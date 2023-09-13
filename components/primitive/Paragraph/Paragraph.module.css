@@ -1,0 +1,23 @@
+.p {
+    margin: 0;
+}
+
+.l {
+    font-size: 20px;
+    line-height: 32px;
+}
+
+.m {
+    font-size: 18px;
+    line-height: 29px;
+}
+
+.s {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.xs {
+    font-size: 14px;
+    line-height: 24px;
+}
