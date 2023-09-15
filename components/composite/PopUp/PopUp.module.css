@@ -1,0 +1,33 @@
+.popup {
+    display: flex;
+    align-items: center;
+    gap: 19px;
+
+    border: solid 1px var(--grey-light);
+    border-radius: 18px;
+
+    background: var(--white);
+
+    width: 33.3125rem;
+    height: 6.6875rem;
+
+    padding-left: 14px;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 0.2vw;
+}
+
+.text {
+    margin: 0;
+}
+
+
+@media (max-width: 600px) {
+
+    .popup {
+        width: 100%;
+        height: 6.6875rem;
+    }
+}

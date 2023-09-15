@@ -1,6 +1,7 @@
 :root {
     --black: #3B434E;
     --white: white;
+    --grey: #858585;
     --grey-light: #D3D3D3;
     --primary: #7653FC;
     --primary-hover: #5537cd;
@@ -30,4 +31,60 @@ a {
 
 * {
     box-sizing: border-box;
+}
+
+@media (max-width: 1950px) {
+
+    html,
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 1600px) {
+
+    html,
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    html,
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    html,
+    body {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 900px) {
+
+    html,
+    body {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    html,
+    body {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    html,
+    body {
+        font-size: 13px;
+    }
 }

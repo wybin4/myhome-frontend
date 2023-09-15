@@ -1,0 +1,56 @@
+.icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    
+    box-sizing: border-box;
+}
+
+.l:not(.iconRounded) {
+    font-size: 20px;
+
+    width: 4.4375rem;
+    height: 4.4375rem;
+}
+
+.l svg {
+    width: 2.1875rem;
+    height: 2.1875rem;
+}
+
+.m:not(.iconRounded) {
+    font-size: 16px;
+
+    padding: 10px 14px;
+}
+
+.m svg {
+    width: 15px;
+    height: 15px;
+}
+
+.s {
+    width: 2.875rem;
+    height: 2.875rem;
+}
+
+.s svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.primary {
+    background: var(--primary);
+    color: var(--white);
+
+    border-radius: 50px;
+}
+
+.primary svg {
+    fill: var(--white);
+}
+
+.none svg {
+    fill: var(--primary);
+}

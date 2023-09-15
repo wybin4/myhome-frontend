@@ -1,0 +1,25 @@
+.referenceMenuItem {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.referenceMenuItem:not(:last-child) {
+    margin-bottom: 1.9375rem;
+}
+
+.menuTitle {
+    font-weight: 600;
+
+    margin-bottom: 1.5rem;
+}
+
+.itemTitle {
+    margin: 0;
+}
+
+.itemText {
+    color: var(--grey);
+
+    margin: 0;
+}

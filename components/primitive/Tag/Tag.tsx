@@ -3,7 +3,7 @@ import styles from "./Tag.module.css";
 import cn from 'classnames';
 
 export const Tag = ({ appearance = "primary", size, children, ...props }: TagProps): JSX.Element => {
-    return <p className={cn(styles.p, {
+    return <p className={cn(styles.tag, {
         [styles.l]: size === "l",
         [styles.m]: size === "m",
         [styles.s]: size === "s",

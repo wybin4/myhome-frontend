@@ -1,14 +1,18 @@
-import { Button } from "@/components";
+import { ReferenceMenu } from "@/components";
+import ApartmentIcon from './apartment.svg';
+import HouseIcon from './home.svg';
+import SubscriberIcon from './subscriber.svg';
 
 export default function Home(): JSX.Element {
     return (
         <div>
-            <Button appearance="primary" symbol="upload">Привет!</Button>
-            <Button appearance="primary" symbol="download">Привет!</Button>
-            <Button appearance="primary" symbol="add">Привет!</Button>
-            <Button appearance="ghost" symbol="upload">Привет, друг!</Button>
-            <Button appearance="ghost" symbol="download">Привет, друг!</Button>
-            <Button appearance="ghost" symbol="add">Привет, друг!</Button>
+            <ReferenceMenu items={[
+                { title: "Дома", text: "Добавление и изменение данных", icon: <HouseIcon /> },
+                { title: "Жилые помещения", text: "Добавление и изменение данных", icon: <ApartmentIcon /> },
+                { title: "Собственники", text: "Добавление и изменение данных", icon: <SubscriberIcon /> },
+                { title: "Лицевые счета", text: "Добавление и изменение Лицевых счетов", icon: <SubscriberIcon /> },
+            ]} title={"Абоненты"} />
+
         </div>
     );
 }
