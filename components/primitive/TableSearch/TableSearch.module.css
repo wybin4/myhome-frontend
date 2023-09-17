@@ -1,0 +1,52 @@
+.searchIcon {
+    fill: var(--grey);
+}
+
+.searchInput {
+    border: solid 1px var(--grey-light);
+}
+
+.l .searchIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    margin-left: 0.45rem;
+}
+
+.s .searchIcon {
+    width: 0.625rem;
+    height: 0.625rem;
+
+    margin-left: -0.1rem;
+}
+
+.l .searchInput {
+    width: 74.5rem;
+    height: 3.75rem;
+
+    border-radius: 0.9375rem;
+
+    font-size: 1.125rem;
+
+    padding-left: 3.375rem;
+}
+
+.s .searchInput {
+    width: 10.25rem;
+    height: 1.875rem;
+
+    border-radius: 0.4375rem;
+
+    font-size: 0.75rem;
+
+    padding-left: 1.625rem;
+}
+
+.searchInput:focus {
+    border: solid 1px var(--primary);
+    outline: none;
+}
+
+.searchInput::-webkit-search-cancel-button {
+    visibility: hidden;
+}

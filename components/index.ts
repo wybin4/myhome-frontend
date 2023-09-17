@@ -3,6 +3,11 @@ export * from "./primitive/Button/Button";
 export * from "./primitive/Tag/Tag";
 export * from "./primitive/Paragraph/Paragraph";
 export * from "./primitive/Icon/Icon";
+export * from "./primitive/TableSearch/TableSearch";
+export * from "./primitive/DatePicker/DatePicker";
+export * from "./primitive/Checkbox/Checkbox";
+export * from "./primitive/DatePicker/DatePicker";
 
 export * from "./composite/PopUp/PopUp";
 export * from "./composite/ReferenceMenu/ReferenceMenu";
+export * from "./composite/TableFilter/TableFilter";

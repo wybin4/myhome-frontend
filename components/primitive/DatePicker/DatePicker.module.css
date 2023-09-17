@@ -1,0 +1,78 @@
+.datepickerWrapper {
+    width: 22rem;
+
+    background: var(--white);
+    border-radius: 0.6375rem;
+    border: solid 1px var(--grey-light);
+
+    padding: 1px 0 30px 15px;
+}
+
+.day {
+    padding: 8px;
+
+    border: none;
+    border-radius: 50%;
+}
+
+.monthLabel {
+    padding-left: 12px;
+    margin: 0 0 16px;
+}
+
+.navWrapper {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-bottom: -20px;
+
+    z-index: 20;
+}
+
+.navButton {
+    padding: 0 20px;
+}
+
+.weekdayLabelsArr {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-content: center;
+
+    margin-bottom: 10px;
+
+    font-size: 10px;
+}
+
+.daysArr {
+    display: grid;
+    grid-template-columns: repeat(7, 40px);
+    justify-content: center;
+}
+
+.activeMonthsArr {
+    display: grid;
+    grid-gap: 0 64px;
+    grid-template-columns: repeat(1, 300px);
+
+    margin: 32px 0 0;
+}
+
+.normalColor {
+    color: var(--black);
+    background: var(--white);
+}
+
+.selectedColor {
+    color: var(--black);
+    background: var(--primary-light);
+}
+
+.rangeHoverColor {
+    color: var(--black);
+    background: var(--primary-light);
+}
+
+.selectedFirstOrLastColor {
+    color: var(--white);
+    background: var(--primary);
+}

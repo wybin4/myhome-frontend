@@ -1,10 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
     --black: #3B434E;
     --white: white;
     --grey: #858585;
     --grey-light: #D3D3D3;
+    --primary-light: #F1EDFE;
     --primary: #7653FC;
-    --primary-hover: #5537cd;
+    --primary-hover: #6144d4;
     --red: #DE0000;
     --red-light: #FC836D;
     --green: #1DC37E;

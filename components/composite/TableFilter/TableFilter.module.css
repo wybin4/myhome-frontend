@@ -1,0 +1,13 @@
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+
+    margin-bottom: 1rem;
+}
+
+.arrowDown {
+    transform: rotate(180deg);
+}
