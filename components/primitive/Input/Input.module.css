@@ -1,0 +1,65 @@
+.inputWrapper svg {
+    fill: var(--grey);
+}
+
+.input {
+    border: solid 1px var(--grey-light);
+}
+
+.l svg {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    margin-left: 0.45rem;
+}
+
+.s .big svg {
+    width: 0.9rem;
+    height: 1.125rem;
+}
+
+.s .normal svg {
+    width: 0.625rem;
+    height: 0.625rem;
+}
+
+.s svg {
+    margin-left: -0.1rem;
+}
+
+.l .input {
+    width: 74.5rem;
+    height: 3.75rem;
+
+    border-radius: 0.9375rem;
+
+    font-size: 1.125rem;
+
+    padding-left: 3.375rem;
+}
+
+.s .input {
+    width: 10.25rem;
+    height: 1.875rem;
+
+    border-radius: 0.4375rem;
+
+    font-size: 0.75rem;
+}
+
+.s .bigInput {
+    padding-left: 1.925rem;
+}
+
+.s .normalInput {
+    padding-left: 1.625rem;
+}
+
+.input:focus {
+    border: solid 1px var(--primary);
+    outline: none;
+}
+
+.input::-webkit-search-cancel-button {
+    visibility: hidden;
+}

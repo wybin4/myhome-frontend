@@ -1,4 +1,4 @@
-import { DatePicker } from "@/components";
+import { DatePickerInput } from "@/components";
 
 export default function Home(): JSX.Element {
     return (
@@ -21,7 +21,8 @@ export default function Home(): JSX.Element {
                     radio: true
                 },
             ]} /> */}
-            <DatePicker />
+            {/* <TableSearch size={"s"}/> */}
+            <DatePickerInput />
         </div>
     );
 }

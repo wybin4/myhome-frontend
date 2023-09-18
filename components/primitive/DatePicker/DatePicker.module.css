@@ -1,58 +1,64 @@
 .datepickerWrapper {
-    width: 22rem;
+    width: 16rem;
 
     background: var(--white);
     border-radius: 0.6375rem;
     border: solid 1px var(--grey-light);
 
-    padding: 1px 0 30px 15px;
+    padding: 0 0 20px 15px;
 }
 
 .day {
-    padding: 8px;
+    font-size: 0.875rem;
+
+    padding: 0.3rem;
 
     border: none;
     border-radius: 50%;
 }
 
 .monthLabel {
-    padding-left: 12px;
+    padding-left: 5px;
     margin: 0 0 16px;
+
+    font-size: 0.875rem;
 }
 
 .navWrapper {
     display: flex;
     justify-content: flex-end;
 
-    margin-bottom: -20px;
+    margin-bottom: -1.2rem;
 
     z-index: 20;
 }
 
 .navButton {
-    padding: 0 20px;
+    width: 0.5625rem;
+    width: 0.3125rem;
+
+    padding: 0 1.25rem;
 }
 
 .weekdayLabelsArr {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    justify-content: center;
+    grid-template-columns: repeat(7, 1.9rem);
+    /* justify-content: center; */
 
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
 
-    font-size: 10px;
+    font-size: 0.625rem;
 }
 
 .daysArr {
     display: grid;
-    grid-template-columns: repeat(7, 40px);
-    justify-content: center;
+    grid-template-columns: repeat(7, 1.9rem);
+    /* justify-content: center; */
 }
 
 .activeMonthsArr {
     display: grid;
     grid-gap: 0 64px;
-    grid-template-columns: repeat(1, 300px);
 
     margin: 32px 0 0;
 }
