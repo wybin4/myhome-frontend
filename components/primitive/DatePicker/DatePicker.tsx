@@ -8,7 +8,13 @@ import ArrowIcon from './arrow.svg';
 import { DatePickerProps, } from "./DatePicker.props";
 import cn from "classnames";
 
-export const DatePicker = ({ dateRange, setDateRange, className, setChoosedDates, ...props }: DatePickerProps): JSX.Element => {
+export const DatePicker = ({
+    innerRef,
+    dateRange, setDateRange,
+    className,
+    setChoosedDates,
+    ...props
+}: DatePickerProps): JSX.Element => {
 
     const {
         firstDayOfWeek,
@@ -89,6 +95,7 @@ export const DatePicker = ({ dateRange, setDateRange, className, setChoosedDates
     return (
         <div className={cn(className, styles.datepickerWrapper)}
             {...props}
+            ref={innerRef}
         >
             <DatepickerContext.Provider
                 value={{

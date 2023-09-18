@@ -7,6 +7,7 @@ export const Input = ({
     icon, sizeOfIcon = "normal",
     placeholder, className, size,
     readOnly = false,
+    innerRef,
     ...props
 }: InputProps): JSX.Element => {
     return (
@@ -23,14 +24,16 @@ export const Input = ({
                     })}>
                     {icon}
                 </div>
-                <input className={cn(
-                    styles.input,
-                    {
-                        [styles.bigInput]: sizeOfIcon === "big",
-                        [styles.normalInput]: sizeOfIcon === "normal",
-                    },
-                    "focus:ring-4 focus:ring-violet-200"
-                )} value={value} placeholder={placeholder} readOnly={readOnly} {...props} />
+                <input
+                    ref={innerRef}
+                    className={cn(
+                        styles.input,
+                        {
+                            [styles.bigInput]: sizeOfIcon === "big",
+                            [styles.normalInput]: sizeOfIcon === "normal",
+                        },
+                        "focus:ring-4 focus:ring-violet-200"
+                    )} value={value} placeholder={placeholder} readOnly={readOnly} {...props} />
             </span>
         </>
     );

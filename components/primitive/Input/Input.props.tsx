@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, HTMLAttributes, LegacyRef } from "react";
 
 export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     value?: string;
@@ -8,4 +8,5 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
     size: "l" | "s";
     sizeOfIcon?: "normal" | "big";
     readOnly?: boolean;
+    innerRef?: LegacyRef<HTMLInputElement>;
 }
