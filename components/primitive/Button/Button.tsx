@@ -4,12 +4,19 @@ import cn from "classnames";
 import DownloadIcon from './download.svg';
 import UploadIcon from './upload.svg';
 
-export const Button = ({ symbol = "none", appearance, children, className, ...props }: ButtonProps): JSX.Element => {
+export const Button = ({
+    symbol = "none",
+    appearance, size,
+    children, className, ...props
+}: ButtonProps): JSX.Element => {
     return (
         <button
             className={cn(styles.button, className, {
                 [styles.primary]: appearance === "primary",
-                [styles.ghost]: appearance === "ghost"
+                [styles.ghost]: appearance === "ghost",
+                [styles.l]: size === "l",
+                [styles.m]: size === "m",
+                [styles.s]: size === "s",
             })}
             {...props}
         >

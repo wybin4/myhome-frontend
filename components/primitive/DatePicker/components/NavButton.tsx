@@ -1,5 +1,5 @@
-import styles from './DatePicker.module.css';
-import { NavButtonProps } from './DatePicker.props';
+import styles from '../DatePicker.module.css';
+import { NavButtonProps } from '../DatePicker.props';
 import cn from "classnames";
 
 export const NavButton = ({ children, onClick, className }: NavButtonProps): JSX.Element => {

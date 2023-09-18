@@ -4,4 +4,5 @@ export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTML
     appearance: "primary" | "ghost";
     children: ReactNode;
     symbol?: "download" | "upload" | "add" | "none";
+    size: "l" | "m" | "s";
 }

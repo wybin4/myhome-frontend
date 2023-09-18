@@ -1,4 +1,4 @@
-import { Checkbox, TableSearch } from "@/components";
+import { Checkbox, DatePickerInput, TableSearch } from "@/components";
 import { TableFilterItemProps, TableFilterProps } from "./TableFilter.props";
 import ArrowIcon from './arrow.svg';
 import { useState } from "react";
@@ -41,7 +41,7 @@ export const TableFilterItem = ({ items, type, title, titleEng, radio = false, .
                     [styles.hidden]: hidden,
                     [styles.visible]: !hidden
                 })}>
-                    {type !== "checkboxWithoutSearch" && <TableSearch className="mb-3" size={"s"} />}
+                    {type !== "checkboxWithoutSearch" && type !== "date" && <div className="mb-3"><TableSearch size="s" /></div>}
                     {items?.length && <div className="flex flex-col gap-1">{
                         items.map((item, index) => {
                             return (
@@ -54,6 +54,7 @@ export const TableFilterItem = ({ items, type, title, titleEng, radio = false, .
                             );
                         })
                     }</div>}
+                    {type === "date" && <DatePickerInput />}
                 </div>
             </div>
         </>

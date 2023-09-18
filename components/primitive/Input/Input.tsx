@@ -14,6 +14,7 @@ export const Input = ({
         <>
             <span className={cn(className, styles.inputWrapper, "relative", {
                 [styles.l]: size === "l",
+                [styles.m]: size === "m",
                 [styles.s]: size === "s",
             }
             )}>

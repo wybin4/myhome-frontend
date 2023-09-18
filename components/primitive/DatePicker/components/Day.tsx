@@ -1,8 +1,8 @@
 import { useRef, useContext } from "react";
-import { DayProps } from "./DatePicker.props";
-import styles from './DatePicker.module.css';
+import { DayProps } from "../DatePicker.props";
+import styles from '../DatePicker.module.css';
 import { useDay } from "@datepicker-react/hooks";
-import DatepickerContext from "./datepickerContext";
+import DatepickerContext from "../helpers/datepickerContext";
 import cn from "classnames";
 
 export const Day = ({ dayLabel, date }: DayProps): JSX.Element => {

@@ -1,12 +1,13 @@
-import styles from "./DatePicker.module.css";
+import styles from '../DatePicker.module.css';
 import { NavButton } from "./NavButton";
 import { FocusedInput, START_DATE, useDatepicker } from "@datepicker-react/hooks";
 import { useEffect } from "react";
 import { Month } from "./Month";
-import DatepickerContext from "./datepickerContext";
-import ArrowIcon from './arrow.svg';
-import { DatePickerProps, } from "./DatePicker.props";
+import DatepickerContext from "../helpers/datepickerContext";
+import ArrowIcon from '../arrow.svg';
+import { DatePickerProps, } from "../DatePicker.props";
 import cn from "classnames";
+import { Button } from '../../Button/Button';
 
 export const DatePicker = ({
     innerRef,
@@ -85,6 +86,22 @@ export const DatePicker = ({
         } else return `${startDate}`;
     };
 
+    const setToday = () => {
+        setChoosedDates(getDateString({
+            startDate: new Date(),
+            endDate: new Date()
+        }));
+        setDateRange({
+            startDate: new Date(),
+            endDate: new Date(),
+            focusedInput: START_DATE
+        });
+    };
+
+    const clear = () => {
+        setChoosedDates("");
+    };
+
     useEffect(() => {
         setChoosedDates(getDateString({
             startDate: dateRange.startDate,
@@ -138,6 +155,10 @@ export const DatePicker = ({
                             firstDayOfWeek={firstDayOfWeek}
                         />
                     ))}
+                    <div className="flex gap-6 mt-2">
+                        <Button appearance="primary" size="s" onClick={setToday}>Сегодня</Button>
+                        <Button appearance="ghost" size="s" onClick={clear}>Очистить</Button>
+                    </div>
                 </div>
             </DatepickerContext.Provider>
         </div>

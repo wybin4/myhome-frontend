@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Input } from '../Input/Input';
 import { DatePicker } from './DatePicker';
-import CalendarIcon from './calendar.svg';
+import CalendarIcon from '../calendar.svg';
 import { START_DATE } from '@datepicker-react/hooks';
-import { IDateRange } from './DatePicker.props';
+import { IDateRange } from '../DatePicker.props';
+import { Input } from '../../Input/Input';
 
 export const DatePickerInput = (): JSX.Element => {
     const [isPickerOpened, setIsPickerOpened] = useState<boolean>(false);

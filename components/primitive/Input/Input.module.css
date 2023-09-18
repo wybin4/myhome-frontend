@@ -38,8 +38,19 @@
     padding-left: 3.375rem;
 }
 
+.m .input {
+    width: 21.125rem;
+    height: 2.375rem;
+
+    border-radius: 0.625rem;
+
+    font-size: 0.875rem;
+
+    padding-left: 0.6875rem;
+}
+
 .s .input {
-    width: 10.25rem;
+    width: 11.5rem;
     height: 1.875rem;
 
     border-radius: 0.4375rem;

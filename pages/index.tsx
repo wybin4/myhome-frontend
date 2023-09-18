@@ -1,6 +1,22 @@
-import { DatePickerInput } from "@/components";
+import { Select } from "@/components";
 
 export default function Home(): JSX.Element {
+
+    const options = [
+        { value: 'option1', text: 'Option 1' },
+        { value: 'option2', text: 'Option 2' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+        { value: 'option3', text: 'Option 3' },
+    ];
+
     return (
         <div>
             {/* <ReferenceMenu items={[
@@ -20,9 +36,12 @@ export default function Home(): JSX.Element {
                     items: ["По домам", "По лицевым счетам"],
                     radio: true
                 },
+                {
+                    type: "date",
+                    title: "Расчётный период", titleEng: "billingPeriod",
+                },
             ]} /> */}
-            {/* <TableSearch size={"s"}/> */}
-            <DatePickerInput />
+            <Select id="select1" options={options} title="ФИО" />
         </div>
     );
 }
