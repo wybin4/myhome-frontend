@@ -62,14 +62,6 @@ a {
     }
 }
 
-@media (max-width: 1200px) {
-
-    html,
-    body {
-        font-size: 15px;
-    }
-}
-
 @media (max-width: 900px) {
 
     html,

@@ -8,7 +8,7 @@ export const ReferenceMenu = ({ title, items, className, ...props }: ReferenceMe
         <>
             <div className={cn(styles.referenceMenu, className)} {...props}>
                 <Paragraph size="l" className={styles.menuTitle}>{title}</Paragraph>
-                {items.length && items.map((item, key) => <ReferenceMenuItem key={key} title={item.title} text={item.text} icon={item.icon} />)}
+                {items && items.map((item, key) => <ReferenceMenuItem key={key} title={item.title} text={item.text} icon={item.icon} />)}
             </div>
         </>
     );

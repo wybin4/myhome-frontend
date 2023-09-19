@@ -12,3 +12,4 @@ export * from "./primitive/DatePicker/components/DatePickerInput";
 export * from "./composite/PopUp/PopUp";
 export * from "./composite/ReferenceMenu/ReferenceMenu";
 export * from "./composite/TableFilter/TableFilter";
+export * from "./composite/TableRow/TableRow";

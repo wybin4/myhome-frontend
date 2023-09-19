@@ -1,0 +1,78 @@
+@media (max-width: 900px) {
+    .rowWrapper {
+        column-gap: 0.5rem;
+        row-gap: 2rem;
+
+        font-size: 0.75rem;
+    }
+
+    .rowWrapper * {
+        row-gap: 1rem;
+
+        justify-items: center;
+    }
+
+    .rowWrapper *:not(.rowTag) {
+        min-height: 2rem;
+        height: 2rem;
+    }
+
+    .rowContent {
+        display: flex;
+        align-items: center;
+    }
+
+    .actions {
+        align-items: center;
+
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .rowWrapper * {
+        column-gap: 1.5rem;
+        row-gap: 2rem;
+    }
+
+    .actions {
+        gap: 0.5rem;
+    }
+
+}
+
+svg:not(.comment) {
+    fill: var(--black);
+}
+
+.comment {
+    stroke: var(--black);
+    stroke-width: 1.67px;
+}
+
+.iconWrapper svg {
+    height: 1.5rem;
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.actions svg {
+    width: 1rem;
+    height: 1rem !important;
+
+    min-width: 1rem;
+    min-height: 1rem !important;
+
+    cursor: pointer;
+}
+
+.underline {
+    text-decoration: underline;
+
+    cursor: pointer;
+}

@@ -10,7 +10,7 @@ export const TableFilter = ({ title, items, ...props }: TableFilterProps): JSX.E
         <>
             <div {...props} className="w-[11.5rem]">
                 <p className="font-medium text-lg mb-4">{title}</p>
-                {items.length && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
+                {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
             </div>
         </>
     );
@@ -42,7 +42,7 @@ export const TableFilterItem = ({ items, type, title, titleEng, radio = false, .
                     [styles.visible]: !hidden
                 })}>
                     {type !== "checkboxWithoutSearch" && type !== "date" && <div className="mb-3"><TableSearch size="s" /></div>}
-                    {items?.length && <div className="flex flex-col gap-1">{
+                    {items && <div className="flex flex-col gap-1">{
                         items.map((item, index) => {
                             return (
                                 <Checkbox
