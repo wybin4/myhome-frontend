@@ -5,11 +5,20 @@ import { useState } from "react";
 import styles from "./TableFilter.module.css";
 import cn from 'classnames';
 
-export const TableFilter = ({ title, items, ...props }: TableFilterProps): JSX.Element => {
+export const TableFilter = ({ innerRef, isOpen, setIsOpen, title, items, className, ...props }: TableFilterProps): JSX.Element => {
     return (
         <>
-            <div {...props} className="w-[11.5rem]">
-                <p className="font-medium text-lg mb-4">{title}</p>
+            <div {...props} className={cn(styles.filterWrapper, className, {
+                [styles.filterHidden]: !isOpen,
+                [styles.filterVisible]: isOpen
+            })} ref={innerRef}>
+                <div className={styles.titleWrapper}>
+                    <ArrowIcon
+                        className={styles.closeFiltersArrow}
+                        onClick={() => setIsOpen(!isOpen)}
+                    />
+                    <p className={styles.mainTitle}>{title}</p>
+                </div>
                 {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
             </div>
         </>
@@ -30,7 +39,7 @@ export const TableFilterItem = ({ items, type, title, titleEng, radio = false, .
         <>
             <div {...props}>
                 <div className="flex items-baseline justify-between">
-                    <p className="font-[0.9375rem] leading-5 font-medium mb-4">{title}</p>
+                    <p className="text-[0.9375rem] leading-5 font-medium mb-4">{title}</p>
                     <ArrowIcon className={cn(
                         "justify-end cursor-pointer", {
                         [styles.arrowDown]: hidden,

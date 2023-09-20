@@ -9,7 +9,7 @@ import DeleteIcon from "./delete.svg";
 import EditIcon from "./edit.svg";
 import React from "react";
 
-export const TableRow = ({ startIcon, actions, items, ...props }: TableRowProps): JSX.Element => {
+export const TableRow = ({ startIcon, actions, items, className, ...props }: TableRowProps): JSX.Element => {
     const countOfRows = items[0].items?.length;
 
     const getActions = () => {
@@ -38,7 +38,7 @@ export const TableRow = ({ startIcon, actions, items, ...props }: TableRowProps)
 
     return (
         <>
-            <div className={cn("flex gap-12", styles.rowWrapper)} {...props}>
+            <div className={cn("flex gap-12", styles.rowWrapper, className)} {...props}>
                 {startIcon && <div className={cn("flex flex-col gap-4", styles.iconWrapper)}>
                     <Paragraph size="s" className="font-medium">⠀</Paragraph>
                     {getStartIcons()}

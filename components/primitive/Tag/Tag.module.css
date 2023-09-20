@@ -2,29 +2,29 @@
     display: inline-block;
 
     box-sizing: border-box;
-    margin-right: 5px;
-    border-radius: 20px;
+    margin-right: 0.3125rem;
+    border-radius: 1.25rem;
 }
 
 .l {
-    padding: 5px 10px;
+    padding: 0.3125rem 0.625rem;
 
-    font-size: 14px;
-    line-height: 14px;
+    font-size: 0.875rem;
+    line-height: 0.875rem;
 }
 
 .m {
-    padding: 5px 10px;
+    padding: 0.3125rem 0.625rem;
 
-    font-size: 12px;
-    line-height: 12px;
+    font-size: 0.75rem;
+    line-height: 0.75rem;
 }
 
 .s {
-    padding: 5px 7px;
+    padding: 0.3125rem 0.4325rem;
 
-    font-size: 10px;
-    line-height: 10px;
+    font-size: 0.625rem;
+    line-height: 0.625rem;
 }
 
 .primary {

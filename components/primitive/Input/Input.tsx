@@ -12,7 +12,7 @@ export const Input = ({
 }: InputProps): JSX.Element => {
     return (
         <>
-            <span className={cn(className, styles.inputWrapper, "relative", {
+            <div className={cn(className, styles.inputWrapper, "relative", {
                 [styles.l]: size === "l",
                 [styles.m]: size === "m",
                 [styles.s]: size === "s",
@@ -35,7 +35,7 @@ export const Input = ({
                         },
                         "focus:ring-4 focus:ring-violet-200"
                     )} value={value} placeholder={placeholder} readOnly={readOnly} {...props} />
-            </span>
+            </div>
         </>
     );
 };

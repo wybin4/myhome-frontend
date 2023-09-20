@@ -1,0 +1,54 @@
+.topPart {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    margin-bottom: 4rem;
+}
+
+.bottomPart {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4rem;
+}
+
+.buttonWrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.75rem;
+
+    margin-bottom: 4rem;
+
+    grid-area: buttonWrapper;
+}
+
+.filterIcon {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .buttonWrapper {
+        gap: 1rem;
+    }
+
+    .filterIcon {
+        display: block;
+    }
+}
+
+@media (max-width: 600px) {
+    .topPart {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .title {
+        margin-bottom: 1rem;
+    }
+
+    .buttonWrapper {
+        margin-bottom: 2rem;
+    }
+}

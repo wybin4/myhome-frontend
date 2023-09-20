@@ -41,7 +41,8 @@
 
 }
 
-svg:not(.comment) {
+.actions svg:not(.comment),
+.iconWrapper svg {
     fill: var(--black);
 }
 

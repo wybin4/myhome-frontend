@@ -11,12 +11,12 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        "sm": "400px",
-        "md": "600px",
-        "lg": "900px",
-        "xl": "1200px",
-        "2xl": "1600px",
-        "3xl": "1950px",
+        "sm": { "min": "280px", "max": "400px" },
+        "md": { "min": "401px", "max": "600px" },
+        "lg": { "min": "601px", "max": "900px" },
+        "xl": { "min": "901px", "max": "1200px" },
+        "2xl": { "min": "1201px", "max": "1600px" },
+        "3xl": { "min": "1601px", "max": "1950px" },
       }
     },
   },

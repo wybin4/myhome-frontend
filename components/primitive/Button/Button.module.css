@@ -9,7 +9,6 @@
     cursor: pointer;
     text-align: center;
     border: none;
-    border-radius: 5px;
 
     font-size: 14px;
 
@@ -18,13 +17,24 @@
 
 .l {}
 
-.m {}
+.m {
+    width: 10.375rem;
+    height: 2.875rem;
+
+    border-radius: 0.625rem;
+}
+
+.m svg {
+    width: 1.0625rem;
+}
 
 .s {
     width: 6rem;
     height: 2rem;
 
     font-size: 0.75rem;
+
+    border-radius: 0.3125rem;
 }
 
 .primary {
@@ -54,7 +64,8 @@
     fill: var(--black);
 }
 
-.ghost .upload {
+.ghost .upload,
+.ghost .filter {
     stroke: var(--black);
 }
 
@@ -70,12 +81,23 @@
     vertical-align: middle;
 }
 
-.upload {
+.upload,
+.filter {
     stroke-width: 2;
 }
 
 .download {}
 
 .add {
-    font-size: 16px;
+    font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+    .m {
+        width: 3rem;
+    }
+
+    .symbol {
+        margin: 0;
+    }
 }

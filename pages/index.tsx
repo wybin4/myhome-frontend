@@ -1,4 +1,4 @@
-import { TableRow } from "@/components";
+import { Table } from "@/components";
 import PDFIcon from "./pdf.svg";
 
 export default function Home(): JSX.Element {
@@ -43,7 +43,7 @@ export default function Home(): JSX.Element {
                 },
             ]} /> */}
             {/* <Select id="select1" options={options} title="ФИО" /> */}
-            <TableRow
+            {/* <TableRow
                 startIcon={<PDFIcon />}
                 actions={["editAndSave", "delete", "addComment", "download"]}
                 items={[
@@ -74,7 +74,65 @@ export default function Home(): JSX.Element {
                             "Паспорт счётчика"
                         ]
                     },
-                ]} />
+                ]} /> */}
+            <Table
+                title="Лицевые счета"
+                buttonTypes={["download", "upload", "add"]}
+                filters={[
+                    {
+                        type: "checkbox",
+                        title: "Тип услуги",
+                        titleEng: "typeOfService",
+                        items: ["Вывоз ТБО", "СодОбщИмущ", "Техобслуж"]
+                    },
+                    {
+                        type: "checkboxWithoutSearch",
+                        title: "Способ начисления",
+                        titleEng: "accrualAbility",
+                        items: ["По домам", "По лицевым счетам"],
+                        radio: true
+                    },
+                    {
+                        type: "date",
+                        title: "Расчётный период",
+                        titleEng: "billingPeriod"
+                    }
+                ]}
+                rows={{
+                    startIcon: < PDFIcon />,
+                    actions: ["editAndSave", "delete", "addComment", "download"],
+                    items:
+                        [
+                            {
+                                title: "Тема",
+                                type: "text",
+                                items: [
+                                    "Установка домофона с видеонаблюдением",
+                                    "Тариф на общедомовое имущество",
+                                    "Ежеквартальное собрание"
+                                ]
+                            },
+                            {
+                                title: "Статус",
+                                type: "tag",
+                                items: [
+                                    "Открыт",
+                                    "Закрыт",
+                                    "Закрыт"
+                                ]
+                            },
+                            {
+                                title: "Вложения",
+                                type: "attachment",
+                                items: [
+                                    undefined,
+                                    "Акт поверки",
+                                    "Паспорт счётчика"
+                                ]
+                            },
+                        ]
+                }}
+            />
         </div>
     );
 }
