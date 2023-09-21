@@ -1,21 +1,24 @@
 import { AppContext } from "@/context/app.context";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { NavigationProps } from "./Navigation.props";
 import { IMenu } from "@/interfaces/menu.interface";
 import styles from "./Navigation.module.css";
-import cn from 'classnames';
+import cn from "classnames";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
     const { role, setRole } = useContext(AppContext);
-    const [activeItem, setActiveItem] = useState<number>(0);
+
+    const router = useRouter();
 
     useEffect(() => {
-        setRole && setRole("managementCompany");
+        setRole && setRole("subscriber");
     });
 
     const menu: IMenu[] = [
         {
-            role: "owner", items:
+            role: "subscriber", items:
                 [{
                     name: "Счётчики", route: "meters", number: 0,
                 },
@@ -63,16 +66,15 @@ export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
         <div {...props}>
             {role !== "none" &&
                 currentMenu &&
-                currentMenu.items.map((menuItem, key) => {
+                currentMenu.items.map(menuItem => {
                     return <div key={menuItem.route}
                         className={cn(styles.item, {
-                            [styles.activeItem]: activeItem === menuItem.number
+                            [styles.activeItem]: router.asPath.split("/")[2] == menuItem.route
                         })}
-                        onClick={() => setActiveItem(key)}
                     >
-                        <a href={`/${menuItem.route}`}>
+                        <Link href={`/${currentMenu.role}/${menuItem.route}`}>
                             <span>{menuItem.name}</span>
-                        </a>
+                        </Link>
                     </div>;
                 }
                 )}
