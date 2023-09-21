@@ -12,6 +12,10 @@
 
 .header {
     grid-area: header;
+
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .body {
@@ -24,6 +28,13 @@
 
 .navigation {
     grid-area: nav;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.875rem;
+
+    margin-top: 5px;
 }
 
 @media (max-width: 900px) {

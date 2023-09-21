@@ -1,0 +1,4 @@
+.activeItem,
+.item:hover {
+    color: var(--primary);
+}

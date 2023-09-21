@@ -1,12 +1,13 @@
 import { HeaderProps } from "./Header.props";
-// import styles from "./Header.module.css";
-// import cn from 'classnames';
+import styles from "./Header.module.css";
+import LogoIcon from "./logo.svg";
 
 export const Header = ({ ...props }: HeaderProps): JSX.Element => {
     return (
         <>
             <div {...props}>
-                Header
+                <LogoIcon className={styles.logo} />
+                <p className={styles.title}>Мой дом</p>
             </div>
         </>
     );
