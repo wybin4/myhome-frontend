@@ -5,7 +5,7 @@ import cn from 'classnames';
 export const Input = ({
     value,
     icon, sizeOfIcon = "normal",
-    placeholder, className, size,
+    placeholder, className, size, textAlign = "left",
     readOnly = false,
     innerRef,
     ...props
@@ -18,18 +18,22 @@ export const Input = ({
                 [styles.s]: size === "s",
             }
             )}>
-                <div className={cn("absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none",
-                    {
-                        [styles.big]: sizeOfIcon === "big",
-                        [styles.normal]: sizeOfIcon === "normal",
-                    })}>
-                    {icon}
-                </div>
+                {icon &&
+                    <div className={cn("absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none",
+                        {
+                            [styles.big]: sizeOfIcon === "big",
+                            [styles.normal]: sizeOfIcon === "normal",
+                        })}>
+                        {icon}
+                    </div>
+                }
                 <input
                     ref={innerRef}
                     className={cn(
                         styles.input,
                         {
+                            "text-center": textAlign === "center",
+                            "text-left": textAlign === "left",
                             [styles.bigInput]: sizeOfIcon === "big",
                             [styles.normalInput]: sizeOfIcon === "normal",
                         },

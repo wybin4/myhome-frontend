@@ -15,3 +15,4 @@ export * from "./composite/TableFilter/TableFilter";
 export * from "./composite/TableRow/TableRow";
 
 export * from "./enhanced/Table/Table";
+export * from "./enhanced/Card/Card";

@@ -7,6 +7,7 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
     placeholder: string;
     size: "l" | "m" | "s";
     sizeOfIcon?: "normal" | "big";
+    textAlign?: "left" | "center";
     readOnly?: boolean;
     innerRef?: LegacyRef<HTMLInputElement>;
 }

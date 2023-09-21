@@ -1,0 +1,64 @@
+.cardWrapper {
+    background: var(--white);
+
+    border: solid 1px var(--grey-light);
+    border-radius: 15px;
+
+    padding: 1.3125rem 1.5625rem;
+}
+
+.title {
+    margin-bottom: 0.5rem;
+
+    position: relative;
+}
+
+.description,
+.input {
+    margin-bottom: 1rem;
+}
+
+.description {
+    color: var(--grey);
+}
+
+.inputCenter {
+    display: flex;
+    justify-content: center;
+}
+
+.iconLeft svg {
+    width: 1.375rem;
+    height: 1.375rem;
+
+    fill: var(--black);
+
+    margin-right: 1rem;
+}
+
+.symbolRight {
+    position: absolute;
+    right: 0;
+}
+
+.symbolRight svg {
+    fill: var(--black);
+
+    width: 0.6rem;
+    height: 0.8rem;
+
+    cursor: pointer;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.bottomText {
+    color: var(--grey);
+}
+
+.bottomText strong {
+    color: var(--black);
+}
