@@ -1,7 +1,8 @@
 import { Table } from "@/components";
 import PDFIcon from "./pdf.svg";
+import { withLayout } from "@/layout/Layout";
 
-export default function Home(): JSX.Element {
+function Home(): JSX.Element {
 
     // const options = [
     //     { value: 'option1', text: 'Option 1' },
@@ -75,7 +76,7 @@ export default function Home(): JSX.Element {
                         ]
                     },
                 ]} /> */}
-            <Table
+            {/* <Table
                 title="Лицевые счета"
                 buttonTypes={["download", "upload", "add"]}
                 filters={[
@@ -132,7 +133,10 @@ export default function Home(): JSX.Element {
                             },
                         ]
                 }}
-            />
+            /> */}
+            Content
         </div>
     );
 }
+
+export default withLayout(Home);
