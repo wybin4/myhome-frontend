@@ -2,20 +2,22 @@ import { CardBottomProps, CardInputProps, CardProps, CardTitleProps } from "./Ca
 import styles from "./Card.module.css";
 import cn from "classnames";
 import { Input, Paragraph } from "@/components";
-import React from "react";
+import React, { useState } from "react";
 
 export const Card = ({
     titlePart, description, text,
     input, bottom,
     className, ...props
 }: CardProps): JSX.Element => {
+    const [inputValue, setInputValue] = useState<string | undefined>(input?.value);
+
     return (
         <div
             className={cn(styles.cardWrapper, className)}
             {...props}>
             <CardTitle className={styles.title} {...titlePart} />
             <Paragraph size="xs" className={styles.description}>{description}</Paragraph>
-            {input && <CardInput className={styles.input} {...input} />}
+            {input && <CardInput className={styles.input} {...input} value={inputValue} setValue={setInputValue} />}
             {bottom && <CardBottom {...bottom} />}
         </div>
     );
@@ -31,11 +33,16 @@ export const CardTitle = ({ text, iconLeft, tag, symbolRight, ...props }: CardTi
     );
 };
 
-export const CardInput = ({ title, textAlign = "left", placeholder, ...props }: CardInputProps): JSX.Element => {
+export const CardInput = ({ readOnly = false, title, value = "", setValue, textAlign = "left", placeholder, ...props }: CardInputProps): JSX.Element => {
     return (
         <div {...props}>
             <Paragraph size="xs" className="font-medium mb-[0.5625rem]">{title}</Paragraph>
-            <Input placeholder={placeholder ? placeholder : ""} size="m" textAlign={textAlign} />
+            <Input
+                value={value} setValue={setValue}
+                placeholder={placeholder ? placeholder : ""}
+                size="m" textAlign={textAlign}
+                readOnly={readOnly}
+            />
         </div>
     );
 };

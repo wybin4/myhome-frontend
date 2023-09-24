@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
+import { DetailedHTMLProps, Dispatch, HTMLAttributes, ReactNode, SetStateAction } from "react";
 
 export interface CardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     text: string;
@@ -11,8 +11,11 @@ export interface CardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
 
 export interface CardInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
+    value?: string;
+    setValue?: Dispatch<SetStateAction<string | undefined>>;
     placeholder?: string;
     textAlign?: "left" | "center";
+    readOnly?: boolean;
 }
 
 export interface CardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

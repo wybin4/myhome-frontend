@@ -1,15 +1,21 @@
 import { InputProps } from "./Input.props";
 import styles from "./Input.module.css";
 import cn from 'classnames';
+import { ChangeEvent } from "react";
 
 export const Input = ({
-    value,
+    value, setValue,
     icon, sizeOfIcon = "normal",
     placeholder, className, size, textAlign = "left",
     readOnly = false,
     innerRef,
     ...props
 }: InputProps): JSX.Element => {
+
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setValue && setValue(event.target.value);
+    };
+
     return (
         <>
             <div className={cn(className, styles.inputWrapper, "relative", {
@@ -36,9 +42,10 @@ export const Input = ({
                             "text-left": textAlign === "left",
                             [styles.bigInput]: sizeOfIcon === "big",
                             [styles.normalInput]: sizeOfIcon === "normal",
+                            "focus:ring-4 focus:ring-violet-200": !readOnly,
+                            [styles.readonly]: readOnly
                         },
-                        "focus:ring-4 focus:ring-violet-200"
-                    )} value={value} placeholder={placeholder} readOnly={readOnly} {...props} />
+                    )} value={value} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
             </div>
         </>
     );

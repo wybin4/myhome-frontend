@@ -66,8 +66,11 @@
     padding-left: 1.625rem;
 }
 
-.input:focus {
+.input:focus:not(.readonly) {
     border: solid 1px var(--primary);
+}
+
+.input:focus {
     outline: none;
 }
 

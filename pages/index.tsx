@@ -132,26 +132,7 @@ function Home(): JSX.Element {
                         ]
                 }}
             /> */}
-            {/* <Card
-                className="w-[392px] h-[195px]"
-                titlePart={{
-                    text: "Отопление, гКал",
-                    iconLeft: <HeatingIcon />,
-                    symbolRight: <ArrowIcon />,
-                }}
-                description="947678510778375 · Поверка 29.12.2022"
-                input={{
-                    title: "Текущие показания",
-                    placeholder: "2,278",
-                    textAlign: "center"
-                }}
-                bottom={
-                    {
-                        text: <>Предыдущие <strong>2,278</strong> 25 февраля 2023</>,
-                        textAlign: "center"
-                    }
-                }
-            /> */}
+ 
         </div>
     );
 }
