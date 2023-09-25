@@ -5,5 +5,6 @@ export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTML
     children: ReactNode;
     symbol?: "download" | "upload" | "add" | "filter" | "none";
     size: "l" | "m" | "s";
+    typeOfButton?: "ordinary" | "rounded";
     innerRef?: LegacyRef<HTMLButtonElement>;
 }

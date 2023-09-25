@@ -1,4 +1,4 @@
-import { Card, Htag } from "@/components";
+import { Card, Htag, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import HeatingIcon from "./icons/heating.svg";
@@ -9,15 +9,32 @@ import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { API } from "@/helpers/api";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
+import cn from "classnames";
+import { AppContext } from "@/context/app.context";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
-    const meters = data[0].meters;
+    const [apartmentId, setApartmentId] = useState<number>(data[0].apartmentId);
+    const { isFormOpened, setIsFormOpened } = useContext(AppContext);
+
     return (
         <>
-            <Htag size="h1">Приборы учёта и показания</Htag>
-            {meters && meters.map((meter, key) =>
-                <MeterCard {...meter} key={key} />
-            )}
+            <Htag size="h1" className="mb-[3rem] lg:mb-[2rem] md:mb-[2rem] sm:mb-[2rem]">Приборы учёта и показания</Htag>
+            <Tabs
+                tabNames={["Квартира 12", "Квартира 124"]}
+                tagTexts={["Ростов-на-Дону, пер. Соборный 99, кв. 12", "ТСЖ Прогресс"]}
+                descriptionText="Срок передачи показаний — с 20 по 25 число"
+                onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
+                activeTab={apartmentId} setActiveTab={setApartmentId}
+                className={cn(
+                    "grid grid-cols-2 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1",
+                    "gap-y-[3.25rem] lg:gap-y-[2rem] md:gap-y-[2rem] sm:gap-y-[2rem]"
+                )}
+            >
+                {data[apartmentId].meters && data[apartmentId].meters.map((meter) =>
+                    <MeterCard {...meter} key={meter.id} />
+                )}
+            </Tabs>
         </>
     );
 }
@@ -63,7 +80,6 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
         } else return <>Предыдущие <strong>{replaceDotWithComma(previous)}</strong> {formatedDateMMMMYYYY(readAt)}</>;
     };
 
-
     return (
         <Card
             key={key}
@@ -95,6 +111,7 @@ export default withLayout<MeterPageProps>(Meter);
 
 export async function getServerSideProps() {
     const apiUrl = API.subscriber.meters.index;
+
     try {
         const postData = {
             "subscriberIds": [1, 2],
@@ -120,6 +137,8 @@ export async function getServerSideProps() {
 interface MeterPageProps extends Record<string, unknown> {
     data: IGetMeterByAIDs[];
     role: UserRole;
+    isFormOpened: boolean;
+    setIsFormOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface IGetMeterByAIDs {

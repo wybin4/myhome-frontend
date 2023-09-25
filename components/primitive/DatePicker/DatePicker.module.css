@@ -1,4 +1,6 @@
 .datepickerWrapper {
+    position: absolute;
+    
     width: 16rem;
 
     background: var(--white);
@@ -6,6 +8,8 @@
     border: solid 1px var(--grey-light);
 
     padding: 0 0 20px 15px;
+
+    z-index: 2;
 }
 
 .day {

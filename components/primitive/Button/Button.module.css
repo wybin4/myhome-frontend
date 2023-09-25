@@ -37,6 +37,15 @@
     border-radius: 0.3125rem;
 }
 
+.rounded {
+    width: 4.1875rem;
+    height: 4.1875rem;
+
+    border-radius: 100%;
+
+    font-size: 2rem;
+}
+
 .primary {
     color: var(--white);
     background-color: var(--primary);
@@ -81,6 +90,14 @@
     vertical-align: middle;
 }
 
+.rounded .symbol {
+    margin-right: 0;
+}
+
+.rounded .content {
+    display: none;
+}
+
 .upload,
 .filter {
     stroke-width: 2;
@@ -99,5 +116,22 @@
 
     .symbol {
         margin: 0;
+    }
+
+    .rounded {
+        width: 26rem;
+        height: 2.77rem;
+
+        border-radius: 1rem;
+
+        font-size: 1.1rem;
+    }
+
+    .rounded .content {
+        display: block;
+    }
+
+    .rounded .symbol {
+        display: none;
     }
 }

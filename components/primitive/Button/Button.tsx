@@ -7,7 +7,7 @@ import FilterIcon from "./filter.svg";
 
 export const Button = ({
     symbol = "none",
-    appearance, size,
+    appearance, size, typeOfButton = "ordinary",
     children, innerRef, className, ...props
 }: ButtonProps): JSX.Element => {
     return (
@@ -15,6 +15,7 @@ export const Button = ({
             className={cn(styles.button, className, {
                 [styles.primary]: appearance === "primary",
                 [styles.ghost]: appearance === "ghost",
+                [styles.rounded]: typeOfButton === "rounded",
                 [styles.l]: size === "l",
                 [styles.m]: size === "m",
                 [styles.s]: size === "s",
@@ -29,8 +30,8 @@ export const Button = ({
                     {symbol === "add" && <span>+</span>}
                     {symbol === "filter" && <FilterIcon className={styles.filter} />}
                 </span>}
-            <span className={cn({
-                "sm:hidden md:hidden lg:hidden": symbol !== "none"
+            <span className={cn(styles.content, {
+                "sm:hidden md:hidden lg:hidden": symbol !== "none",
             })}>{children}</span>
         </button >
     );

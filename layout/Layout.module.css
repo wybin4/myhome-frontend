@@ -1,3 +1,10 @@
+.blurScreen {
+    transition: all 0.4s;
+
+    filter: blur(5px);
+    overflow: hidden;
+}
+
 .wrapper {
     display: grid;
     grid-template-areas:
@@ -20,6 +27,8 @@
 
 .body {
     grid-area: body;
+
+    margin-top: 4.4rem;
 }
 
 .footer {
@@ -48,5 +57,9 @@
 
     .navigation {
         display: none;
+    }
+
+    .body {
+        margin-top: 2.9rem;
     }
 }

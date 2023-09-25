@@ -1,6 +1,12 @@
 import { FirstDayOfWeek, FocusedInput } from "@datepicker-react/hooks";
 import { ButtonHTMLAttributes, DetailedHTMLProps, Dispatch, HTMLAttributes, LegacyRef, ReactNode, SetStateAction } from "react";
 
+export interface DatePickerInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    inputTitle?: string;
+    inputSize?: "l" | "m" | "s";
+}
+
+
 export interface DatePickerProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     setChoosedDates: Dispatch<SetStateAction<string>>;
     dateRange: IDateRange;

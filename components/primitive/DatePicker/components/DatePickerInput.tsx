@@ -2,10 +2,12 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { DatePicker } from './DatePicker';
 import CalendarIcon from '../calendar.svg';
 import { START_DATE } from '@datepicker-react/hooks';
-import { IDateRange } from '../DatePicker.props';
+import { DatePickerInputProps, IDateRange } from '../DatePicker.props';
 import { Input } from '../../Input/Input';
 
-export const DatePickerInput = (): JSX.Element => {
+export const DatePickerInput = ({
+    inputTitle, inputSize = "s", ...props
+}: DatePickerInputProps): JSX.Element => {
     const [isPickerOpened, setIsPickerOpened] = useState<boolean>(false);
     const [choosedDates, setChoosedDates] = useState<string>("");
     const [dateRange, setDateRange] = useState<IDateRange>({
@@ -41,10 +43,12 @@ export const DatePickerInput = (): JSX.Element => {
     }, []);
 
     return (
-        <>
-            <Input placeholder=""
+        <div {...props}>
+            <Input
+                title={inputTitle}
+                placeholder=""
                 onClick={() => setIsPickerOpened(!isPickerOpened)}
-                size="s"
+                size={inputSize}
                 sizeOfIcon="big" icon={<CalendarIcon />}
                 value={choosedDates}
                 onChange={handleInputChange}
@@ -59,6 +63,6 @@ export const DatePickerInput = (): JSX.Element => {
                     className="mt-3"
                     innerRef={pickerRef} />
             }
-        </>
+        </div>
     );
 };

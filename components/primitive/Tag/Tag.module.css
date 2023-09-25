@@ -29,6 +29,7 @@
 
 .primary {
     background: var(--primary);
+    color: var(--white);
 }
 
 .primaryBorder {
