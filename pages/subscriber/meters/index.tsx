@@ -17,12 +17,23 @@ function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data[0].apartmentId);
     const { isFormOpened, setIsFormOpened } = useContext(AppContext);
 
+    const tabs = data.map(obj => {
+        return {
+            name: "Квартира " + obj.apartmentId,
+            id: obj.apartmentId
+        };
+    });
+
+    // ИСПРАВИТЬ MOCK-DATA 
+
+    const selectedData = data.find(obj => obj.apartmentId === apartmentId);
+
     return (
         <>
             <Htag size="h1" className="mb-[3rem] lg:mb-[2rem] md:mb-[2rem] sm:mb-[2rem]">Приборы учёта и показания</Htag>
             <Tabs
-                tabNames={["Квартира 12", "Квартира 124"]}
-                tagTexts={["Ростов-на-Дону, пер. Соборный 99, кв. 12", "ТСЖ Прогресс"]}
+                tabs={tabs}
+                tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
                 descriptionText="Срок передачи показаний — с 20 по 25 число"
                 onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
                 activeTab={apartmentId} setActiveTab={setApartmentId}
@@ -31,7 +42,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                     "gap-y-[3.25rem] lg:gap-y-[2rem] md:gap-y-[2rem] sm:gap-y-[2rem]"
                 )}
             >
-                {data[apartmentId].meters && data[apartmentId].meters.map((meter) =>
+                {selectedData?.meters && selectedData?.meters.map((meter) =>
                     <MeterCard {...meter} key={meter.id} />
                 )}
             </Tabs>
@@ -143,6 +154,9 @@ interface MeterPageProps extends Record<string, unknown> {
 
 export interface IGetMeterByAIDs {
     apartmentId: number;
+    apartmentFullAddress: string;
+    apartmentNumber: number;
+
     meters: IGetMeterByAID[];
 }
 

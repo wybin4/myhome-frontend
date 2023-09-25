@@ -1,7 +1,7 @@
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, ReactNode, SetStateAction } from "react";
 
 export interface TabsProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    tabNames: string[];
+    tabs: { name: string; id: number; }[];
     tagTexts?: string[];
     descriptionText?: string;
     onAddButtonClick?: () => void;
