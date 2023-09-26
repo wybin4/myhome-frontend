@@ -1,7 +1,7 @@
 import { Htag } from "@/components";
 import { withLayout } from "@/layout/Layout";
 
-function Appeals(): JSX.Element {
+function Appeal(): JSX.Element {
     return (
         <>
             <Htag size="h1">Обращения</Htag>
@@ -10,4 +10,4 @@ function Appeals(): JSX.Element {
     );
 }
 
-export default withLayout(Appeals);
+export default withLayout(Appeal);

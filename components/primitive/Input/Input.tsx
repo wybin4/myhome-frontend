@@ -7,7 +7,7 @@ export const Input = forwardRef(({
     title, placeholder, textAlign = "left",
     size,
     value, setValue,
-    icon, sizeOfIcon = "normal",
+    icon, sizeOfIcon = "normal", alignOfIcon = "left",
     className,
     readOnly = false,
     inputError,
@@ -46,8 +46,10 @@ export const Input = forwardRef(({
                             },
                         )} value={value} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
                     {icon &&
-                        <div className={cn("absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none",
+                        <div className={cn("absolute inset-y-0 flex items-center pointer-events-none",
                             {
+                                "right-0 pr-3": alignOfIcon === "right",
+                                "left-0 pl-3": alignOfIcon === "left",
                                 [styles.big]: sizeOfIcon === "big",
                                 [styles.normal]: sizeOfIcon === "normal",
                             })}>

@@ -1,7 +1,7 @@
 import { Htag } from "@/components";
 import { withLayout } from "@/layout/Layout";
 
-function Charges(): JSX.Element {
+function Charge(): JSX.Element {
     return (
         <>
             <Htag size="h1">Начисления</Htag>
@@ -10,4 +10,4 @@ function Charges(): JSX.Element {
     );
 }
 
-export default withLayout(Charges);
+export default withLayout(Charge);

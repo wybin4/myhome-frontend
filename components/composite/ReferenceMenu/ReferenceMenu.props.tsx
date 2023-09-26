@@ -10,4 +10,5 @@ export interface ReferenceMenuItemProps extends DetailedHTMLProps<HTMLAttributes
     icon: any;
     title: string;
     text: string;
+    href: string;
 }

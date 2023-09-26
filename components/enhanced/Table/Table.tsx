@@ -5,7 +5,7 @@ import { Button, Htag, TableFilter, TableRow, TableSearch } from "@/components";
 import { useState, useEffect, useRef } from "react";
 
 export const Table = ({
-    title, buttonTypes,
+    title, buttons,
     filters,
     rows,
     className, ...props
@@ -38,14 +38,32 @@ export const Table = ({
                 <div className={styles.topPart}>
                     <Htag size="h1" className={styles.title}>{title}</Htag>
                     <div className={styles.buttonWrapper}>
-                        {buttonTypes && buttonTypes.map((type, key) => {
-                            switch (type) {
+                        {buttons && buttons.map((button, key) => {
+                            switch (button.type) {
                                 case "add":
-                                    return <Button symbol="add" size="m" appearance="primary" key={key}>Добавить</Button>;
+                                    return (
+                                        <Button
+                                            symbol="add" size="m" appearance="primary"
+                                            onClick={button.onClick}
+                                            key={key}
+                                        >Добавить</Button>
+                                    );
                                 case "download":
-                                    return <Button symbol="download" size="m" appearance="ghost" key={key}>Загрузить</Button>;
+                                    return (
+                                        <Button
+                                            symbol="download" size="m" appearance="ghost"
+                                            onClick={button.onClick}
+                                            key={key}
+                                        >Загрузить</Button>
+                                    );
                                 case "upload":
-                                    return <Button symbol="upload" size="m" appearance="ghost" key={key}>Скачать</Button>;
+                                    return (
+                                        <Button
+                                            symbol="upload" size="m" appearance="ghost"
+                                            onClick={button.onClick}
+                                            key={key}
+                                        >Скачать</Button>
+                                    );
                             }
                         })}
                         <span className={styles.filterIcon}>

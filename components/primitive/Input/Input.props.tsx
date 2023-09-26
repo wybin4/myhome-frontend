@@ -9,6 +9,7 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
 
     icon?: any;
     sizeOfIcon?: "normal" | "big";
+    alignOfIcon?: "left" | "right";
 
     value?: string;
     setValue?: Dispatch<SetStateAction<string | undefined>>;

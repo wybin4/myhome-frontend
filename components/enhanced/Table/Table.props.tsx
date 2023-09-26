@@ -4,9 +4,14 @@ import { HTMLAttributes, DetailedHTMLProps } from "react";
 
 export interface TableProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
-    buttonTypes: IButtomType[];
+
     filters: TableFilterItemProps[];
     rows: TableRowProps;
+
+    buttons: ITableButton[];
 }
 
-export type IButtomType = "download" | "upload" | "add";
+export interface ITableButton {
+    type: "download" | "upload" | "add";
+    onClick?: () => void;
+}

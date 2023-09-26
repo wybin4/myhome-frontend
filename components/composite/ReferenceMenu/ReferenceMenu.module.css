@@ -1,4 +1,6 @@
 .referenceMenuItem {
+    width: 18rem;
+
     display: flex;
     align-items: center;
     gap: 9px;

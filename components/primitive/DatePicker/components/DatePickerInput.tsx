@@ -46,6 +46,7 @@ export const DatePickerInput = forwardRef(({
                 size={inputSize}
                 sizeOfIcon="big"
                 icon={<CalendarIcon />}
+                alignOfIcon="right"
                 value={choosedDates || ""}
                 onChange={handleInputChange}
                 readOnly={true}

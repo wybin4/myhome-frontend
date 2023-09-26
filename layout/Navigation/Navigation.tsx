@@ -20,43 +20,43 @@ export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
         {
             role: "subscriber", items:
                 [{
-                    name: "Счётчики", route: "meters", number: 0,
+                    name: "Счётчики", route: "meter", number: 0,
                 },
                 {
-                    name: "Начисления", route: "charges", number: 1,
+                    name: "Начисления", route: "charge", number: 1,
                 },
                 {
-                    name: "События", route: "events", number: 2,
+                    name: "События", route: "event", number: 2,
                 },
                 {
-                    name: "Обращения", route: "appeals", number: 3,
+                    name: "Обращения", route: "appeal", number: 3,
                 }],
         },
         {
             role: "managementCompany", items:
                 [{
-                    name: "Справочники", route: "references", number: 0,
+                    name: "Справочники", route: "reference", number: 0,
                 },
                 {
-                    name: "Квитанции", route: "spds", number: 1,
+                    name: "Квитанции", route: "spd", number: 1,
                 },
                 {
-                    name: "Опросы", route: "votings", number: 2,
+                    name: "Опросы", route: "voting", number: 2,
                 },
                 {
-                    name: "Обращения", route: "appeals", number: 3,
+                    name: "Обращения", route: "appeal", number: 3,
                 },
                 {
-                    name: "Уведомления", route: "notifications", number: 4,
+                    name: "Уведомления", route: "notification", number: 4,
                 }]
         },
         {
             role: "admin", items:
                 [{
-                    name: "Справочники", route: "references", number: 0,
+                    name: "Справочники", route: "reference", number: 0,
                 },
                 {
-                    name: "Отчеты", route: "reports", number: 1,
+                    name: "Отчеты", route: "report", number: 1,
                 }]
         },
     ];
