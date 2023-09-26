@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
-import { SelectProps } from "./Select.props";
+import React, { useState, useEffect, useRef, ForwardedRef, forwardRef } from "react";
+import { SelectProps, SelectorOption } from "./Select.props";
 import styles from "./Select.module.css";
 import cn from "classnames";
 import ArrowIcon from "./arrow.svg";
 
-export const Select = ({
-    id, inputTitle, options,
+export const Select = forwardRef(({
+    id,
+    selected, setSelected,
+    inputTitle, inputError,
+    options,
     size = "s",
     className
-}: SelectProps): JSX.Element => {
+}: SelectProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState<{
-        value: string;
-        text: string;
-    }>();
-    const selectRef = useRef<HTMLDivElement | null>(null);
+    const selectRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         document.addEventListener("click", handleDocumentClick);
@@ -29,14 +28,7 @@ export const Select = ({
         }
     };
 
-    const handleButtonClick = () => {
-        setIsOpen(!isOpen);
-    };
-
-    const handleOptionClick = (option: {
-        value: string;
-        text: string;
-    }) => {
+    const handleOptionClick = (option: SelectorOption) => {
         setSelected(option);
         setIsOpen(false);
     };
@@ -45,13 +37,18 @@ export const Select = ({
         <div className={cn(styles.select, className, {
             [styles.s]: size === "s",
             [styles.m]: size === "m",
-        })} ref={selectRef}>
+            [styles.inputError]: inputError
+        })} ref={ref}>
             {inputTitle && <div className={styles.inputTitle}>{inputTitle}</div>}
             <button
-                className={cn(styles.button, "focus:ring-4 focus:ring-violet-200")}
+                className={cn(styles.button, {
+                    "focus:ring-4 focus:ring-violet-200": !inputError,
+                    "focus:ring-4 focus:ring-red-200": inputError,
+                })}
                 data-value={selected?.value}
                 type="button"
-                onClick={handleButtonClick}
+                onClick={() => setIsOpen(!isOpen)}
+                ref={selectRef}
             >
                 <span>{selected?.text}</span>
                 <ArrowIcon className={cn(styles.icon, {
@@ -64,7 +61,7 @@ export const Select = ({
                 })}
                 id={`list-${id}`}
             >
-                {options.map((option: { value: string; text: string; }, index: number) => (
+                {options.map((option: SelectorOption, index: number) => (
                     <li
                         key={index}
                         className={styles.listItem}
@@ -75,6 +72,7 @@ export const Select = ({
                     </li>
                 ))}
             </ul>
+            {inputError && <span className={styles.error}>{inputError}</span>}
         </div>
     );
-};
+});

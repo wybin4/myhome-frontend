@@ -84,3 +84,15 @@
 
     margin-bottom: 0.4rem;
 }
+
+.error {
+    font-size: 0.875rem;
+
+    color: var(--red);
+}
+
+.inputError .input:focus:not(.readonly),
+.inputError .input:not(.readonly) {
+    border: solid 1px var(--red);
+    background: var(--red-background);
+}

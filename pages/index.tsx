@@ -132,7 +132,6 @@ function Home(): JSX.Element {
                         ]
                 }}
             /> */}
-            
         </div>
     );
 }
