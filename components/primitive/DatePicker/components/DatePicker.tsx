@@ -1,7 +1,6 @@
 import styles from '../DatePicker.module.css';
 import { NavButton } from "./NavButton";
 import { FocusedInput, START_DATE, useDatepicker } from "@datepicker-react/hooks";
-import { useEffect } from "react";
 import { Month } from "./Month";
 import DatepickerContext from "../helpers/datepickerContext";
 import ArrowIcon from '../arrow.svg';
@@ -13,7 +12,7 @@ export const DatePicker = ({
     innerRef,
     dateRange, setDateRange,
     className,
-    setChoosedDates,
+    setToday, clear,
     ...props
 }: DatePickerProps): JSX.Element => {
 
@@ -50,64 +49,6 @@ export const DatePicker = ({
             setDateRange(data);
         }
     }
-
-    const formatDate = (date: Date) => {
-        if (date) {
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const year = date.getFullYear().toString().slice(-2);
-
-            return `${day}/${month}/${year}`;
-        } else return "";
-    };
-
-    const getDateString = (dates: {
-        startDate: Date,
-        endDate: Date,
-    }): string => {
-        if (!dateRange.startDate) {
-            if (!dateRange.endDate) {
-                return "";
-            } else return formatDate(dateRange.endDate);
-        }
-
-        if (!dateRange.endDate) {
-            if (!dateRange.startDate) {
-                return "";
-            } else return formatDate(dateRange.startDate);
-        }
-
-        const startDate = formatDate(dateRange.startDate);
-        const endDate = formatDate(dateRange.endDate);
-        if (dates.startDate.getTime() > dates.endDate.getTime()) {
-            return `${startDate} - ${endDate}`;
-        } else if (dates.startDate.getTime() < dates.endDate.getTime()) {
-            return `${startDate} - ${endDate}`;
-        } else return `${startDate}`;
-    };
-
-    const setToday = () => {
-        setChoosedDates(getDateString({
-            startDate: new Date(),
-            endDate: new Date()
-        }));
-        setDateRange({
-            startDate: new Date(),
-            endDate: new Date(),
-            focusedInput: START_DATE
-        });
-    };
-
-    const clear = () => {
-        setChoosedDates("");
-    };
-
-    useEffect(() => {
-        setChoosedDates(getDateString({
-            startDate: dateRange.startDate,
-            endDate: dateRange.endDate
-        }));
-    }, [dateRange]);
 
     return (
         <div className={cn(className, styles.datepickerWrapper)}
@@ -156,8 +97,8 @@ export const DatePicker = ({
                         />
                     ))}
                     <div className="flex gap-6 mt-2">
-                        <Button appearance="primary" size="s" onClick={setToday}>Сегодня</Button>
-                        <Button appearance="ghost" size="s" onClick={clear}>Очистить</Button>
+                        <Button appearance="primary" size="s" onClick={setToday} type="button">Сегодня</Button>
+                        <Button appearance="ghost" size="s" onClick={clear} type="button">Очистить</Button>
                     </div>
                 </div>
             </DatepickerContext.Provider>

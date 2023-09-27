@@ -1,19 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormElementProps, FormProps } from "./Form.props";
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, DatePickerInput, Input, Paragraph, Select } from "@/components";
 import { FieldValues, Controller } from "react-hook-form";
+import axios from "axios";
 
 export const Form = <T extends FieldValues>({
-    title, inputs, selectors, datePickers,
+    title,
+    inputs, selectors, datePickers,
     className, useFormData,
     isOpened, setIsOpened,
+    urlToPost, additionalFormData,
     ...props
 }: FormProps<T>): JSX.Element => {
     const formRef = useRef<HTMLDivElement | null>(null);
     const [isFormVisible, setIsFormVisible] = useState(false);
-    const { handleSubmit, register, control, formState: { errors } } = useFormData;
+    const { handleSubmit, control, formState: { errors }, reset } = useFormData;
+    const [isSuccess, setIsSuccess] = useState<boolean>(false);
+    const [error, setError] = useState<string>();
 
     const formComponents: FormElementProps<T>[] = [
         ...inputs || [],
@@ -21,14 +27,43 @@ export const Form = <T extends FieldValues>({
         ...datePickers || [],
     ];
     formComponents.sort((a, b) => a.numberInOrder - b.numberInOrder);
+    const elementCount = Math.max(...formComponents.map(component => component.numberInOrder));
     const newFormComponents = formComponents.map(component => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { numberInOrder, ...rest } = component;
         return rest;
     });
 
-    const onSubmit = (data: T) => {
-        console.log(data);
+    const onSubmit = async (formData: T) => {
+        try {
+
+            let flatObject;
+            if (additionalFormData) {
+                flatObject = {
+                    ...formData,
+                    ...Object.assign({}, ...additionalFormData),
+                };
+            } else {
+                flatObject = { ...formData };
+            }
+            const { data } = await axios.post(urlToPost, flatObject);
+            if (data) {
+                console.log("все прошло успешно");
+                setIsSuccess(true);
+                reset();
+            } else {
+                console.log("Что-то пошло не так");
+                setError("Что-то пошло не так");
+            }
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                console.log(e.message);
+                setError(e.message);
+            } else {
+                console.log("Что-то пошло не так");
+                setError("Что-то пошло не так");
+            }
+        }
     };
 
     useEffect(() => {
@@ -63,25 +98,39 @@ export const Form = <T extends FieldValues>({
                 "hidden": !isOpened,
             })} {...props} ref={formRef}>
                 <Paragraph size="l" className={styles.title}>{title}</Paragraph>
-                <div className={styles.content}>
+                <div className={cn(styles.content, {
+                    "grid grid-cols-2 gap-x-8 min-w-[42.25rem]": elementCount > 3,
+                    "lg:grid-cols-1 lg:min-w-fit": elementCount > 3,
+                    "md:grid-cols-1 md:min-w-fit": elementCount > 3,
+                    "sm:grid-cols-1 sm:min-w-fit": elementCount > 3,
+                })}>
                     {newFormComponents.map((component, key) => {
                         switch (component.type) {
                             case "input":
                                 return (
-                                    <Input key={key}
-                                        {...register(
-                                            component.id,
+                                    <Controller
+                                        key={key}
+                                        control={control}
+                                        name={component.id}
+                                        rules={
                                             {
                                                 required: {
                                                     value: component.error.value,
                                                     message: component.error.message ? component.error.message : ""
                                                 }
                                             }
+                                        }
+                                        render={({ field }) => (
+                                            <Input key={key}
+                                                value={field.value}
+                                                setValue={field.onChange}
+                                                ref={field.ref}
+                                                className="mb-4"
+                                                placeholder=""
+                                                inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                {...component}
+                                            />
                                         )}
-                                        className="mb-4"
-                                        placeholder=""
-                                        inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
-                                        {...component}
                                     />
                                 );
                             case "datepicker":
@@ -138,7 +187,10 @@ export const Form = <T extends FieldValues>({
                     })}
                 </div>
                 <div className={styles.buttonWrapper}>
-                    <Button appearance="ghost" size="m" onClick={() => setIsOpened && setIsOpened(!isOpened)}>Отмена</Button>
+                    <Button appearance="ghost" size="m" type="button" onClick={() => {
+                        reset();
+                        setIsOpened && setIsOpened(!isOpened);
+                    }}>Отмена</Button>
                     <Button appearance="primary" size="m">Добавить</Button>
                 </div>
             </div>

@@ -11,8 +11,9 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
     sizeOfIcon?: "normal" | "big";
     alignOfIcon?: "left" | "right";
 
-    value?: string;
-    setValue?: Dispatch<SetStateAction<string | undefined>>;
+    value?: number | string;
+    setValue?: Dispatch<SetStateAction<number | string | undefined>>;
+    inputType?: "string" | "number";
 
     readOnly?: boolean;
 

@@ -161,7 +161,7 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
 export default withLayout<MeterPageProps>(Meter);
 
 export async function getServerSideProps() {
-    const apiUrl = API.subscriber.meters.index;
+    const apiUrl = API.subscriber.meter.index;
 
     try {
         const postData = {

@@ -19,7 +19,7 @@ function References(): JSX.Element {
         <>
             <Htag size="h1" className="mb-[1.875rem]">Справочники</Htag>
             <div className={cn(
-                "flex gap-[5.5rem]",
+                "flex gap-[5.5rem] mb-16",
                 "xl:grid xl:grid-cols-2 lg:grid lg:grid-cols-2 md:grid md:grid-cols-1 sm:grid sm:grid-cols-1"
             )}>
                 <ReferenceMenu items={[

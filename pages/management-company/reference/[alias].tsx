@@ -1,5 +1,6 @@
 import { Form, Table } from "@/components";
 import { AppContext } from "@/context/app.context";
+import { API } from "@/helpers/api";
 import { IMCAddHouseForm } from "@/interfaces/reference/subscriber/house.interface";
 import { withLayout } from "@/layout/Layout";
 import { useContext } from "react";
@@ -12,6 +13,10 @@ function ReferencePage(): JSX.Element {
     return (
         <>
             <Form
+                additionalFormData={
+                    [{ managementCompanyId: 1 }]
+                }
+                urlToPost={API.managementCompany.reference.house.add}
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
                 title="Добавление дома"
@@ -25,10 +30,28 @@ function ReferencePage(): JSX.Element {
                         error: { value: true, message: "Заполните название улицы" }
                     },
                     {
-                        id: "numberOfHouse", type: "input", size: "m", title: "Номер дома", numberInOrder: 3,
-                        error: { value: true, message: "Заполните номер дома " }
-                    }
+                        id: "houseNumber", type: "input", size: "m", title: "Номер дома", numberInOrder: 3,
+                        error: { value: true, message: "Заполните номер дома" }
+                    },
+                    {
+                        id: "livingArea", type: "input", size: "m", inputType: "number", title: "Жилая площадь", numberInOrder: 4,
+                        error: { value: true, message: "Заполните жилую площадь" }
+                    },
+                    {
+                        id: "noLivingArea", type: "input", size: "m", inputType: "number", title: "Нежилая площадь", numberInOrder: 5,
+                        error: { value: true, message: "Заполните нежилую площадь" }
+                    },
+                    {
+                        id: "commonArea", type: "input", size: "m", inputType: "number", title: "Общая площадь", numberInOrder: 6,
+                        error: { value: true, message: "Заполните общую площадь" }
+                    },
                 ]}
+            // datePickers={[
+            //     {
+            //         id: "date", type: "datepicker", inputTitle: "Дата поверки", inputSize: "m", numberInOrder: 7,
+            //         error: { value: true, message: "Заполните дату поверки" }
+            //     },
+            // ]}
             >
             </Form>
             <Table

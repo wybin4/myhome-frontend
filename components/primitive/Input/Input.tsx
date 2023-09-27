@@ -6,7 +6,7 @@ import { ChangeEvent, ForwardedRef, forwardRef } from "react";
 export const Input = forwardRef(({
     title, placeholder, textAlign = "left",
     size,
-    value, setValue,
+    value, setValue, inputType = "string",
     icon, sizeOfIcon = "normal", alignOfIcon = "left",
     className,
     readOnly = false,
@@ -15,7 +15,23 @@ export const Input = forwardRef(({
 }: InputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setValue && setValue(event.target.value);
+        if (inputType === "number") {
+            const inputValue = event.target.value;
+            if (inputValue === "" || /^\d+(\.\d*)?$/.test(inputValue)) {
+                if (inputValue === "") {
+                    // Если введена пустая строка, сохраняем как строку
+                    setValue && setValue(inputValue);
+                } else if (inputValue.includes('.') && inputValue.split('.')[1].length === 0) {
+                    // Если введено число и точка, но после точки нет других символов, сохраняем как строку
+                    setValue && setValue(inputValue);
+                } else {
+                    // В противном случае, парсим как число
+                    setValue && setValue(parseFloat(inputValue));
+                }
+            }
+        } else {
+            setValue && setValue(event.target.value);
+        }
     };
 
     return (
@@ -44,7 +60,7 @@ export const Input = forwardRef(({
                                 "focus:ring-4 focus:ring-red-200": !readOnly && inputError,
                                 [styles.readonly]: readOnly
                             },
-                        )} value={value} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
+                        )} value={value ? value : ""} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
                     {icon &&
                         <div className={cn("absolute inset-y-0 flex items-center pointer-events-none",
                             {

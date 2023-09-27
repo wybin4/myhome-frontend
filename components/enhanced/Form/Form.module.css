@@ -28,6 +28,7 @@
 
 .buttonWrapper {
     display: flex;
+    justify-content: center;
     gap: 1.75rem;
 
     margin-top: 2.625rem;

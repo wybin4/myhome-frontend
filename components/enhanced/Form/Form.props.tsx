@@ -1,20 +1,28 @@
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
+import { IMCAddHouseForm } from "@/interfaces/reference/subscriber/house.interface";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { UseFormRegister, UseFormHandleSubmit, Control, FieldValues, Path, FormState } from "react-hook-form";
+import { UseFormHandleSubmit, Control, FieldValues, Path, FormState, UseFormReset } from "react-hook-form";
 
 export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
+
     useFormData: {
-        register: UseFormRegister<T>;
         control: Control<T>;
         handleSubmit: UseFormHandleSubmit<T>;
-        formState: FormState<T>
+        formState: FormState<T>;
+        reset: UseFormReset<IMCAddHouseForm>;
     };
+
     selectors?: SelectorFormProps<T>[];
     datePickers?: DatePickerFormProps<T>[];
     inputs?: InputFormProps<T>[];
+
     isOpened: boolean;
     setIsOpened?: (newFormOpened: boolean) => void;
+
+    urlToPost: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    additionalFormData?: Record<string | number, any>[];
 }
 
 export type FormElementProps<T extends FieldValues> = SelectorFormProps<T> | DatePickerFormProps<T> | InputFormProps<T>;
@@ -48,6 +56,7 @@ export interface DatePickerFormProps<T extends FieldValues> {
 export interface InputFormProps<T extends FieldValues> {
     title: string;
     size: "l" | "m" | "s";
+    inputType?: "number" | "string";
 
     id: Path<T>;
     type: "input";

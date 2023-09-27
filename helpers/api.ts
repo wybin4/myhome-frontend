@@ -1,7 +1,14 @@
 export const API = {
     subscriber: {
-        meters: {
-            index: `http://localhost:3100/api/meter/get-meters-all-info-by-sid`
+        meter: {
+            index: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/get-meters-all-info-by-sid`
+        }
+    },
+    managementCompany: {
+        reference: {
+            house: {
+                add: `${process.env.NEXT_PUBLIC_DOMAIN}/house/add-house`
+            }
         }
     }
 };
