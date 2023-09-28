@@ -5,14 +5,14 @@ import { Htag, Icon, Paragraph } from "@/components";
 import SuccessIcon from './success.svg';
 import FailureIcon from './failure.svg';
 
-export const PopUp = ({ children, type, ...props }: PopUpProps): JSX.Element => {
+export const PopUp = ({ className, children, type, ...props }: PopUpProps): JSX.Element => {
     return (
         <>
-            <div className={cn(styles.popup, {
+            <div className={cn(styles.popup, className, {
                 [styles.success]: type === "success",
                 [styles.failure]: type === "failure",
             })} {...props}>
-                <Icon type="icon" appearance="primary" size="l" className={styles.logoIcon}>
+                <Icon type="icon" appearance={type === "success" ? "green" : "red"} size="l" className={styles.logoIcon}>
                     {type === "success" && <SuccessIcon />}
                     {type === "failure" && <FailureIcon />}
                 </Icon>

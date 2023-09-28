@@ -13,6 +13,8 @@ function ReferencePage(): JSX.Element {
     return (
         <>
             <Form
+                successMessage="Данные о доме добавлены"
+                successCode={201}
                 additionalFormData={
                     [{ managementCompanyId: 1 }]
                 }

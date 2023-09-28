@@ -35,10 +35,17 @@
     margin-bottom: 2rem;
 }
 
+.popup {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+}
+
 @media (max-width: 900px) {
     .wrapper {
         width: 50%;
     }
+
 }
 
 @media (max-width: 800px) {
@@ -50,6 +57,12 @@
 @media (max-width: 700px) {
     .wrapper {
         width: 70%;
+    }
+
+    .popup {
+        margin: auto;
+        right: 0;
+        left: 0;
     }
 }
 

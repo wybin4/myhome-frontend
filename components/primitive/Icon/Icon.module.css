@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    
+
     box-sizing: border-box;
 }
 
@@ -40,14 +40,35 @@
     height: 1rem;
 }
 
-.primary {
-    background: var(--primary);
-    color: var(--white);
-
+.primary,
+.green,
+.red {
     border-radius: 50px;
 }
 
+.primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.green {
+    background: var(--green-light);
+    color: var(--green);
+}
+
+.red {
+    background: var(--red-light);
+}
+
 .primary svg {
+    fill: var(--white);
+}
+
+.green svg {
+    fill: var(--green);
+}
+
+.red svg {
     fill: var(--white);
 }
 

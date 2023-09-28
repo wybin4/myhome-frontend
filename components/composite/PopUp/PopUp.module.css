@@ -12,6 +12,8 @@
     height: 6.6875rem;
 
     padding-left: 14px;
+
+    z-index: 4;
 }
 
 .title {

@@ -23,7 +23,13 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     urlToPost: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     additionalFormData?: Record<string | number, any>[];
+    successCode: FormSuccess;
+    // errorCode?: FormErrors[];
+    successMessage: string;
 }
+
+export type FormSuccess = 200 | 201;
+export type FormErrors = 400 | 404 | 409 | 422 | 500 | 504;
 
 export type FormElementProps<T extends FieldValues> = SelectorFormProps<T> | DatePickerFormProps<T> | InputFormProps<T>;
 
