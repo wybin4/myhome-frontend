@@ -2,10 +2,10 @@ import { DetailedHTMLProps, HTMLAttributes } from "react";
 
 export interface SelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLSelectElement>, HTMLSelectElement> {
     id: string;
-   
+
     selected: SelectorOption | undefined;
     setSelected: React.Dispatch<React.SetStateAction<SelectorOption | undefined>>;
-    
+
     inputTitle?: string;
 
     options: SelectorOption[];
@@ -16,5 +16,5 @@ export interface SelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLSelect
 }
 
 export interface SelectorOption {
-    value: number; text: string;
+    value: number | string; text: string;
 }

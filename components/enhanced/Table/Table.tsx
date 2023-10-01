@@ -84,14 +84,15 @@ export const Table = ({
                         <TableSearch size="l" className={styles.searchBar} />
                         <TableRow {...rows} className={cn("mt-8", styles.rows)} />
                     </div>
-                    <TableFilter
-                        isOpen={isFilterOpened}
-                        setIsOpen={setIsFilterOpened}
-                        title="Фильтры"
-                        items={filters}
-                        className={styles.filter}
-                        innerRef={filterRef}
-                    />
+                    {filters.length !== 0 &&
+                        <TableFilter
+                            isOpen={isFilterOpened}
+                            setIsOpen={setIsFilterOpened}
+                            title="Фильтры"
+                            items={filters}
+                            className={styles.filter}
+                            innerRef={filterRef}
+                        />}
                 </div>
             </div>
         </div>

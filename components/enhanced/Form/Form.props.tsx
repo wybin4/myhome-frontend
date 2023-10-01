@@ -1,17 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
-import { IMCAddHouseForm } from "@/interfaces/reference/subscriber/house.interface";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { UseFormHandleSubmit, Control, FieldValues, Path, FormState, UseFormReset } from "react-hook-form";
+import {  FieldValues, Path, UseFormReturn } from "react-hook-form";
 
 export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
 
-    useFormData: {
-        control: Control<T>;
-        handleSubmit: UseFormHandleSubmit<T>;
-        formState: FormState<T>;
-        reset: UseFormReset<IMCAddHouseForm>;
-    };
+    useFormData: UseFormReturn<T, any, undefined>;
 
     selectors?: SelectorFormProps<T>[];
     datePickers?: DatePickerFormProps<T>[];
@@ -21,7 +16,6 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     setIsOpened?: (newFormOpened: boolean) => void;
 
     urlToPost: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     additionalFormData?: Record<string | number, any>[];
     successCode: FormSuccess;
     // errorCode?: FormErrors[];

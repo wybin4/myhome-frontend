@@ -13,7 +13,7 @@ import { Dispatch, SetStateAction, useContext, useState } from "react";
 import cn from "classnames";
 import { AppContext } from "@/context/app.context";
 import { useForm } from "react-hook-form";
-import { ISubscriberAddMeterForm } from "@/interfaces/reference/meter/meter.interface";
+import { ISubscriberAddMeterForm } from "@/interfaces/reference/meter.interface";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data[0].apartmentId);

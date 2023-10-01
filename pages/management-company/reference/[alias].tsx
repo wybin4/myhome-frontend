@@ -1,118 +1,74 @@
-import { Form, Table } from "@/components";
-import { AppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
-import { IMCAddHouseForm } from "@/interfaces/reference/subscriber/house.interface";
+import { IUserPage, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IGeneralMeterPage, IIndividualMeterPage, generalMeterPageComponent, individualMeterPageComponent } from "@/interfaces/reference/meter.interface";
+import { IReferencePageComponent } from "@/interfaces/reference/page.interface";
+import { IApartmentPage, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
+import { IHousePage, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
+import { ISubscriberPage, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
+import { ICommonHouseNeedTariffPage, IMunicipalTariffPage, INormPage, ISeasonalityFactorPage, ISocialNormPage, municipalTariffPageComponent, normPageComponent, seasonalityFactorPageComponent, socialNormPageComponent, сommonHouseNeedTariffPageComponent } from "@/interfaces/reference/tariff-and-norm.interface";
 import { withLayout } from "@/layout/Layout";
-import { useContext } from "react";
-import { useForm } from "react-hook-form";
+import { ReferencePageComponent } from "@/page-components";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { FieldValues } from "react-hook-form";
 
 function ReferencePage(): JSX.Element {
-    const useFormData = useForm<IMCAddHouseForm>();
-    const { isFormOpened, setIsFormOpened } = useContext(AppContext);
+    const [engName, setEngName] = useState<string>("");
+    const router = useRouter();
+
+    useEffect(() => {
+        const engName = router.asPath.split("/")[3];
+        setEngName(engName);
+    }, [router.asPath]);
+
+    const createComponent = <T extends FieldValues>(
+        engName: string,
+        item: IReferencePageComponent<T>,
+    ) => {
+        return (
+            <ReferencePageComponent<T>
+                key={item.engName}
+                item={item}
+                uriToAdd={API.managementCompany.reference[engName].add}
+                uriToAddMany={API.managementCompany.reference[engName].addMany}
+            />
+        );
+    };
+
+    const createBaseComponent = <T extends FieldValues>(
+        baseEngName: string,
+        item: IReferencePageComponent<T>,
+    ) => {
+        return (
+            <ReferencePageComponent<T>
+                key={item.engName}
+                item={item}
+                uriToAdd={API.managementCompany.reference[baseEngName].add}
+                uriToAddMany={API.managementCompany.reference[baseEngName].addMany}
+            />
+        );
+    };
 
     return (
         <>
-            <Form
-                successMessage="Данные о доме добавлены"
-                successCode={201}
-                additionalFormData={
-                    [{ managementCompanyId: 1 }]
-                }
-                urlToPost={API.managementCompany.reference.house.add}
-                useFormData={useFormData}
-                isOpened={isFormOpened} setIsOpened={setIsFormOpened}
-                title="Добавление дома"
-                inputs={[
-                    {
-                        id: "city", type: "input", size: "m", title: "Город", numberInOrder: 1,
-                        error: { value: true, message: "Заполните название города" }
-                    },
-                    {
-                        id: "street", type: "input", size: "m", title: "Улица", numberInOrder: 2,
-                        error: { value: true, message: "Заполните название улицы" }
-                    },
-                    {
-                        id: "houseNumber", type: "input", size: "m", title: "Номер дома", numberInOrder: 3,
-                        error: { value: true, message: "Заполните номер дома" }
-                    },
-                    {
-                        id: "livingArea", type: "input", size: "m", inputType: "number", title: "Жилая площадь", numberInOrder: 4,
-                        error: { value: true, message: "Заполните жилую площадь" }
-                    },
-                    {
-                        id: "noLivingArea", type: "input", size: "m", inputType: "number", title: "Нежилая площадь", numberInOrder: 5,
-                        error: { value: true, message: "Заполните нежилую площадь" }
-                    },
-                    {
-                        id: "commonArea", type: "input", size: "m", inputType: "number", title: "Общая площадь", numberInOrder: 6,
-                        error: { value: true, message: "Заполните общую площадь" }
-                    },
-                ]}
-            // datePickers={[
-            //     {
-            //         id: "date", type: "datepicker", inputTitle: "Дата поверки", inputSize: "m", numberInOrder: 7,
-            //         error: { value: true, message: "Заполните дату поверки" }
-            //     },
-            // ]}
-            >
-            </Form>
-            <Table
-                title="Дома"
-                buttons={[{ type: "download" }, { type: "upload" }, { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }]}
-                filters={[
-                    {
-                        type: "checkbox",
-                        title: "Тип услуги",
-                        titleEng: "typeOfService",
-                        items: ["Вывоз ТБО", "СодОбщИмущ", "Техобслуж"]
-                    },
-                    {
-                        type: "checkboxWithoutSearch",
-                        title: "Способ начисления",
-                        titleEng: "accrualAbility",
-                        items: ["По домам", "По лицевым счетам"],
-                        radio: true
-                    },
-                    {
-                        type: "date",
-                        title: "Расчётный период",
-                        titleEng: "billingPeriod"
-                    }
-                ]}
-                rows={{
-                    actions: ["editAndSave", "delete", "addComment", "download"],
-                    items:
-                        [
-                            {
-                                title: "Тема",
-                                type: "text",
-                                items: [
-                                    "Установка домофона с видеонаблюдением",
-                                    "Тариф на общедомовое имущество",
-                                    "Ежеквартальное собрание"
-                                ]
-                            },
-                            {
-                                title: "Статус",
-                                type: "tag",
-                                items: [
-                                    "Открыт",
-                                    "Закрыт",
-                                    "Закрыт"
-                                ]
-                            },
-                            {
-                                title: "Вложения",
-                                type: "attachment",
-                                items: [
-                                    undefined,
-                                    "Акт поверки",
-                                    "Паспорт счётчика"
-                                ]
-                            },
-                        ]
-                }}
-            />
+            {engName === "house" && createComponent<IHousePage>(engName, housePageComponent)}
+            {engName === "apartment" && createComponent<IApartmentPage>(engName, apartmentPageComponent)}
+            {engName === "subscriber" && createComponent<ISubscriberPage>(engName, subscriberPageComponent)}
+            {engName === "individual-meter" && createBaseComponent<IIndividualMeterPage>("meter", individualMeterPageComponent)}
+            {engName === "general-meter" && createBaseComponent<IGeneralMeterPage>("meter", generalMeterPageComponent)}
+            {engName === "municipal-tariff" && createBaseComponent<IMunicipalTariffPage>("tariffAndNorm", municipalTariffPageComponent)}
+            {engName === "norm" && createBaseComponent<INormPage>("tariffAndNorm", normPageComponent)}
+            {engName === "social-norm" && createBaseComponent<ISocialNormPage>("tariffAndNorm", socialNormPageComponent)}
+            {engName === "seasonality-factor" && createBaseComponent<ISeasonalityFactorPage>("tariffAndNorm", seasonalityFactorPageComponent)}
+            {engName === "common-house-need" && createBaseComponent<ICommonHouseNeedTariffPage>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
+            {engName === "owner" &&
+                <ReferencePageComponent<IUserPage>
+                    key={ownerPageComponent.engName}
+                    item={ownerPageComponent}
+                    uriToAdd={API.common.register.add}
+                    uriToAddMany={API.common.register.addMany}
+                />
+            }
         </>
     );
 }

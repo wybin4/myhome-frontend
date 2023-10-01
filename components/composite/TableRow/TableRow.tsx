@@ -48,7 +48,7 @@ export const TableRow = ({ startIcon, actions, items, className, ...props }: Tab
                         key={key}
                         {...item} />)
                 }
-                {actions && <div className="flex flex-col gap-4">
+                {actions.length !== 0 && <div className="flex flex-col gap-4">
                     <Paragraph size="s" className="font-medium">Действия</Paragraph>
                     {getActions()}
                 </div>}

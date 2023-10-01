@@ -6,7 +6,6 @@ export interface TableFilterProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
     innerRef?: LegacyRef<HTMLDivElement>;
-
 }
 
 export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -14,6 +13,6 @@ export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<H
     titleEng: string;
     type: "date" | "checkboxWithoutSearch" | "checkbox" | "number";
     items?: string[];
-    number?: number;
+    // number?: number;
     radio?: boolean;
 }
