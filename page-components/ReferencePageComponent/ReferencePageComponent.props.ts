@@ -6,5 +6,5 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     item: IReferencePageComponent<T>;
 
     uriToAdd: string;
-    uriToAddMany: string;
+    uriToAddMany?: string;
 }

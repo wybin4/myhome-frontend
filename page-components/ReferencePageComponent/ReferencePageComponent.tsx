@@ -85,7 +85,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 type: "select",
                 numberInOrder: component.numberInOrder,
                 error: {
-                    value: true, message: `Заполните ${getCase(
+                    value: true, message: `Выберите ${getCase(
                         component.title, component.gender, "винительный"
                     )}`
                 }
@@ -103,7 +103,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 type: "datepicker",
                 numberInOrder: component.numberInOrder,
                 error: {
-                    value: true, message: `Заполните ${getCase(
+                    value: true, message: `Выберите ${getCase(
                         component.title, component.gender, "винительный"
                     )}`
                 }

@@ -17,6 +17,11 @@ export const API: {
             addMany: string,
         }
     };
+    correction: {
+        penaltyRule: {
+            add: string,
+        }
+    }
 } = {
     subscriber: {
         meter: {
@@ -51,6 +56,11 @@ export const API: {
         register: {
             add: ``,
             addMany: ``,
+        }
+    },
+    correction: {
+        penaltyRule: {
+            add: ``,
         }
     }
 };

@@ -7,7 +7,7 @@ import MeterIcon from "./icons/meter.svg";
 import CommonHouseNeedIcon from "./icons/common-house-needs.svg";
 import TariffAndNormIcon from "./icons/tariffs&norms.svg";
 import SocialNormIcon from "./icons/social-norm.svg";
-import SeasonalityFactor from "./icons/seasonality-factor.svg";
+import SeasonalityFactorIcon from "./icons/seasonality-factor.svg";
 import cn from "classnames";
 import { useRouter } from "next/router";
 
@@ -19,8 +19,8 @@ function References(): JSX.Element {
         <>
             <Htag size="h1" className="mb-[1.875rem]">Справочники</Htag>
             <div className={cn(
-                "flex gap-[5.5rem] mb-16",
-                "xl:grid xl:grid-cols-2 lg:grid lg:grid-cols-2 md:grid md:grid-cols-1 sm:grid sm:grid-cols-1"
+                "3xl:flex 3xl:flex-cols 3xl:gap-[5.5rem] gap-[2rem] grid grid-cols-3 mb-16",
+                "xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1"
             )}>
                 <ReferenceMenu items={[
                     { title: "Дома", text: "Добавление и изменение данных", icon: <HouseIcon />, href: `${baseUrl}/house` },
@@ -37,8 +37,11 @@ function References(): JSX.Element {
                     { title: "Муниципальные тарифы", text: "Добавление и изменение данных", icon: <TariffAndNormIcon />, href: `${baseUrl}/municipal-tariff` },
                     { title: "Нормативы", text: "Добавление и изменение данных", icon: <TariffAndNormIcon />, href: `${baseUrl}/norm` },
                     { title: "Социальная норма", text: "Добавление и изменение данных", icon: <SocialNormIcon />, href: `${baseUrl}/social-norm` },
-                    { title: "Коэффициент сезонности", text: "Добавление и изменение данных", icon: <SeasonalityFactor />, href: `${baseUrl}/seasonality-factor` },
+                    { title: "Коэффициент сезонности", text: "Добавление и изменение данных", icon: <SeasonalityFactorIcon />, href: `${baseUrl}/seasonality-factor` },
                 ]} title={"Тарифы и нормативы"} />
+                <ReferenceMenu items={[
+                    { title: "Пеня", text: "Добавление и изменение правил расчёта пени", icon: <CommonHouseNeedIcon />, href: `${baseUrl}/penalty-rule` },
+                ]} title={"Правила"} />
             </div>
         </>
     );

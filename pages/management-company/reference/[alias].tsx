@@ -1,5 +1,6 @@
 import { API } from "@/helpers/api";
 import { IUserPage, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IPenaltyCalculationRulePage, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
 import { IGeneralMeterPage, IIndividualMeterPage, generalMeterPageComponent, individualMeterPageComponent } from "@/interfaces/reference/meter.interface";
 import { IReferencePageComponent } from "@/interfaces/reference/page.interface";
 import { IApartmentPage, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
@@ -61,6 +62,13 @@ function ReferencePage(): JSX.Element {
             {engName === "social-norm" && createBaseComponent<ISocialNormPage>("tariffAndNorm", socialNormPageComponent)}
             {engName === "seasonality-factor" && createBaseComponent<ISeasonalityFactorPage>("tariffAndNorm", seasonalityFactorPageComponent)}
             {engName === "common-house-need" && createBaseComponent<ICommonHouseNeedTariffPage>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
+            {engName === "penalty-rule" &&
+                <ReferencePageComponent<IPenaltyCalculationRulePage>
+                key={penaltyCalcRulePageComponent.engName}
+                    item={penaltyCalcRulePageComponent}
+                    uriToAdd={API.correction.penaltyRule.add}
+                />
+            }
             {engName === "owner" &&
                 <ReferencePageComponent<IUserPage>
                     key={ownerPageComponent.engName}
