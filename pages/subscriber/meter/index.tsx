@@ -165,7 +165,7 @@ export async function getServerSideProps() {
 
     try {
         const postData = {
-            "subscriberIds": [1, 2],
+            "subscriberIds": [1, 2], // ИСПРАВИТЬ!!!
         };
         const { data } = await axios.post<{ data: IGetMeterByAIDs[] }>(apiUrl, postData);
         if (!data) {

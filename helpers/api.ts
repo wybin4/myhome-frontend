@@ -3,6 +3,7 @@ interface APIMCData {
     [key: string]: {
         add: string;
         addMany: string;
+        get: string;
     };
 }
 
@@ -33,22 +34,27 @@ export const API: {
             house: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/house/add-house`,
                 addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/house/get-houses`,
             },
             apartment: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/apartment/add-apartment`,
                 addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/apartment/get-apartments`,
             },
             subscriber: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/subscriber/add-subscriber`,
                 addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/subscriber/get-subscribers`,
             },
             meter: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/add-meter`,
                 addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/get-meters`,
             },
             tariffAndNorm: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/add-tariff-and-norm`,
                 addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/get-tariff-and-norms`,
             },
         }
     },

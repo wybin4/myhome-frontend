@@ -1,6 +1,10 @@
-import { IReferencePageComponent } from "../page.interface";
+import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../page.interface";
 
-export interface ISubscriberPage {
+export interface ISubscriberReferenceData extends IReferenceData {
+    subscribers: ISubscriberReferenceDataItem[];
+}
+
+export interface ISubscriberReferenceDataItem extends IReferenceDataItem {
     ownerId: number;
     apartmentId: number;
     personalAccount: string;
@@ -21,7 +25,7 @@ export enum SubscriberStatus {
 }
 
 export const subscriberPageComponent:
-    IReferencePageComponent<ISubscriberPage> = {
+    IReferencePageComponent<ISubscriberReferenceDataItem> = {
     engName: "subscriber",
     rusName: [{ word: "лицевой", isChangeable: true }, { word: "счет", isChangeable: true }],
     gender: "мужской",

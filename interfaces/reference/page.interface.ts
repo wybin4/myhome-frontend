@@ -3,6 +3,15 @@ import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { FieldValues, Path } from "react-hook-form";
 import { Gender } from "russian-nouns-js/src/Gender";
 
+export interface IReferenceDataItem {
+    id: number | string;
+    [key: string]: number | string | Date | undefined;
+}
+
+export interface IReferenceData {
+    [key: string]: IReferenceDataItem[];
+}
+
 export interface IReferencePageComponent<T extends FieldValues> {
     rusName: IReferenceTitle[];
     engName: string;

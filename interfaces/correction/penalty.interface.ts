@@ -1,12 +1,17 @@
-import { IReferencePageComponent } from "../reference/page.interface";
+import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../reference/page.interface";
 
-export interface IPenaltyCalculationRulePage {
-    typeOfServiceIds: number[];
-    penaltyRuleId: string;
-    priority: number;
+export interface IPenaltyCalculationRuleReferenceData extends IReferenceData {
+    subscribers: IPenaltyCalculationRuleReferenceDataItem[];
 }
 
-export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalculationRulePage> = {
+export interface IPenaltyCalculationRuleReferenceDataItem extends IReferenceDataItem {
+    name?: string;
+    email: string;
+    passwordHash: string;
+    checkingAcount?: string;
+}
+
+export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem> = {
     engName: "penalty-rule",
     rusName: [{ word: "настройка", isChangeable: true }, { word: "пени" }],
     gender: "женский",

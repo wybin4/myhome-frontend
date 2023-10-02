@@ -1,19 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/helpers/api";
-import { IUserPage, ownerPageComponent } from "@/interfaces/account/user.interface";
-import { IPenaltyCalculationRulePage, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
-import { IGeneralMeterPage, IIndividualMeterPage, generalMeterPageComponent, individualMeterPageComponent } from "@/interfaces/reference/meter.interface";
-import { IReferencePageComponent } from "@/interfaces/reference/page.interface";
-import { IApartmentPage, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
-import { IHousePage, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
-import { ISubscriberPage, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
-import { ICommonHouseNeedTariffPage, IMunicipalTariffPage, INormPage, ISeasonalityFactorPage, ISocialNormPage, municipalTariffPageComponent, normPageComponent, seasonalityFactorPageComponent, socialNormPageComponent, сommonHouseNeedTariffPageComponent } from "@/interfaces/reference/tariff-and-norm.interface";
+import { IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
+import { IReferencePageComponent, IReferencePageItem, IReferenceData } from "@/interfaces/reference/page.interface";
+import { IApartmentReferenceData, IApartmentReferenceDataItem, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
+import { IHouseReferenceData, IHouseReferenceDataItem, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
+import { ISubscriberReferenceDataItem, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
+import { ICommonHouseNeedTariffReferenceDataItem, INormReferenceDataItem, IMunicipalTariffReferenceDataItem, ISeasonalityFactorReferenceDataItem, ISocialNormReferenceDataItem, municipalTariffPageComponent, normPageComponent, seasonalityFactorPageComponent, socialNormPageComponent, сommonHouseNeedTariffPageComponent } from "@/interfaces/reference/tariff-and-norm.interface";
+import { IGeneralMeterReferenceDataItem, IIndividualMeterReferenceDataItem, generalMeterPageComponent, individualMeterPageComponent } from "@/interfaces/reference/meter.interface";
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
+import axios from "axios";
+import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 
-function ReferencePage(): JSX.Element {
+function ReferencePage({ data }: ReferencePageProps): JSX.Element {
     const [engName, setEngName] = useState<string>("");
     const router = useRouter();
 
@@ -23,7 +26,6 @@ function ReferencePage(): JSX.Element {
     }, [router.asPath]);
 
     const createComponent = <T extends FieldValues>(
-        engName: string,
         item: IReferencePageComponent<T>,
     ) => {
         return (
@@ -50,27 +52,61 @@ function ReferencePage(): JSX.Element {
         );
     };
 
+    const enrich = <T extends FieldValues>(
+        item: IReferencePageComponent<T>,
+    ): IReferencePageComponent<T> => {
+        const enrichedComponent = { ...item };
+        const dataFromBack = data[engName + "s"];
+        if (dataFromBack) {
+            const enrichedComponents = enrichedComponent.components.map(component => {
+                if (component.isFilter) {
+                    const values = dataFromBack.map(item => item[component.id]);
+                    const uniqueValues = Array.from(new Set(values));
+                    const filterItems = [{
+                        name: [{ word: component.title.map(t => t.word).join(" ") }],
+                        items: uniqueValues.map(value => value?.toString())
+                    }];
+
+                    return {
+                        ...component,
+                        filterItems
+                    } as IReferencePageItem<T>;
+                }
+                return component;
+            });
+
+            return {
+                ...enrichedComponent,
+                components: enrichedComponents
+            };
+        }
+
+        return enrichedComponent;
+    };
+
+
+
     return (
         <>
-            {engName === "house" && createComponent<IHousePage>(engName, housePageComponent)}
-            {engName === "apartment" && createComponent<IApartmentPage>(engName, apartmentPageComponent)}
-            {engName === "subscriber" && createComponent<ISubscriberPage>(engName, subscriberPageComponent)}
-            {engName === "individual-meter" && createBaseComponent<IIndividualMeterPage>("meter", individualMeterPageComponent)}
-            {engName === "general-meter" && createBaseComponent<IGeneralMeterPage>("meter", generalMeterPageComponent)}
-            {engName === "municipal-tariff" && createBaseComponent<IMunicipalTariffPage>("tariffAndNorm", municipalTariffPageComponent)}
-            {engName === "norm" && createBaseComponent<INormPage>("tariffAndNorm", normPageComponent)}
-            {engName === "social-norm" && createBaseComponent<ISocialNormPage>("tariffAndNorm", socialNormPageComponent)}
-            {engName === "seasonality-factor" && createBaseComponent<ISeasonalityFactorPage>("tariffAndNorm", seasonalityFactorPageComponent)}
-            {engName === "common-house-need" && createBaseComponent<ICommonHouseNeedTariffPage>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
+            {engName === "house" && createComponent<IHouseReferenceDataItem>(enrich(housePageComponent))}
+            {engName === "apartment" && createComponent<IApartmentReferenceDataItem>(apartmentPageComponent)}
+            {engName === "subscriber" && createComponent<ISubscriberReferenceDataItem>(subscriberPageComponent)}
+            {engName === "individual-meter" && createBaseComponent<IIndividualMeterReferenceDataItem>("meter", individualMeterPageComponent)}
+            {engName === "general-meter" && createBaseComponent<IGeneralMeterReferenceDataItem>("meter", generalMeterPageComponent)}
+            {engName === "municipal-tariff" && createBaseComponent<IMunicipalTariffReferenceDataItem>("tariffAndNorm", municipalTariffPageComponent)}
+            {engName === "norm" && createBaseComponent<INormReferenceDataItem>("tariffAndNorm", normPageComponent)}
+            {engName === "social-norm" && createBaseComponent<ISocialNormReferenceDataItem>("tariffAndNorm", socialNormPageComponent)}
+            {engName === "seasonality-factor" && createBaseComponent<ISeasonalityFactorReferenceDataItem>("tariffAndNorm", seasonalityFactorPageComponent)}
+            {engName === "common-house-need" && createBaseComponent<ICommonHouseNeedTariffReferenceDataItem>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
             {engName === "penalty-rule" &&
-                <ReferencePageComponent<IPenaltyCalculationRulePage>
-                key={penaltyCalcRulePageComponent.engName}
+                <ReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem>
+                    key={penaltyCalcRulePageComponent.engName}
                     item={penaltyCalcRulePageComponent}
                     uriToAdd={API.correction.penaltyRule.add}
                 />
             }
             {engName === "owner" &&
-                <ReferencePageComponent<IUserPage>
+                <ReferencePageComponent<IUserReferenceDataItem>
                     key={ownerPageComponent.engName}
                     item={ownerPageComponent}
                     uriToAdd={API.common.register.add}
@@ -82,3 +118,58 @@ function ReferencePage(): JSX.Element {
 }
 
 export default withLayout(ReferencePage);
+
+export async function getServerSideProps(context: MyContext) {
+    const { req } = context;
+    const url = req?.url || "";
+    const engName = url.split("/")[3];
+
+    const apiUrl = API.managementCompany.reference[engName].get;
+    const postData = {
+        "managementCompanyId": 1, // ИСПРАВИТЬ
+    };
+
+    try {
+        switch (engName) {
+            case "house":
+                return await fetchData<IHouseReferenceData>(apiUrl, postData);
+            case "apartment":
+                return await fetchData<IApartmentReferenceData>(apiUrl, postData);
+            default:
+                return {
+                    notFound: true
+                };
+        }
+    } catch {
+        return {
+            notFound: true
+        };
+    }
+}
+
+async function fetchData<T extends IReferenceData>
+    (apiUrl: string, postData: any) {
+    const { data } = await axios.post<{ data: T }>(apiUrl, postData);
+    if (!data) {
+        return {
+            notFound: true
+        };
+    }
+    return {
+        props: {
+            data
+        }
+    };
+}
+
+interface ReferencePageProps extends Record<string, unknown> {
+    data: IReferenceData;
+    role: UserRole;
+    isFormOpened: boolean;
+    setIsFormOpened: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface MyContext {
+    req: NextApiRequest;
+    res: NextApiResponse;
+}

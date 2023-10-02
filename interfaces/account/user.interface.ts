@@ -1,4 +1,4 @@
-import { IReferencePageComponent } from "../reference/page.interface";
+import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../reference/page.interface";
 
 export type UserRole = "admin" | "subscriber" | "managementCompany" | "none";
 
@@ -10,7 +10,11 @@ export interface IUser {
     checkingAcount?: string;
 }
 
-export interface IUserPage {
+export interface IUserReferenceData extends IReferenceData {
+    subscribers: IUserReferenceDataItem[];
+}
+
+export interface IUserReferenceDataItem extends IReferenceDataItem {
     name?: string;
     email: string;
     passwordHash: string;
@@ -18,7 +22,7 @@ export interface IUserPage {
 }
 
 export const ownerPageComponent:
-    IReferencePageComponent<IUserPage> = {
+    IReferencePageComponent<IUserReferenceDataItem> = {
     engName: "owner",
     rusName: [{ word: "собственник", isChangeable: true }],
     gender: "мужской",

@@ -1,37 +1,41 @@
-import { IReferencePageComponent } from "./page.interface";
+import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "./page.interface";
 
-export interface IBaseTariffAndNormPage {
+export interface IBaseTariffAndNormReferenceData extends IReferenceData {
+    subscribers: IBaseTariffAndNormReferenceDataItem[];
+}
+
+export interface IBaseTariffAndNormReferenceDataItem extends IReferenceDataItem {
     managementCompanyId: number;
     typeOfServiceId: number;
 }
 
 export enum TypeOfNorm { Individual = 'Individual', General = 'General' }
 
-export interface INormPage extends IBaseTariffAndNormPage {
+export interface INormReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     unitId: number;
     norm: number;
     typeOfNorm: TypeOfNorm;
 }
 
-export interface IMunicipalTariffPage extends IBaseTariffAndNormPage {
+export interface IMunicipalTariffReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     unitId: number;
     norm: number;
     supernorm?: number;
     multiplyingFactor?: number;
 }
 
-export interface ISocialNormPage extends IBaseTariffAndNormPage {
+export interface ISocialNormReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     unitId: number;
     norm: number;
     amount: number;
 }
 
-export interface ISeasonalityFactorPage extends IBaseTariffAndNormPage {
+export interface ISeasonalityFactorReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     monthName: string;
     coefficient: number;
 }
 
-export interface ICommonHouseNeedTariffPage {
+export interface ICommonHouseNeedTariffReferenceDataItem {
     id?: number;
     typeOfServiceId: number;
     unitId: number;
@@ -40,7 +44,7 @@ export interface ICommonHouseNeedTariffPage {
 }
 
 export const normPageComponent:
-    IReferencePageComponent<INormPage> = {
+    IReferencePageComponent<INormReferenceDataItem> = {
     engName: "norm",
     rusName: [{ word: "норматив", isChangeable: true }],
     gender: "мужской",
@@ -79,7 +83,7 @@ export const normPageComponent:
 };
 
 export const socialNormPageComponent:
-    IReferencePageComponent<ISocialNormPage> = {
+    IReferencePageComponent<ISocialNormReferenceDataItem> = {
     engName: "social-norm",
     rusName: [{ word: "социальная", isChangeable: true }, { word: "норма", isChangeable: true }],
     gender: "женский",
@@ -115,9 +119,9 @@ export const socialNormPageComponent:
 };
 
 export const seasonalityFactorPageComponent:
-    IReferencePageComponent<ISeasonalityFactorPage> = {
+    IReferencePageComponent<ISeasonalityFactorReferenceDataItem> = {
     engName: "seasonality-factor",
-    rusName: [{ word: "коэффициент", isChangeable: true }, { word: "сезонности" } ],
+    rusName: [{ word: "коэффициент", isChangeable: true }, { word: "сезонности" }],
     gender: "мужской",
     components: [
         {
@@ -147,7 +151,7 @@ export const seasonalityFactorPageComponent:
 };
 
 export const сommonHouseNeedTariffPageComponent:
-    IReferencePageComponent<ICommonHouseNeedTariffPage> = {
+    IReferencePageComponent<ICommonHouseNeedTariffReferenceDataItem> = {
     engName: "сommon-house-need-tariff",
     rusName: [{ word: "общедомовая", isChangeable: true }, { word: "нужда", isChangeable: true }],
     gender: "мужской",
@@ -186,7 +190,7 @@ export const сommonHouseNeedTariffPageComponent:
 };
 
 export const municipalTariffPageComponent:
-    IReferencePageComponent<IMunicipalTariffPage> = {
+    IReferencePageComponent<IMunicipalTariffReferenceDataItem> = {
     engName: "municipal-tariff",
     rusName: [{ word: "муниципальный", isChangeable: true }, { word: "тариф", isChangeable: true }],
     gender: "мужской",

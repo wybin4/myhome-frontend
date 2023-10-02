@@ -1,11 +1,16 @@
-import { IReferencePageComponent } from "../page.interface";
+import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../page.interface";
 
-export interface IApartmentPage {
-    houseId: number;
-    apartmentNumber: number;
-    totalArea: number;
+export interface IApartmentReferenceData extends IReferenceData {
+    apartments: IApartmentReferenceDataItem[];
+}
+
+export interface IApartmentReferenceDataItem extends IReferenceDataItem {
+    city: string;
+    street: string;
+    houseNumber: string;
     livingArea: number;
-    numberOfRegistered: number;
+    noLivingArea: number;
+    commonArea: number;
 }
 
 export interface IApartment {
@@ -17,7 +22,7 @@ export interface IApartment {
     numberOfRegistered: number;
 }
 
-export const apartmentPageComponent: IReferencePageComponent<IApartmentPage> = {
+export const apartmentPageComponent: IReferencePageComponent<IApartmentReferenceDataItem> = {
     engName: "apartment",
     rusName: [{ word: "жилое", isChangeable: true }, { word: "помещение", isChangeable: true }],
     gender: "средний",

@@ -1,6 +1,10 @@
-import { IReferencePageComponent } from "../page.interface";
+import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../page.interface";
 
-export interface IHousePage {
+export interface IHouseReferenceData extends IReferenceData {
+    houses: IHouseReferenceDataItem[];
+}
+
+export interface IHouseReferenceDataItem extends IReferenceDataItem {
     city: string;
     street: string;
     houseNumber: string;
@@ -20,7 +24,7 @@ export interface IHouse {
     commonArea: number;
 }
 
-export const housePageComponent: IReferencePageComponent<IHousePage> = {
+export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem> = {
     engName: "house",
     rusName: [{ word: "дом", isChangeable: true }],
     gender: "мужской",
@@ -28,18 +32,18 @@ export const housePageComponent: IReferencePageComponent<IHousePage> = {
         {
             type: "input",
             title: [{ word: "город", isChangeable: true }], numberInOrder: 1, id: "city", gender: "мужской", isFilter: true,
-            filterItems: [{ items: ["Ростов-на-Дону"] }]
+            filterItems: [{ items: [] }]
         },
         {
             type: "input",
             title: [{ word: "улица", isChangeable: true }], numberInOrder: 2, id: "street", gender: "женский", isFilter: true,
-            filterItems: [{ items: ["ул. Малюгина", "пер. Соборный"] }]
+            filterItems: [{ items: [] }]
         },
         {
             type: "input",
             title: [{ word: "номер" }, { word: "дома" }], gender: "мужской",
             numberInOrder: 3, id: "houseNumber", isFilter: true,
-            filterItems: [{ items: ["д. 12", "д. 124"] }]
+            filterItems: [{ items: [] }]
         },
         {
             type: "input", inputType: "number",
