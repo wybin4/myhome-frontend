@@ -11,6 +11,7 @@ export interface IApartmentReferenceDataItem extends IReferenceDataItem {
     livingArea: number;
     noLivingArea: number;
     commonArea: number;
+    houseName: string;
 }
 
 export interface IApartment {
@@ -33,28 +34,33 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
                 { value: 2, text: "д. 99" },
                 { value: 3, text: "д. 100" },
             ],
-            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "houseId", gender: "мужской", isFilter: true,
-            filterItems: [{ items: ["д. 98", "д. 99"] }]
+            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "houseName", gender: "мужской", isFilter: true,
+            filterItems: [{ items: [] }],
+            rows: []
         },
         {
             type: "input", inputType: "number",
             title: [{ word: "квартира", isChangeable: true }], numberInOrder: 2, id: "apartmentNumber", gender: "женский", isFilter: true,
-            filterItems: [{ items: ["кв. 12", "кв. 14"] }]
+            filterItems: [{ items: [] }],
+            rows: []
         },
         {
             type: "input", inputType: "number",
             title: [{ word: "жил." }, { word: "площадь" }],
             numberInOrder: 3, id: "totalArea", gender: "мужской",
+            rows: []
         },
         {
             type: "input", inputType: "number",
             title: [{ word: "общ.", }, { word: "площадь" }],
-            numberInOrder: 4, id: "livingArea", gender: "женский"
+            numberInOrder: 4, id: "livingArea", gender: "женский",
+            rows: []
         },
         {
             type: "input", inputType: "number",
             title: [{ word: "колич.", }, { word: "зарег" }],
-            numberInOrder: 5, id: "numberOfRegistered", gender: "женский"
+            numberInOrder: 5, id: "numberOfRegistered", gender: "женский",
+            rows: []
         },
     ]
 };

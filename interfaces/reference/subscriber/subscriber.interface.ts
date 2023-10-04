@@ -9,6 +9,8 @@ export interface ISubscriberReferenceDataItem extends IReferenceDataItem {
     apartmentId: number;
     personalAccount: string;
     status: SubscriberStatus;
+    ownerName: string;
+    apartmentName: string;
 }
 
 export interface ISubscriber {
@@ -29,6 +31,7 @@ export const subscriberPageComponent:
     engName: "subscriber",
     rusName: [{ word: "лицевой", isChangeable: true }, { word: "счет", isChangeable: true }],
     gender: "мужской",
+    keyElements: {first: 3, second: 1},
     components: [
         {
             type: "select", selectorOptions: [
@@ -36,11 +39,13 @@ export const subscriberPageComponent:
                 { value: 2, text: "А.А.А" },
                 { value: 3, text: "А.А.А" },
             ],
-            title: [{ word: "ФИО" }, { word: "ответств." }], numberInOrder: 1, id: "ownerId", gender: "мужской"
+            title: [{ word: "ФИО" }, { word: "ответств." }], numberInOrder: 1, id: "ownerName", gender: "мужской",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "код" }], numberInOrder: 2, id: "personalAccount", gender: "мужской"
+            title: [{ word: "код" }], numberInOrder: 2, id: "personalAccount", gender: "мужской",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -49,18 +54,20 @@ export const subscriberPageComponent:
                 { value: 3, text: "д. 100" },
             ],
             title: [{ word: "объект" }, { word: "учета" }],
-            numberInOrder: 3, id: "apartmentId", gender: "мужской",
+            numberInOrder: 3, id: "apartmentName", gender: "мужской",
             isFilter: true, filterItems: [
-                { name: [{ word: "город" }], items: ["Ростов-на-Дону"] },
-                { name: [{ word: "улица" }], items: ["ул. Малюгина", "пер. Соборный"] },
-                { name: [{ word: "дом" }], items: ["д. 98", "д. 99"] },
-                { name: [{ word: "квартира" }], items: ["кв. 12", "кв. 14"] }
-            ]
+                { name: [{ word: "город" }], items: [] },
+                { name: [{ word: "улица" }], items: [] },
+                { name: [{ word: "дом" }], items: [] },
+                { name: [{ word: "квартира" }], items: [] }
+            ],
+            rows: []
         },
         {
             type: "none",
             title: [{ word: "статус" }],
-            numberInOrder: 4, id: "status", gender: "женский"
+            numberInOrder: 4, id: "status", gender: "женский",
+            rows: []
         },
     ]
 };

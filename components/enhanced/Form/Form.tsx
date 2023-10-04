@@ -84,6 +84,7 @@ export const Form = <T extends FieldValues>({
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (formRef.current && !formRef.current.contains(event.target as Node | null)) {
+                reset();
                 setIsOpened && setIsOpened(false);
             }
         };

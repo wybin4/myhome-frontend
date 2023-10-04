@@ -1,4 +1,4 @@
-import { ITypeOfAction } from "@/components/composite/TableRow/TableRow.props";
+import { ITypeOfAction, RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { FieldValues, Path } from "react-hook-form";
 import { Gender } from "russian-nouns-js/src/Gender";
@@ -18,6 +18,7 @@ export interface IReferencePageComponent<T extends FieldValues> {
     gender: Gender[keyof Gender];
     components: IReferencePageItem<T>[];
     tableActions?: ITypeOfAction[];
+    keyElements?: RowKeyElements;
 }
 
 export interface IReferencePageItem<T extends FieldValues> {
@@ -27,11 +28,13 @@ export interface IReferencePageItem<T extends FieldValues> {
 
     numberInOrder: number;
 
+    rows: string[];
+
     isFilter?: boolean;
     filterItems?: { name?: IReferenceTitle[]; items: string[] }[];
 
     type: "input" | "select" | "datepicker" | "none";
-    inputType?: "number" | "string"
+    inputType?: "number" | "string";
 
     selectorOptions?: SelectorOption[];
 }

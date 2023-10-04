@@ -41,7 +41,7 @@
 @media (max-width: 600px) {
     .topPart {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
     }
 
     .title {
@@ -50,5 +50,7 @@
 
     .buttonWrapper {
         margin-bottom: 2rem;
+
+        gap: 0.7rem;
     }
 }

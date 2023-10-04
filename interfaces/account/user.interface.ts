@@ -30,11 +30,13 @@ export const ownerPageComponent:
     components: [
         {
             type: "input",
-            title: [{ word: "ФИО" }], numberInOrder: 1, id: "name", gender: "мужской"
+            title: [{ word: "ФИО" }], numberInOrder: 1, id: "name", gender: "мужской",
+            rows: []
         },
         {
             type: "input",
-            title: [{ word: "email" }], numberInOrder: 2, id: "email", gender: "мужской"
+            title: [{ word: "email" }], numberInOrder: 2, id: "email", gender: "мужской",
+            rows: []
         }
     ]
 };

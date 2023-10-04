@@ -19,6 +19,7 @@ export const Button = ({
                 [styles.l]: size === "l",
                 [styles.m]: size === "m",
                 [styles.s]: size === "s",
+                [styles.symbButtons]: symbol !== "none"
             })}
             ref={innerRef}
             {...props}

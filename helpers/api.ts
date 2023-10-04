@@ -34,17 +34,17 @@ export const API: {
             house: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/house/add-house`,
                 addMany: ``,
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/house/get-houses`,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/house/get-houses-by-mcid`,
             },
             apartment: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/apartment/add-apartment`,
                 addMany: ``,
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/apartment/get-apartments`,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/apartment/get-apartments-by-mcid`,
             },
             subscriber: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/subscriber/add-subscriber`,
                 addMany: ``,
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/subscriber/get-subscribers`,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/subscriber/get-subscribers-by-mcid`,
             },
             meter: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/add-meter`,

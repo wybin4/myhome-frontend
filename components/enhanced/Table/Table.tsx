@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 export const Table = ({
     title, buttons,
     filters,
-    rows,
+    rows, 
     className, ...props
 }: TableProps): JSX.Element => {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);

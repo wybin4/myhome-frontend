@@ -23,7 +23,6 @@ export const ReferencePageComponent = <T extends FieldValues>({
 
     const noun = item.rusName;
     const gender = item.gender;
-    // const nominative = rne.decline({ text: noun, gender }, "именительный");
     const pluralNominative = (
         title: IReferenceTitle[], gender: Gender[keyof Gender]
     ) => {
@@ -155,12 +154,9 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     items: item.components.map(component => ({
                         title: capFirstLetter(phraseByArr(component.title)),
                         type: "text",
-                        items: [
-                            "пер. Соборный",
-                            "ул. Малюгина",
-                            "пер. Соборный"
-                        ]
-                    }))
+                        items: component.rows
+                    })),
+                    keyElements: item.keyElements
                 }}
             />
         </>

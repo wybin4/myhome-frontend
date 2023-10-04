@@ -5,7 +5,7 @@ import { IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent 
 import { IReferencePageComponent, IReferencePageItem, IReferenceData } from "@/interfaces/reference/page.interface";
 import { IApartmentReferenceData, IApartmentReferenceDataItem, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
 import { IHouseReferenceData, IHouseReferenceDataItem, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
-import { ISubscriberReferenceDataItem, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
+import { ISubscriberReferenceData, ISubscriberReferenceDataItem, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { ICommonHouseNeedTariffReferenceDataItem, INormReferenceDataItem, IMunicipalTariffReferenceDataItem, ISeasonalityFactorReferenceDataItem, ISocialNormReferenceDataItem, municipalTariffPageComponent, normPageComponent, seasonalityFactorPageComponent, socialNormPageComponent, сommonHouseNeedTariffPageComponent } from "@/interfaces/reference/tariff-and-norm.interface";
 import { IGeneralMeterReferenceDataItem, IIndividualMeterReferenceDataItem, generalMeterPageComponent, individualMeterPageComponent } from "@/interfaces/reference/meter.interface";
 import { withLayout } from "@/layout/Layout";
@@ -28,10 +28,11 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
     const createComponent = <T extends FieldValues>(
         item: IReferencePageComponent<T>,
     ) => {
+        const newItem = enrich(item);
         return (
             <ReferencePageComponent<T>
-                key={item.engName}
-                item={item}
+                key={newItem.engName}
+                item={newItem}
                 uriToAdd={API.managementCompany.reference[engName].add}
                 uriToAddMany={API.managementCompany.reference[engName].addMany}
             />
@@ -42,10 +43,11 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         baseEngName: string,
         item: IReferencePageComponent<T>,
     ) => {
+        const newItem = enrich(item);
         return (
             <ReferencePageComponent<T>
-                key={item.engName}
-                item={item}
+                key={newItem.engName}
+                item={newItem}
                 uriToAdd={API.managementCompany.reference[baseEngName].add}
                 uriToAddMany={API.managementCompany.reference[baseEngName].addMany}
             />
@@ -59,8 +61,9 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         const dataFromBack = data[engName + "s"];
         if (dataFromBack) {
             const enrichedComponents = enrichedComponent.components.map(component => {
+                const values = dataFromBack.map(item => item[component.id]);
+                const rows = values.map(val => val ? val?.toString() : "");
                 if (component.isFilter) {
-                    const values = dataFromBack.map(item => item[component.id]);
                     const uniqueValues = Array.from(new Set(values));
                     const filterItems = [{
                         name: [{ word: component.title.map(t => t.word).join(" ") }],
@@ -69,10 +72,14 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
 
                     return {
                         ...component,
-                        filterItems
+                        filterItems,
+                        rows
                     } as IReferencePageItem<T>;
                 }
-                return component;
+                return {
+                    ...component,
+                    rows
+                };
             });
 
             return {
@@ -88,7 +95,7 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
 
     return (
         <>
-            {engName === "house" && createComponent<IHouseReferenceDataItem>(enrich(housePageComponent))}
+            {engName === "house" && createComponent<IHouseReferenceDataItem>(housePageComponent)}
             {engName === "apartment" && createComponent<IApartmentReferenceDataItem>(apartmentPageComponent)}
             {engName === "subscriber" && createComponent<ISubscriberReferenceDataItem>(subscriberPageComponent)}
             {engName === "individual-meter" && createBaseComponent<IIndividualMeterReferenceDataItem>("meter", individualMeterPageComponent)}
@@ -124,17 +131,18 @@ export async function getServerSideProps(context: MyContext) {
     const url = req?.url || "";
     const engName = url.split("/")[3];
 
-    const apiUrl = API.managementCompany.reference[engName].get;
-    const postData = {
-        "managementCompanyId": 1, // ИСПРАВИТЬ
-    };
-
     try {
+        const apiUrl = API.managementCompany.reference[engName].get;
+        const postData = {
+            "managementCompanyId": 1, // ИСПРАВИТЬ
+        };
         switch (engName) {
             case "house":
                 return await fetchData<IHouseReferenceData>(apiUrl, postData);
             case "apartment":
                 return await fetchData<IApartmentReferenceData>(apiUrl, postData);
+            case "subscriber":
+                return await fetchData<ISubscriberReferenceData>(apiUrl, postData);
             default:
                 return {
                     notFound: true

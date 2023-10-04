@@ -58,18 +58,21 @@ export const normPageComponent:
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceId", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
-            ]
+            ],
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "норма", isChangeable: true }], numberInOrder: 2, id: "norm", gender: "женский"
+            title: [{ word: "норма", isChangeable: true }], numberInOrder: 2, id: "norm", gender: "женский",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
                 { value: TypeOfNorm.Individual, text: "Индивидуальная" },
                 { value: TypeOfNorm.General, text: "Общедомовая" },
             ],
-            title: [{ word: "тип" }, { word: "нормы" }], numberInOrder: 2, id: "typeOfNorm", gender: "мужской"
+            title: [{ word: "тип" }, { word: "нормы" }], numberInOrder: 2, id: "typeOfNorm", gender: "мужской",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -78,6 +81,7 @@ export const normPageComponent:
                 { value: 3, text: "руб./кВтч" },
             ],
             title: [{ word: "единицы" }, { word: "измерения" }], numberInOrder: 3, id: "unitId", gender: "женский",
+            rows: []
         },
     ]
 };
@@ -97,15 +101,18 @@ export const socialNormPageComponent:
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceId", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
-            ]
+            ],
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "норма", isChangeable: true }], numberInOrder: 2, id: "norm", gender: "мужской"
+            title: [{ word: "норма", isChangeable: true }], numberInOrder: 2, id: "norm", gender: "мужской",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "количество" }], numberInOrder: 3, id: "amount", gender: "мужской"
+            title: [{ word: "количество" }], numberInOrder: 3, id: "amount", gender: "мужской",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -114,6 +121,7 @@ export const socialNormPageComponent:
                 { value: 3, text: "руб./кВтч" },
             ],
             title: [{ word: "единицы" }, { word: "измерения" }], numberInOrder: 4, id: "unitId", gender: "женский",
+            rows: []
         },
     ]
 };
@@ -133,7 +141,8 @@ export const seasonalityFactorPageComponent:
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceId", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
-            ]
+            ],
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -141,11 +150,13 @@ export const seasonalityFactorPageComponent:
                 { value: 2, text: "Февраль" },
                 { value: 3, text: "Март" },
             ],
-            title: [{ word: "месяц" }], numberInOrder: 2, id: "monthName", gender: "мужской"
+            title: [{ word: "месяц" }], numberInOrder: 2, id: "monthName", gender: "мужской",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "коэффициент" }], numberInOrder: 3, id: "coefficient", gender: "мужской"
+            title: [{ word: "коэффициент" }], numberInOrder: 3, id: "coefficient", gender: "мужской",
+            rows: []
         },
     ]
 };
@@ -162,6 +173,7 @@ export const сommonHouseNeedTariffPageComponent:
                 { value: 2, text: "д. 99" },
             ],
             title: [{ word: "дом" }], numberInOrder: 1, id: "houseId", gender: "мужской",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -172,11 +184,13 @@ export const сommonHouseNeedTariffPageComponent:
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 2, id: "typeOfServiceId", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
-            ]
+            ],
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "тариф" }], numberInOrder: 3, id: "multiplier", gender: "мужской"
+            title: [{ word: "тариф" }], numberInOrder: 3, id: "multiplier", gender: "мужской",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -185,6 +199,7 @@ export const сommonHouseNeedTariffPageComponent:
                 { value: 3, text: "руб./кВтч" },
             ],
             title: [{ word: "единицы" }, { word: "измерения" }], numberInOrder: 4, id: "unitId", gender: "женский",
+            rows: []
         },
     ]
 };
@@ -204,19 +219,23 @@ export const municipalTariffPageComponent:
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceId", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
-            ]
+            ],
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "норма", isChangeable: true }], numberInOrder: 2, id: "norm", gender: "женский"
+            title: [{ word: "норма", isChangeable: true }], numberInOrder: 2, id: "norm", gender: "женский",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "тариф" }, { word: "сверх" }, { word: "нормы" }], numberInOrder: 3, id: "supernorm", gender: "мужской"
+            title: [{ word: "тариф" }, { word: "сверх" }, { word: "нормы" }], numberInOrder: 3, id: "supernorm", gender: "мужской",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "повышающий" }, { word: "коэфф." }], numberInOrder: 4, id: "multiplyingFactor", gender: "мужской"
+            title: [{ word: "повышающий" }, { word: "коэфф." }], numberInOrder: 4, id: "multiplyingFactor", gender: "мужской",
+            rows: []
         },
         {
             type: "select", selectorOptions: [
@@ -225,6 +244,7 @@ export const municipalTariffPageComponent:
                 { value: 3, text: "руб./кВтч" },
             ],
             title: [{ word: "единицы" }, { word: "измерения" }], numberInOrder: 5, id: "unitId", gender: "женский",
+            rows: []
         },
     ]
 };

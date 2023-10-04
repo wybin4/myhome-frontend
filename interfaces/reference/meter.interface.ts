@@ -60,29 +60,35 @@ const meterPageComponents: IReferencePageItem<
                 { value: 3, text: "Отопление" },
             ],
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 2, id: "typeOfServiceId", gender: "женский",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "заводской" }, { word: "номер" }], numberInOrder: 3, id: "factoryNumber", gender: "мужской"
+            title: [{ word: "заводской" }, { word: "номер" }], numberInOrder: 3, id: "factoryNumber", gender: "мужской",
+            rows: []
         },
         {
             type: "datepicker",
             title: [{ word: "дата" }, { word: "поверки" }],
             numberInOrder: 4, id: "verifiedAt", gender: "мужской",
+            rows: []
         },
         {
             type: "datepicker",
             title: [{ word: "дата" }, { word: "выпуска" }],
             numberInOrder: 5, id: "issuedAt", gender: "мужской",
+            rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "предыдущее", isChangeable: true }, { word: "показание" }], numberInOrder: 6, id: "previousReading", gender: "средний"
+            title: [{ word: "предыдущее", isChangeable: true }, { word: "показание" }], numberInOrder: 6, id: "previousReading", gender: "средний",
+            rows: []
         },
         {
             type: "datepicker",
             title: [{ word: "дата", isChangeable: true }, { word: "предыдущего" }, { word: "показания" }],
             numberInOrder: 7, id: "previousReadAt", gender: "средний",
+            rows: []
         },
     ];
 
@@ -103,7 +109,8 @@ export const individualMeterPageComponent:
                 { name: [{ word: "улица" }], items: ["ул. Малюгина", "пер. Соборный"] },
                 { name: [{ word: "дом" }], items: ["д. 98", "д. 99"] },
                 { name: [{ word: "квартира" }], items: ["кв. 12", "кв. 14"] }
-            ]
+            ],
+            rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IIndividualMeterReferenceDataItem>[]
     ]
@@ -121,6 +128,7 @@ export const generalMeterPageComponent:
                 { value: 2, text: "д. 99" },
             ],
             title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseId", gender: "мужской",
+            rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IGeneralMeterReferenceDataItem>[]
     ]
