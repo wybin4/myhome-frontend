@@ -80,7 +80,6 @@
 
 
 .rowsMobileWrapper {
-    display: flex;
     flex-direction: column;
     gap: 1.33rem;
     align-items: center;

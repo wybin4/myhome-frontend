@@ -28,7 +28,7 @@ export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem
     engName: "house",
     rusName: [{ word: "дом", isChangeable: true }],
     gender: "мужской",
-    keyElements: { first: 1, second: 3 },
+    keyElements: { first: [1, 2], second: 3 },
     components: [
         {
             type: "input",
@@ -44,7 +44,7 @@ export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem
         },
         {
             type: "input",
-            title: [{ word: "номер" }, { word: "дома" }], gender: "мужской",
+            title: [{ word: "дом" }], gender: "мужской",
             numberInOrder: 3, id: "houseNumber", isFilter: true,
             filterItems: [{ items: [] }],
             rows: []

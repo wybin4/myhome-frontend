@@ -31,7 +31,7 @@ export const subscriberPageComponent:
     engName: "subscriber",
     rusName: [{ word: "лицевой", isChangeable: true }, { word: "счет", isChangeable: true }],
     gender: "мужской",
-    keyElements: {first: 3, second: 1},
+    keyElements: { first: [3], second: 1 },
     components: [
         {
             type: "select", selectorOptions: [

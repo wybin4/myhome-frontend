@@ -11,7 +11,6 @@ import { IGeneralMeterReferenceDataItem, IIndividualMeterReferenceDataItem, gene
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
 import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -126,9 +125,8 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
 
 export default withLayout(ReferencePage);
 
-export async function getServerSideProps(context: MyContext) {
-    const { req } = context;
-    const url = req?.url || "";
+export async function getServerSideProps({ resolvedUrl }: any) {
+    const url = resolvedUrl || "";
     const engName = url.split("/")[3];
 
     try {
@@ -175,9 +173,4 @@ interface ReferencePageProps extends Record<string, unknown> {
     role: UserRole;
     isFormOpened: boolean;
     setIsFormOpened: Dispatch<SetStateAction<boolean>>;
-}
-
-export interface MyContext {
-    req: NextApiRequest;
-    res: NextApiResponse;
 }

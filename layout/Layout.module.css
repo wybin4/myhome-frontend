@@ -28,7 +28,7 @@
 .body {
     grid-area: body;
 
-    margin-top: 3rem;
+    margin-top: 2rem;
 }
 
 .footer {
@@ -59,7 +59,13 @@
         display: none;
     }
 
+    .header {
+        padding: 0 2.5rem;
+    }
+
     .body {
         margin-top: 2.9rem;
+
+        padding: 0 2.5rem;
     }
 }

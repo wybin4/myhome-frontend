@@ -9,7 +9,7 @@ export interface TableRowProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivE
 }
 
 export interface RowKeyElements {
-    first: number;
+    first: number[];
     second: number;
 }
 

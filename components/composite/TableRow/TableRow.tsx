@@ -11,7 +11,7 @@ import React from "react";
 
 export const TableRow = ({
     startIcon, actions, items,
-    keyElements = { first: 1, second: 2 },
+    keyElements = { first: [1], second: 2 },
     className, ...props
 }: TableRowProps): JSX.Element => {
 
@@ -20,7 +20,7 @@ export const TableRow = ({
             <TableRowDesktop startIcon={startIcon} actions={actions} items={items}
                 className={cn(className, "md:hidden sm:hidden")} {...props} />
             <TableRowMobile startIcon={startIcon} actions={actions} items={items} keyElements={keyElements}
-                className={cn(className, "3xl:invisible 2xl:invisible xl:invisible lg:invisible")} {...props} />
+                className={cn(className, "md:flex sm:flex 3xl:hidden 2xl:hidden xl:hidden lg:hidden")} {...props} />
         </>
     );
 };
@@ -99,7 +99,7 @@ const TableRowItemDesktop = ({ title, type, items, ...props }: TableRowItemDeskt
     );
 };
 
-const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { first: 1, second: 2 }, ...props }: TableRowProps) => {
+const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { first: [1], second: 2 }, ...props }: TableRowProps) => {
     const rowItems: (ITableRowItem[] | undefined)[] = items.map(item => {
         return item.items?.map(i => {
             return {
@@ -162,10 +162,12 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
         }
     };
 
-    const firstItem = items ? items[keyElements.first - 1] : undefined;
+    const firstItem = items ? items.filter((item, index) =>
+        keyElements.first.includes(index + 1)) : undefined;
     const secondItem = items ? items[keyElements.second - 1] : undefined;
-    const itemsFiltered = items ? items.filter((item, index) => index !== (keyElements.first - 1) && index !== (keyElements.second - 1)) : undefined;
-
+    const itemsFiltered = items ? items.filter((item, index) =>
+        !keyElements.first.includes(index + 1) &&
+        index !== (keyElements.second - 1)) : undefined;
     return (
         <div className={cn(styles.itemMobile)} {...props}>
             <div className="flex justify-between">
@@ -177,7 +179,9 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
                             {getElement(secondItem)}
                         </div>
                     }
-                    {firstItem && <span className={styles.firstItem}>{getElement(firstItem)}</span>}
+                    {firstItem && <span className={cn(styles.firstItem, "flex gap-1")}>{
+                        firstItem.map(obj => getElement(obj))
+                    }</span>}
                 </div>
                 <Action actions={actions} />
             </div>
@@ -185,9 +189,9 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
             <div className={styles.bottomItemsWrap}>
                 {itemsFiltered && itemsFiltered.map((item, key) => {
                     return (
-                        <div>
+                        <div key={key}>
                             <span className={styles.mobileTitle}>{item.title}</span>
-                            {getElement(item, key)}
+                            {getElement(item)}
                         </div>
                     );
                 })}
