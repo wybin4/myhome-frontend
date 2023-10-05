@@ -68,3 +68,9 @@
         transform: rotate(-90deg);
     }
 }
+
+@media (max-width: 600px) {
+    .filterWrapper {
+        margin: 0 -2.5rem;
+    }
+}

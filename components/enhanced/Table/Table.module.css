@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: row-reverse;
     justify-content: flex-end;
-    gap: 4rem;
+    gap: 2vw;
 }
 
 .buttonWrapper {
@@ -58,6 +58,8 @@
 @media (max-width: 600px) {
     .buttonWrapper {
         display: flex;
+
+        margin-bottom: 2rem;
     }
 
     .topPart {

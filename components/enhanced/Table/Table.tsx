@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 export const Table = ({
     title, buttons,
     filters,
-    rows, 
+    rows,
     className, ...props
 }: TableProps): JSX.Element => {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
@@ -15,13 +15,15 @@ export const Table = ({
     const filterButtonRef = useRef(null);
 
     const closeFiltersOnOutsideClick = (e: MouseEvent) => {
-        if (
-            filterRef.current &&
-            !(filterRef.current as Node).contains(e.target as Node) &&
-            filterButtonRef.current &&
-            !(filterButtonRef.current as Node).contains(e.target as Node)
-        ) {
-            setIsFilterOpened(false);
+        if (window.innerWidth <= 900) {
+            if (
+                filterRef.current &&
+                !(filterRef.current as Node).contains(e.target as Node) &&
+                filterButtonRef.current &&
+                !(filterButtonRef.current as Node).contains(e.target as Node)
+            ) {
+                setIsFilterOpened(false);
+            }
         }
     };
 

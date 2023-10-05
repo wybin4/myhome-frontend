@@ -8,7 +8,17 @@ import cn from 'classnames';
 export const TableFilter = ({ innerRef, isOpen, setIsOpen, title, items, className, ...props }: TableFilterProps): JSX.Element => {
     return (
         <>
-            {isOpen && <div {...props} className={cn(styles.filterWrapper, className)} ref={innerRef}>
+            {<div {...props} className={cn(styles.filterWrapper, "lg:hidden md:hidden sm:hidden", className)} ref={innerRef}>
+                <div className={styles.titleWrapper}>
+                    <ArrowIcon
+                        className={styles.closeFiltersArrow}
+                        onClick={() => setIsOpen(!isOpen)}
+                    />
+                    <p className={styles.mainTitle}>{title}</p>
+                </div>
+                {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
+            </div>}
+            {isOpen && <div {...props} className={cn(styles.filterWrapper, "3xl:hidden 2xl:hidden xl:hidden", className)} ref={innerRef}>
                 <div className={styles.titleWrapper}>
                     <ArrowIcon
                         className={styles.closeFiltersArrow}
