@@ -10,6 +10,7 @@ export interface TableRowProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivE
 
 export interface RowKeyElements {
     first: number[];
+    isSecondNoNeedTitle?: boolean;
     second: number;
 }
 

@@ -11,10 +11,18 @@ export interface IBaseTariffAndNormReferenceDataItem extends IReferenceDataItem 
 
 export enum TypeOfNorm { Individual = 'Individual', General = 'General' }
 
+export interface INormReferenceData extends IReferenceData {
+    norms: INormReferenceDataItem[];
+}
+
 export interface INormReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     unitId: number;
     norm: number;
     typeOfNorm: TypeOfNorm;
+}
+
+export interface IMunicipalTariffReferenceData extends IReferenceData {
+    municipalTariffs: IMunicipalTariffReferenceDataItem[];
 }
 
 export interface IMunicipalTariffReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
@@ -24,10 +32,18 @@ export interface IMunicipalTariffReferenceDataItem extends IBaseTariffAndNormRef
     multiplyingFactor?: number;
 }
 
+export interface ISocialNormReferenceData extends IReferenceData {
+    socialNorms: ISocialNormReferenceDataItem[];
+}
+
 export interface ISocialNormReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     unitId: number;
     norm: number;
     amount: number;
+}
+
+export interface ISeasonalityFactorReferenceData extends IReferenceData {
+    seasonalityFactors: ISeasonalityFactorReferenceDataItem[];
 }
 
 export interface ISeasonalityFactorReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
@@ -35,8 +51,12 @@ export interface ISeasonalityFactorReferenceDataItem extends IBaseTariffAndNormR
     coefficient: number;
 }
 
-export interface ICommonHouseNeedTariffReferenceDataItem {
-    id?: number;
+export interface ICommonHouseNeedTariffReferenceData extends IReferenceData {
+    commonHouseNeedTariffs: ICommonHouseNeedTariffReferenceDataItem[];
+}
+
+export interface ICommonHouseNeedTariffReferenceDataItem extends IReferenceDataItem {
+    id: number;
     typeOfServiceId: number;
     unitId: number;
     multiplier: number;

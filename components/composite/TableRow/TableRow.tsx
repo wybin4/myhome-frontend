@@ -11,7 +11,7 @@ import React from "react";
 
 export const TableRow = ({
     startIcon, actions, items,
-    keyElements = { first: [1], second: 2 },
+    keyElements = { first: [1], isSecondNoNeedTitle: false, second: 2 },
     className, ...props
 }: TableRowProps): JSX.Element => {
 
@@ -99,7 +99,7 @@ const TableRowItemDesktop = ({ title, type, items, ...props }: TableRowItemDeskt
     );
 };
 
-const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { first: [1], second: 2 }, ...props }: TableRowProps) => {
+const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { first: [1], second: 2, isSecondNoNeedTitle: false }, ...props }: TableRowProps) => {
     const rowItems: (ITableRowItem[] | undefined)[] = items.map(item => {
         return item.items?.map(i => {
             return {
@@ -175,23 +175,29 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
                     {startIcon && <span className={styles.iconWrapper}>{startIcon}</span>}
                     {secondItem &&
                         <div className={cn("flex gap-x-1", styles.secondItem)}>
-                            {secondItem.title}
+                            {!keyElements.isSecondNoNeedTitle && secondItem.title}
                             {getElement(secondItem)}
                         </div>
                     }
-                    {firstItem && <span className={cn(styles.firstItem, "flex gap-1")}>{
-                        firstItem.map(obj => getElement(obj))
-                    }</span>}
+                    {firstItem && (
+                        <span className={cn(styles.firstItem, "flex gap-1")}>
+                            {firstItem.map((obj, index) => (
+                                <React.Fragment key={index}>
+                                    {getElement(obj, index)}
+                                </React.Fragment>
+                            ))}
+                        </span>
+                    )}
                 </div>
                 <Action actions={actions} />
             </div>
             <hr className={styles.hr}></hr>
             <div className={styles.bottomItemsWrap}>
-                {itemsFiltered && itemsFiltered.map((item, key) => {
+                {itemsFiltered && itemsFiltered.map((item, index) => {
                     return (
-                        <div key={key}>
+                        <div key={index}>
                             <span className={styles.mobileTitle}>{item.title}</span>
-                            {getElement(item)}
+                            {getElement(item, index)}
                         </div>
                     );
                 })}
@@ -199,6 +205,7 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
         </div>
     );
 };
+
 
 const Action = ({ actions, ...props }: ActionProps): JSX.Element => {
     return (

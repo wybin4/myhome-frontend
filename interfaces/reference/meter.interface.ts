@@ -1,5 +1,10 @@
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent, IReferencePageItem } from "./page.interface";
 
+export interface IGetReading {
+    reading: number;
+    readAt: Date;
+}
+
 export interface ISubscriberAddMeterForm {
     typeOfService: number;
     verificationDate: Date;
@@ -21,12 +26,25 @@ export interface IMeterReferenceDataItem extends IReferenceDataItem {
     previousReadAt: Date;
 }
 
+export interface IIndividualMeterReferenceData extends IReferenceData {
+    meters: IIndividualMeterReferenceDataItem[];
+}
+
 export interface IIndividualMeterReferenceDataItem extends IMeterReferenceDataItem {
     apartmentId: number;
+    typeOfServiceName: string;
+}
+
+export interface IGeneralMeterReferenceData extends IReferenceData {
+    meters: IGeneralMeterReferenceDataItem[];
 }
 
 export interface IGeneralMeterReferenceDataItem extends IMeterReferenceDataItem {
     houseId: number;
+    houseName: string;
+    typeOfServiceName: string;
+    // currentReading: IGetReading;
+    // previousReading: IGetReading;
 }
 
 export interface IMeterReading {
@@ -59,7 +77,7 @@ const meterPageComponents: IReferencePageItem<
                 { value: 2, text: "ГВС" },
                 { value: 3, text: "Отопление" },
             ],
-            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 2, id: "typeOfServiceId", gender: "женский",
+            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 2, id: "typeOfServiceName", gender: "женский",
             rows: []
         },
         {
@@ -94,16 +112,17 @@ const meterPageComponents: IReferencePageItem<
 
 export const individualMeterPageComponent:
     IReferencePageComponent<IIndividualMeterReferenceDataItem> = {
-    engName: "individual-meter",
+    engName: "individualMeter",
     rusName: [{ word: "индивидуальный", isChangeable: true }, { word: "прибор", isChangeable: true }, { word: "учёта" }],
     gender: "мужской",
+    keyElements: { first: [3], second: 2, isSecondNoNeedTitle: true },
     components: [
         {
             type: "select", selectorOptions: [
                 { value: 1, text: "кв. 12" },
                 { value: 2, text: "кв. 14" },
             ],
-            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "apartmentId", gender: "мужской",
+            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", gender: "мужской",
             isFilter: true, filterItems: [
                 { name: [{ word: "город" }], items: ["Ростов-на-Дону"] },
                 { name: [{ word: "улица" }], items: ["ул. Малюгина", "пер. Соборный"] },
@@ -118,7 +137,7 @@ export const individualMeterPageComponent:
 
 export const generalMeterPageComponent:
     IReferencePageComponent<IGeneralMeterReferenceDataItem> = {
-    engName: "general-meter",
+    engName: "generalMeter",
     rusName: [{ word: "общедомовой", isChangeable: true }, { word: "прибор", isChangeable: true }, { word: "учёта" }],
     gender: "мужской",
     components: [
@@ -127,7 +146,7 @@ export const generalMeterPageComponent:
                 { value: 1, text: "д. 98" },
                 { value: 2, text: "д. 99" },
             ],
-            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseId", gender: "мужской",
+            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", gender: "мужской",
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IGeneralMeterReferenceDataItem>[]

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface APIMCData {
+interface IData {
     [key: string]: {
         add: string;
         addMany: string;
@@ -10,12 +10,13 @@ interface APIMCData {
 export const API: {
     subscriber: any,
     managementCompany: {
-        reference: APIMCData;
+        reference: IData;
     };
     common: {
-        register: {
-            add: string,
-            addMany: string,
+        owner: {
+            add: string;
+            addMany: string;
+            get: string;
         }
     };
     correction: {
@@ -49,7 +50,7 @@ export const API: {
             meter: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/add-meter`,
                 addMany: ``,
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/get-meters`,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/get-meters-by-mcid`,
             },
             tariffAndNorm: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/add-tariff-and-norm`,
@@ -59,9 +60,10 @@ export const API: {
         }
     },
     common: {
-        register: {
+        owner: {
             add: ``,
             addMany: ``,
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/user/get-owners-by-mcid`
         }
     },
     correction: {

@@ -68,17 +68,18 @@ export const Table = ({
                                     );
                             }
                         })}
-                        <span className={styles.filterIcon}>
-                            <Button
-                                symbol="filter"
-                                size="m"
-                                appearance="ghost"
-                                onClick={() => setIsFilterOpened(!isFilterOpened)}
-                                innerRef={filterButtonRef}
-                            >
-                                Фильтры
-                            </Button>
-                        </span>
+                        {filters.length !== 0 &&
+                            <span className={styles.filterIcon}>
+                                <Button
+                                    symbol="filter"
+                                    size="m"
+                                    appearance="ghost"
+                                    onClick={() => setIsFilterOpened(!isFilterOpened)}
+                                    innerRef={filterButtonRef}
+                                >
+                                    Фильтры
+                                </Button>
+                            </span>}
                     </div>
                 </div>
                 <div className={styles.bottomPart}>

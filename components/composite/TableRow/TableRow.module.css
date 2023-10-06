@@ -120,6 +120,7 @@
 
 .bottomItemsWrap {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
 
     margin-top: 0.83rem;

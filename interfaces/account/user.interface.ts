@@ -27,6 +27,7 @@ export const ownerPageComponent:
     rusName: [{ word: "собственник", isChangeable: true }],
     gender: "мужской",
     tableActions: [],
+    keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true },
     components: [
         {
             type: "input",
