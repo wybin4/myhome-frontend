@@ -55,7 +55,7 @@ export const API: {
             tariffAndNorm: {
                 add: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/add-tariff-and-norm`,
                 addMany: ``,
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/get-tariff-and-norms`,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/get-tariffs-and-norms-by-mcid`,
             },
         }
     },

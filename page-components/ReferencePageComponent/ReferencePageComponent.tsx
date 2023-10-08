@@ -151,7 +151,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     })}
                 rows={{
                     actions: item.tableActions ? item.tableActions : ["editAndSave", "download"],
-                    items: item.components.map(component => ({
+                    items: item.components.sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
                         title: capFirstLetter(phraseByArr(component.title)),
                         type: "text",
                         items: component.rows

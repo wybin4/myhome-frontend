@@ -11,7 +11,7 @@ import { IMunicipalTariffReferenceDataItem, municipalTariffPageComponent, INormR
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
 import axios from "axios";
-import { format, isDate, isValid, parseISO } from "date-fns";
+import { format, isDate, isValid } from "date-fns";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -66,22 +66,31 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         );
     };
 
+    const parseValue = (value: string) => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+        if (dateRegex.test(value)) {
+            return new Date(value);
+        }
+        const numberValue = parseFloat(value);
+        if (!isNaN(numberValue)) {
+            return numberValue;
+        }
+        return value;
+    };
+
     const valueFormat = (value: string | number | Date) => {
         if (typeof value === "string") {
-            const parsedDate = parseISO(value);
-            if (isValid(parsedDate)) {
-                return format(parsedDate, 'dd.MM.yyyy');
-            } else {
-                return value;
-            }
-        } else if (typeof value === "number") {
-            return String(value);
+            const parsed = parseValue(value);
+            if (isDate(parsed) && isValid(parsed)) {
+                return String(format(parsed as Date, 'dd.MM.yyyy'));
+            } else return String(value);
         } else if (isDate(value) && isValid(value)) {
-            return format(value, 'dd.MM.yyyy');
+            return String(format(value, 'dd.MM.yyyy'));
         } else {
             return String(value);
         }
     };
+
 
     const enrich = <T extends FieldValues>(
         item: IReferencePageComponent<T>, baseEngName: string
@@ -133,7 +142,7 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
             {engName === "norm" && createBaseComponent<INormReferenceDataItem>("tariffAndNorm", normPageComponent)}
             {engName === "social-norm" && createBaseComponent<ISocialNormReferenceDataItem>("tariffAndNorm", socialNormPageComponent)}
             {engName === "seasonality-factor" && createBaseComponent<ISeasonalityFactorReferenceDataItem>("tariffAndNorm", seasonalityFactorPageComponent)}
-            {engName === "common-house-need" && createBaseComponent<ICommonHouseNeedTariffReferenceDataItem>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
+            {engName === "common-house-need-tariff" && createBaseComponent<ICommonHouseNeedTariffReferenceDataItem>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
             {engName === "penalty-rule" &&
                 <ReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem>
                     key={penaltyCalcRulePageComponent.engName}
@@ -165,10 +174,15 @@ export async function getServerSideProps({ resolvedUrl }: any) {
             apiUrl = API.common.owner.get;
             break;
         case "individual-meter":
-            apiUrl = API.managementCompany.reference["meter"].get;
-            break;
         case "general-meter":
             apiUrl = API.managementCompany.reference["meter"].get;
+            break;
+        case "norm":
+        case "social-norm":
+        case "seasonality-factor":
+        case "common-house-need-tariff":
+        case "municipal-tariff":
+            apiUrl = API.managementCompany.reference["tariffAndNorm"].get;
             break;
         case "penalty-rule":
             apiUrl = API.managementCompany.reference[engName].get;
@@ -200,14 +214,19 @@ export async function getServerSideProps({ resolvedUrl }: any) {
                 postData["meterType"] = "General";
                 return await fetchData<IGeneralMeterReferenceData>(apiUrl, postData);
             case "municipal-tariff":
+                postData["type"] = "MunicipalTariff";
                 return await fetchData<IMunicipalTariffReferenceData>(apiUrl, postData);
             case "norm":
+                postData["type"] = "Norm";
                 return await fetchData<INormReferenceData>(apiUrl, postData);
             case "social-norm":
+                postData["type"] = "SocialNorm";
                 return await fetchData<ISocialNormReferenceData>(apiUrl, postData);
             case "seasonality-factor":
+                postData["type"] = "SeasonalityFactor";
                 return await fetchData<ISeasonalityFactorReferenceData>(apiUrl, postData);
-            case "common-house-need":
+            case "common-house-need-tariff":
+                postData["type"] = "CommonHouseNeedTariff";
                 return await fetchData<ICommonHouseNeedTariffReferenceData>(apiUrl, postData);
             case "penalty-rule":
                 return await fetchData<IPenaltyCalculationRuleReferenceData>(apiUrl, postData);

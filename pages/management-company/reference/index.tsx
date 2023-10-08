@@ -33,7 +33,7 @@ function References(): JSX.Element {
                     { title: "ОПУ", text: "Добавление и изменение данных", icon: <MeterIcon />, href: `${baseUrl}/general-meter` },
                 ]} title={"Приборы учёта"} />
                 <ReferenceMenu items={[
-                    { title: "Общедомовые нужды", text: "Добавление и изменение тарифов на общедомовые нужды", icon: <CommonHouseNeedIcon />, href: `${baseUrl}/common-house-need` },
+                    { title: "Общедомовые нужды", text: "Добавление и изменение тарифов на общедомовые нужды", icon: <CommonHouseNeedIcon />, href: `${baseUrl}/common-house-need-tariff` },
                     { title: "Муниципальные тарифы", text: "Добавление и изменение данных", icon: <TariffAndNormIcon />, href: `${baseUrl}/municipal-tariff` },
                     { title: "Нормативы", text: "Добавление и изменение данных", icon: <TariffAndNormIcon />, href: `${baseUrl}/norm` },
                     { title: "Социальная норма", text: "Добавление и изменение данных", icon: <SocialNormIcon />, href: `${baseUrl}/social-norm` },

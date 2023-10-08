@@ -1,10 +1,5 @@
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent, IReferencePageItem } from "./page.interface";
 
-export interface IGetReading {
-    reading: number;
-    readAt: Date;
-}
-
 export interface ISubscriberAddMeterForm {
     typeOfService: number;
     verificationDate: Date;
@@ -18,12 +13,19 @@ export interface IMeterReferenceData extends IReferenceData {
 
 export interface IMeterReferenceDataItem extends IReferenceDataItem {
     typeOfServiceId: number;
+    typeOfServiceName: string;
+
     factoryNumber: string;
     verifiedAt: Date;
     issuedAt: Date;
     status: MeterStatus;
+
+    currentReading: number;
+    currentReadAt: Date;
     previousReading: number;
     previousReadAt: Date;
+
+    houseName: string;
 }
 
 export interface IIndividualMeterReferenceData extends IReferenceData {
@@ -32,7 +34,6 @@ export interface IIndividualMeterReferenceData extends IReferenceData {
 
 export interface IIndividualMeterReferenceDataItem extends IMeterReferenceDataItem {
     apartmentId: number;
-    typeOfServiceName: string;
 }
 
 export interface IGeneralMeterReferenceData extends IReferenceData {
@@ -41,10 +42,6 @@ export interface IGeneralMeterReferenceData extends IReferenceData {
 
 export interface IGeneralMeterReferenceDataItem extends IMeterReferenceDataItem {
     houseId: number;
-    houseName: string;
-    typeOfServiceName: string;
-    // currentReading: IGetReading;
-    // previousReading: IGetReading;
 }
 
 export interface IMeterReading {
