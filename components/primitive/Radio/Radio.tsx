@@ -1,18 +1,19 @@
-import { CheckboxProps } from "./Checkbox.props";
-import styles from "./Checkbox.module.css";
-import { useState } from "react";
+import { RadioProps } from "./Radio.props";
+import styles from "./Radio.module.css";
 import CheckIcon from "./check.svg";
 import cn from "classnames";
 
-export const Checkbox = ({ forString, children, onClick, ...props }: CheckboxProps): JSX.Element => {
-    const [checked, setChecked] = useState(false);
+export const Radio = ({
+    forString,
+    onClick, checked,
+    children,
+    ...props
+}: RadioProps): JSX.Element => {
 
     const handleClick = () => {
         if (onClick) {
             onClick();
         }
-
-        setChecked(!checked);
     };
 
     return (

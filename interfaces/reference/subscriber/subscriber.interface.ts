@@ -6,11 +6,17 @@ export interface ISubscriberReferenceData extends IReferenceData {
 
 export interface ISubscriberReferenceDataItem extends IReferenceDataItem {
     ownerId: number;
+    ownerName: string;
+
+
     apartmentId: number;
+    apartmentName: string;
+
+    houseId: number;
+    houseName: string;
+
     personalAccount: string;
     status: SubscriberStatus;
-    ownerName: string;
-    apartmentName: string;
 }
 
 export interface ISubscriber {

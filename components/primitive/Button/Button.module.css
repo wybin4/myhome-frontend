@@ -92,6 +92,10 @@
     vertical-align: middle;
 }
 
+.hiddenSymbol {
+    margin: 0;
+}
+
 .rounded .symbol {
     margin-right: 0;
 }
@@ -109,6 +113,10 @@
 
 .add {
     font-size: 1rem;
+}
+
+.calculate {
+    display: none;
 }
 
 @media (max-width: 900px) {
@@ -136,6 +144,12 @@
     .rounded .symbol {
         display: none;
     }
+
+    .calculate {
+        display: block;
+
+        fill: var(--white);
+    }
 }
 
 @media (max-width: 600px) {
@@ -144,5 +158,4 @@
 
         border-radius: 100%;
     }
-
 }

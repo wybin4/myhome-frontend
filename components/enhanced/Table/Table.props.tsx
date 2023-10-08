@@ -9,6 +9,8 @@ export interface TableProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElem
     rows: TableRowProps;
 
     buttons: ITableButton[];
+
+    isSearch?: boolean;
 }
 
 export interface ITableButton {

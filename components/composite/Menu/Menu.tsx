@@ -1,21 +1,21 @@
-import { ReferenceMenuItemProps, ReferenceMenuProps } from "./ReferenceMenu.props";
-import styles from "./ReferenceMenu.module.css";
+import { MenuItemProps, MenuProps } from "./Menu.props";
+import styles from "./Menu.module.css";
 import cn from 'classnames';
 import { Icon, Paragraph } from "@/components";
 import Link from "next/link";
 
-export const ReferenceMenu = ({ title, items, className, ...props }: ReferenceMenuProps): JSX.Element => {
+export const Menu = ({ title, items, className, ...props }: MenuProps): JSX.Element => {
     return (
         <>
             <div className={cn(styles.referenceMenu, className)} {...props}>
                 <Paragraph size="l" className={styles.menuTitle}>{title}</Paragraph>
-                {items && items.map((item, key) => <ReferenceMenuItem key={key} {...item} />)}
+                {items && items.map((item, key) => <MenuItem key={key} {...item} />)}
             </div>
         </>
     );
 };
 
-export const ReferenceMenuItem = ({ title, text, icon, href, ...props }: ReferenceMenuItemProps): JSX.Element => {
+export const MenuItem = ({ title, text, icon, href, ...props }: MenuItemProps): JSX.Element => {
     return (
         <>
             <Link className={cn(styles.referenceMenuItem)} href={href}>

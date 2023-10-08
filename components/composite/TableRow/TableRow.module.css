@@ -89,6 +89,7 @@
     width: 100%;
     max-width: 30rem;
     min-height: 9.17rem;
+    min-height: fit-content;
 
     background-color: var(--white);
 

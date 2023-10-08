@@ -29,6 +29,32 @@
     display: none;
 }
 
+.numberInput {
+    height: 1.625rem;
+    width: 2rem;
+
+    border: solid 1px var(--grey-light);
+    border-radius: 0.4375rem;
+
+    font-size: 0.8125rem;
+
+    text-align: center;
+}
+
+.numberInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.numberInput:focus {
+    outline: none;
+    border: solid 1px var(--primary);
+}
+
+.numberInputText {
+    font-size: 0.8125rem;
+    max-width: 6.75rem;
+}
+
 @media (max-width: 900px) {
     .filterVisible {
         opacity: 1;
@@ -67,9 +93,7 @@
 
         transform: rotate(-90deg);
     }
-}
 
-@media (max-width: 600px) {
     .filterWrapper {
         margin: 0 -2.5rem;
     }

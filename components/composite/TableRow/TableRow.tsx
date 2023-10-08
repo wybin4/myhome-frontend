@@ -191,17 +191,20 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
                 </div>
                 <Action actions={actions} />
             </div>
-            <hr className={styles.hr}></hr>
-            <div className={styles.bottomItemsWrap}>
-                {itemsFiltered && itemsFiltered.map((item, index) => {
-                    return (
-                        <div key={index}>
-                            <span className={styles.mobileTitle}>{item.title}</span>
-                            {getElement(item, index)}
-                        </div>
-                    );
-                })}
-            </div>
+            {(itemsFiltered && itemsFiltered.length !== 0) &&
+                <>
+                    <hr className={styles.hr}></hr>
+                    <div className={styles.bottomItemsWrap}>
+                        {itemsFiltered.map((item, index) => {
+                            return (
+                                <div key={index}>
+                                    <span className={styles.mobileTitle}>{item.title}</span>
+                                    {getElement(item, index)}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </>}
         </div>
     );
 };

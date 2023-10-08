@@ -1,4 +1,4 @@
-import { Htag, ReferenceMenu } from "@/components";
+import { Htag, Menu } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import HouseIcon from "./icons/house.svg";
 import ApartmentIcon from "./icons/apartment.svg";
@@ -22,24 +22,24 @@ function References(): JSX.Element {
                 "3xl:flex 3xl:flex-cols 3xl:gap-[5.5rem] gap-[2rem] grid grid-cols-3 mb-16",
                 "xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1"
             )}>
-                <ReferenceMenu items={[
+                <Menu items={[
                     { title: "Дома", text: "Добавление и изменение данных", icon: <HouseIcon />, href: `${baseUrl}/house` },
                     { title: "Жилые помещения", text: "Добавление и изменение данных", icon: <ApartmentIcon />, href: `${baseUrl}/apartment` },
                     { title: "Собственники", text: "Добавление и изменение данных", icon: <SubscriberIcon />, href: `${baseUrl}/owner` },
                     { title: "Лицевые счета", text: "Добавление и изменение лицевых счетов", icon: <SubscriberIcon />, href: `${baseUrl}/subscriber` },
                 ]} title={"Абоненты"} />
-                <ReferenceMenu items={[
+                <Menu items={[
                     { title: "ИПУ", text: "Добавление и изменение данных", icon: <MeterIcon />, href: `${baseUrl}/individual-meter` },
                     { title: "ОПУ", text: "Добавление и изменение данных", icon: <MeterIcon />, href: `${baseUrl}/general-meter` },
                 ]} title={"Приборы учёта"} />
-                <ReferenceMenu items={[
+                <Menu items={[
                     { title: "Общедомовые нужды", text: "Добавление и изменение тарифов на общедомовые нужды", icon: <CommonHouseNeedIcon />, href: `${baseUrl}/common-house-need-tariff` },
                     { title: "Муниципальные тарифы", text: "Добавление и изменение данных", icon: <TariffAndNormIcon />, href: `${baseUrl}/municipal-tariff` },
                     { title: "Нормативы", text: "Добавление и изменение данных", icon: <TariffAndNormIcon />, href: `${baseUrl}/norm` },
                     { title: "Социальная норма", text: "Добавление и изменение данных", icon: <SocialNormIcon />, href: `${baseUrl}/social-norm` },
                     { title: "Коэффициент сезонности", text: "Добавление и изменение данных", icon: <SeasonalityFactorIcon />, href: `${baseUrl}/seasonality-factor` },
                 ]} title={"Тарифы и нормативы"} />
-                <ReferenceMenu items={[
+                <Menu items={[
                     { title: "Пеня", text: "Добавление и изменение правил расчёта пени", icon: <CommonHouseNeedIcon />, href: `${baseUrl}/penalty-rule` },
                 ]} title={"Правила"} />
             </div>

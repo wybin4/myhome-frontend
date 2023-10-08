@@ -1,6 +1,7 @@
 import { ButtonProps } from "./Button.props";
 import styles from "./Button.module.css";
 import cn from "classnames";
+import CalculateIcon from './calculate.svg';
 import DownloadIcon from './download.svg';
 import UploadIcon from './upload.svg';
 import FilterIcon from "./filter.svg";
@@ -16,6 +17,7 @@ export const Button = ({
                 [styles.primary]: appearance === "primary",
                 [styles.ghost]: appearance === "ghost",
                 [styles.rounded]: typeOfButton === "rounded",
+                [styles.hiddenSymbol]: symbol === "calculate",
                 [styles.l]: size === "l",
                 [styles.m]: size === "m",
                 [styles.s]: size === "s",
@@ -26,6 +28,7 @@ export const Button = ({
         >
             {symbol !== "none" &&
                 <span className={styles.symbol}>
+                    {symbol === "calculate" && <CalculateIcon className={styles.calculate} />}
                     {symbol === "download" && <DownloadIcon className={styles.download} />}
                     {symbol === "upload" && <UploadIcon className={styles.upload} />}
                     {symbol === "add" && <span>+</span>}
