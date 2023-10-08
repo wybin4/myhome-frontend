@@ -91,7 +91,6 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         }
     };
 
-
     const enrich = <T extends FieldValues>(
         item: IReferencePageComponent<T>, baseEngName: string
     ): IReferencePageComponent<T> => {
@@ -129,8 +128,6 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         return enrichedComponent;
     };
 
-
-
     return (
         <>
             {engName === "house" && createComponent<IHouseReferenceDataItem>(housePageComponent)}
@@ -146,16 +143,16 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
             {engName === "penalty-rule" &&
                 <ReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem>
                     key={penaltyCalcRulePageComponent.engName}
-                    item={enrich(penaltyCalcRulePageComponent, engName)}
-                    uriToAdd={API.correction.penaltyRule.add}
+                    item={enrich(penaltyCalcRulePageComponent, "penaltyRule")}
+                    uriToAdd={API.managementCompany.correction.penaltyRule.add}
                 />
             }
             {engName === "owner" &&
                 <ReferencePageComponent<IUserReferenceDataItem>
                     key={ownerPageComponent.engName}
                     item={enrich(ownerPageComponent, engName)}
-                    uriToAdd={API.common.owner.add}
-                    uriToAddMany={API.common.owner.addMany}
+                    uriToAdd={API.managementCompany.common.owner.add}
+                    uriToAddMany={API.managementCompany.common.owner.addMany}
                 />
             }
         </>
@@ -171,7 +168,7 @@ export async function getServerSideProps({ resolvedUrl }: any) {
     let apiUrl: string = '';
     switch (engName) {
         case "owner":
-            apiUrl = API.common.owner.get;
+            apiUrl = API.managementCompany.common.owner.get;
             break;
         case "individual-meter":
         case "general-meter":
@@ -185,7 +182,7 @@ export async function getServerSideProps({ resolvedUrl }: any) {
             apiUrl = API.managementCompany.reference["tariffAndNorm"].get;
             break;
         case "penalty-rule":
-            apiUrl = API.managementCompany.reference[engName].get;
+            apiUrl = API.managementCompany.correction["penaltyRule"].get;
             break;
         default:
             apiUrl = API.managementCompany.reference[engName].get;

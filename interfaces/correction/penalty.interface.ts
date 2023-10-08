@@ -1,20 +1,22 @@
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../reference/page.interface";
 
 export interface IPenaltyCalculationRuleReferenceData extends IReferenceData {
-    subscribers: IPenaltyCalculationRuleReferenceDataItem[];
+    penaltyRules: IPenaltyCalculationRuleReferenceDataItem[];
 }
 
 export interface IPenaltyCalculationRuleReferenceDataItem extends IReferenceDataItem {
-    name?: string;
-    email: string;
-    passwordHash: string;
-    checkingAcount?: string;
+    penaltyRuleId: string;
+    description: string;
+    typeOfServiceName: string;
+    typeOfServiceId: number;
+    priority: number;
 }
 
 export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem> = {
     engName: "penalty-rule",
     rusName: [{ word: "настройка", isChangeable: true }, { word: "пени" }],
     gender: "женский",
+    keyElements: {first: [], second: 1, isSecondNoNeedTitle: true},
     components: [
         {
             type: "select", selectorOptions: [
@@ -22,7 +24,7 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
                 { value: 2, text: "ГВС" },
                 { value: 3, text: "Отопление" },
             ],
-            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceIds", gender: "женский",
+            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
             ],
@@ -34,7 +36,7 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
                 { value: "32234fds324", text: "С 1 дня просрочки 1/300 ставки" },
                 { value: "32145fds324", text: "Не начисляется" },
             ],
-            title: [{ word: "правило" }], numberInOrder: 2, id: "penaltyRuleId", gender: "средний",
+            title: [{ word: "правило" }], numberInOrder: 2, id: "description", gender: "средний",
             rows: []
         },
         {

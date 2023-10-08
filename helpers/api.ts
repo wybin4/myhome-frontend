@@ -11,19 +11,9 @@ export const API: {
     subscriber: any,
     managementCompany: {
         reference: IData;
+        common: IData;
+        correction: IData;
     };
-    common: {
-        owner: {
-            add: string;
-            addMany: string;
-            get: string;
-        }
-    };
-    correction: {
-        penaltyRule: {
-            add: string,
-        }
-    }
 } = {
     subscriber: {
         meter: {
@@ -57,18 +47,21 @@ export const API: {
                 addMany: ``,
                 get: `${process.env.NEXT_PUBLIC_DOMAIN}/tariff-and-norm/get-tariffs-and-norms-by-mcid`,
             },
+        },
+        common: {
+            owner: {
+                add: ``,
+                addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/user/get-owners-by-mcid`
+            }
+        },
+        correction: {
+            penaltyRule: {
+                add: ``,
+                addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/penalty/get-penalty-rules-by-mcid`
+            }
         }
     },
-    common: {
-        owner: {
-            add: ``,
-            addMany: ``,
-            get: `${process.env.NEXT_PUBLIC_DOMAIN}/user/get-owners-by-mcid`
-        }
-    },
-    correction: {
-        penaltyRule: {
-            add: ``,
-        }
-    }
+
 };
