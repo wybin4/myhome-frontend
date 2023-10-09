@@ -5,9 +5,10 @@ export interface ISubscriberReferenceData extends IReferenceData {
 }
 
 export interface ISubscriberReferenceDataItem extends IReferenceDataItem {
+    id: number;
+
     ownerId: number;
     ownerName: string;
-
 
     apartmentId: number;
     apartmentName: string;

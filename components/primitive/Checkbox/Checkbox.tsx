@@ -32,7 +32,7 @@ export const Checkbox = ({ forString, children, onClick, ...props }: CheckboxPro
                         "before:top-2/4 before:left-2/4 before:h-6 before:w-6 before:-translate-y-2/4 before:-translate-x-2/4",
                         "peer relative appearance-none rounded-[0.3125rem]"
                     )}
-                    onClick={handleClick}
+                    onChange={handleClick}
                     checked={checked}
                     {...props}
                 />

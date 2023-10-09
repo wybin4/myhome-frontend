@@ -1,7 +1,65 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
-import { DetailedHTMLProps, HTMLAttributes } from "react";
-import {  FieldValues, Path, UseFormReturn } from "react-hook-form";
+import { DetailedHTMLProps, Dispatch, HTMLAttributes, ReactNode, SetStateAction } from "react";
+import { FieldValues, Path, UseFormReset, UseFormReturn } from "react-hook-form";
+
+export interface BaseFormProps<T extends FieldValues> extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    reset?: UseFormReset<T>
+
+    isOpened: boolean;
+    setIsOpened?: (newFormOpened: boolean) => void;
+
+    formRef: React.MutableRefObject<HTMLDivElement | null>;
+
+    children: ReactNode;
+}
+
+export interface SelectionFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    title: string;
+
+    data: {
+        dataType: "nested";
+        items: {
+            title: string;
+            icon: any;
+            values: SelectionDataItem[];
+        }[];
+    } | {
+        dataType: "flat";
+        items: SelectionDataItem[];
+    } | {
+        dataType: "scroll";
+        items: {
+            title: string;
+            description: string;
+        }[];
+    }
+
+    isOpened: boolean;
+    setIsOpened?: (newFormOpened: boolean) => void;
+
+    checkedIds?: number[];
+    setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+}
+
+export interface NestedSelectionFormItemProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    title: string;
+    icon: any;
+    values: SelectionDataItem[];
+    checkedIds?: number[];
+    setCheckedIds?: Dispatch<SetStateAction<number[]>>
+}
+
+export interface SelectionFormCheckboxProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    item: { value: string; id: number };
+    checkedIds?: number[];
+    setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+}
+
+export type SelectionDataItem = {
+    value: string;
+    id: number;
+};
 
 export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
