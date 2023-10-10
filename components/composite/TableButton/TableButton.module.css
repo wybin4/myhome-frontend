@@ -1,0 +1,39 @@
+.buttonWrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.75rem;
+
+    margin-bottom: 4rem;
+
+    grid-area: buttonWrapper;
+}
+
+.filterIcon {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .buttonWrapper {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 1rem;
+    }
+
+    .filterIcon {
+        display: block;
+    }
+}
+
+@media (max-width: 800px) {
+    .buttonWrapper {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .buttonWrapper {
+        display: flex;
+
+        margin-bottom: 2rem;
+    }
+}

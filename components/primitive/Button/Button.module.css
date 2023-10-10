@@ -57,7 +57,8 @@
     fill: var(--white);
 }
 
-.primary .upload {
+.primary .upload,
+.primary .filter {
     stroke: var(--white);
 }
 

@@ -248,9 +248,14 @@ export const SelectionForm = ({
     checkedIds, setCheckedIds,
     ...props
 }: SelectionFormProps) => {
-
+    const [prevCheckedIds, setPrevCheckedIds] = useState<number[]>([]);
     const formRef = useRef<HTMLDivElement | null>(null);
 
+    useEffect(() => {
+        if (checkedIds) {
+            setPrevCheckedIds(checkedIds);
+        }
+    }, [isOpened]);
 
     return (
         <>
@@ -259,37 +264,44 @@ export const SelectionForm = ({
                 setIsOpened={setIsOpened}
                 formRef={formRef}
             >
-                <div ref={formRef} className={cn(styles.wrapper, {
-                    "hidden": !isOpened,
+                <div ref={formRef} className={cn(styles.wrapper, styles.selectWrapper, {
+                    "hidden": !isOpened
                 })} {...props}>
-                    <Paragraph size="l" className={styles.title}>{title}</Paragraph>
-                    {data.dataType === "flat" && data.items.length !== 0 && (
-                        <div>
-                            {
-                                data.items.map((item: SelectionDataItem) =>
-                                    <SelectionFormCheckbox checkedIds={checkedIds} setCheckedIds={setCheckedIds} item={item} />
-                                )
-                            }
-                        </div>
-                    )}
-                    {data.dataType === "nested" && data.items.length !== 0 && (
-                        <div>
-                            {
-                                data.items.map((item, key) =>
-                                    <NestedSelectionFormItem
-                                        key={key}
-                                        checkedIds={checkedIds}
-                                        setCheckedIds={setCheckedIds}
-                                        {...item} />
-                                )
-                            }
-                        </div>
-                    )}
+                    <div className={styles.topPartWrapper}>
+                        <Paragraph size="l" className={styles.title}>{title}</Paragraph>
+                        {data.dataType === "flat" && data.items.length !== 0 && (
+                            <div className={styles.selectFlatWrapper}>
+                                {
+                                    data.items.map((item: SelectionDataItem) =>
+                                        <SelectionFormCheckbox checkedIds={checkedIds} setCheckedIds={setCheckedIds} item={item} key={item.id} />
+                                    )
+                                }
+                            </div>
+                        )}
+                        {data.dataType === "nested" && data.items.length !== 0 && (
+                            <div>
+                                {
+                                    data.items.map((item, key) =>
+                                        <NestedSelectionFormItem
+                                            key={key}
+                                            checkedIds={checkedIds}
+                                            setCheckedIds={setCheckedIds}
+                                            {...item} />
+                                    )
+                                }
+                            </div>
+                        )}
+                    </div>
                     <div className={styles.buttonWrapper}>
                         <Button appearance="ghost" size="m" type="button"
-                            onClick={() => setIsOpened && setIsOpened(!isOpened)}
+                            onClick={() => {
+                                if (setCheckedIds) {
+                                    setCheckedIds(prevCheckedIds);
+                                }
+                                setIsOpened && setIsOpened(!isOpened);
+                            }}
                         >Отмена</Button>
-                        <Button appearance="primary" size="m">Выбрать</Button>
+                        <Button appearance="primary" size="m" onClick={() => setIsOpened && setIsOpened(!isOpened)}>Выбрать</Button>
                     </div>
                 </div>
             </BaseForm>
@@ -311,9 +323,11 @@ const NestedSelectionFormItem = ({ icon, title, checkedIds, setCheckedIds, value
                     "rotate-180": !isOpen
                 })} onClick={() => setIsOpen(!isOpen)}><ArrowIcon /></span>
             </div>
-            {isOpen && <div className={cn("mb-[0.6rem]", styles.selectNestedWrapper)}>{values.map((value, key) =>
-                <SelectionFormCheckbox checkedIds={checkedIds} setCheckedIds={setCheckedIds} item={value} key={key} />
-            )}
+            {isOpen && <div className={cn("mb-[0.6rem]", styles.selectNestedWrapper)}>
+                {values.map(value =>
+                    <SelectionFormCheckbox checkedIds={checkedIds} setCheckedIds={setCheckedIds} item={value} key={value.id} />
+                )
+                }
             </div>}
         </>
     );

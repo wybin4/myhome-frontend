@@ -1,3 +1,4 @@
+import { TableButtonType } from "@/components/composite/TableButton/TableButton.props";
 import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
 import { TableRowProps } from "@/components/composite/TableRow/TableRow.props";
 import { HTMLAttributes, DetailedHTMLProps } from "react";
@@ -8,12 +9,8 @@ export interface TableProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElem
     filters: TableFilterItemProps[];
     rows: TableRowProps;
 
-    buttons: ITableButton[];
+    buttons: TableButtonType[];
 
     isSearch?: boolean;
 }
 
-export interface ITableButton {
-    type: "download" | "upload" | "add";
-    onClick?: () => void;
-}

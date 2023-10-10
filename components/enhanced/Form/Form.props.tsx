@@ -47,13 +47,15 @@ export interface NestedSelectionFormItemProps extends DetailedHTMLProps<HTMLAttr
     icon: any;
     values: SelectionDataItem[];
     checkedIds?: number[];
-    setCheckedIds?: Dispatch<SetStateAction<number[]>>
+    setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+    setPrevCheckedIds?: Dispatch<SetStateAction<number[]>>;
 }
 
 export interface SelectionFormCheckboxProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     item: { value: string; id: number };
     checkedIds?: number[];
     setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+    setPrevCheckedIds?: Dispatch<SetStateAction<number[]>>;
 }
 
 export type SelectionDataItem = {

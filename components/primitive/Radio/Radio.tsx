@@ -11,7 +11,7 @@ export const Radio = ({
 }: RadioProps): JSX.Element => {
 
     const handleClick = () => {
-        if (onClick) {
+        if (!checked && onClick) {
             onClick();
         }
     };

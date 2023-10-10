@@ -1,11 +1,11 @@
-import { Button, Htag, SelectionForm, TableFilter, TableRow } from "@/components";
+import { Htag, SelectionForm, TableButton, TableFilter, TableRow } from "@/components";
 import { AppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { ISubscriberReferenceData, ISubscriberReferenceDataItem } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
-import { Dispatch, SetStateAction, useContext, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import HouseIcon from "./icons/house.svg";
 import { SelectionDataItem, SelectionFormProps } from "@/components/enhanced/Form/Form.props";
 
@@ -17,7 +17,7 @@ type GroupedSubscriber = {
 function GetSPD({ data }: IGetSPDProps): JSX.Element {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
     const filterButtonRef = useRef(null);
-    const [isHouses, setIsHouses] = useState<boolean>(false);
+    const [isHouses, setIsHouses] = useState<boolean>(true);
     const { isFormOpened, setIsFormOpened } = useContext(AppContext);
 
     const getUnique = () => {
@@ -65,14 +65,22 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
         }
     };
 
-    const [formCheckedIds, setFormCheckedIds] = useState<number[]>(
-        isHouses
+    const getStartCheckedIds = () => {
+        return isHouses
             ? getUnique().map(u => u.houseId)
             : group(data.subscribers)
                 .flatMap(g =>
                     g.subscribers.map(subscriber => subscriber.id)
-                )
+                );
+    };
+
+    const [formCheckedIds, setFormCheckedIds] = useState<number[]>(
+        getStartCheckedIds()
     );
+
+    useEffect(() => {
+        setFormCheckedIds(getStartCheckedIds);
+    }, [isHouses]);
 
     const selectionFormData = (): SelectionFormProps => {
         return {
@@ -121,25 +129,21 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
                 {...selectionFormData()}
             />
             <>
-                <Htag size="h1">Единый платёжный документ</Htag>
-                <Button
-                    symbol="calculate" size="m" appearance="primary"
-                >Сформировать</Button>
-                <Button
-                    symbol="add" size="m" appearance="ghost"
-                    onClick={() => setIsFormOpened(!isFormOpened)}
-                >Выбрать</Button>
-                <span className="hidden lg:block md:block sm:block">
-                    <Button
-                        symbol="filter"
-                        size="m"
-                        appearance="ghost"
-                        onClick={() => setIsFilterOpened(!isFilterOpened)}
-                        innerRef={filterButtonRef}
-                    >
-                        Фильтры
-                    </Button>
-                </span>
+                <div className="flex justify-between lg:flex-col lg:items-start md:flex-col md:items-center">
+                    <Htag size="h1"
+                        className="mb-16 lg:mb-8 md:mb-4 sm:mb-4 md:text-center sm:text-center"
+                    >Единый платёжный документ</Htag>
+                    <TableButton
+                        buttons={[{
+                            type: "add",
+                            title: "Сформировать", appearance: "ghost",
+                            onClick: () => setIsFormOpened(!isFormOpened)
+                        }]}
+                        filterAppearance="primary"
+                        isFiltersExist={true}
+                        isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
+                        filterButtonRef={filterButtonRef} />
+                </div>
                 <TableRow
                     actions={[]}
                     keyElements={{ first: [0], second: 1, isSecondNoNeedTitle: true }}

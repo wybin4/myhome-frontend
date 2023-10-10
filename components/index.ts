@@ -14,6 +14,7 @@ export * from "./composite/PopUp/PopUp";
 export * from "./composite/Menu/Menu";
 export * from "./composite/TableFilter/TableFilter";
 export * from "./composite/TableRow/TableRow";
+export * from "./composite/TableButton/TableButton";
 export * from "./composite/Tabs/Tabs";
 
 export * from "./enhanced/Table/Table";
