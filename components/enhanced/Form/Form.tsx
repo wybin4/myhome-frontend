@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps } from "./Form.props";
+import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps } from "./Form.props";
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Checkbox, DatePickerInput, Input, Paragraph, PopUp, Select } from "@/components";
-import { FieldValues, Controller } from "react-hook-form";
+import { FieldValues, Controller, useForm } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 import ArrowIcon from "./arrow.svg";
 
-export const BaseForm = <T extends FieldValues>(
-    { isOpened, setIsOpened, reset, formRef, children }: BaseFormProps<T>
-) => {
+export const BaseForm = <T extends FieldValues>({
+    isOpened, setIsOpened,
+    reset,
+    setActiveForm, formRef, additionalRef,
+    children
+}: BaseFormProps<T>) => {
     const [isFormVisible, setIsFormVisible] = useState(false);
 
     useEffect(() => {
@@ -24,10 +27,16 @@ export const BaseForm = <T extends FieldValues>(
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (formRef.current && !formRef.current.contains(event.target as Node | null)) {
+                if (additionalRef && additionalRef.current) {
+                    return;
+                }
                 if (reset) {
                     reset();
                 }
                 setIsOpened && setIsOpened(false);
+                if (setActiveForm && isOpened) {
+                    setActiveForm();
+                }
             }
         };
 
@@ -126,8 +135,18 @@ export const Form = <T extends FieldValues>({
         <>
             {isPopupVisible &&
                 <>
-                    {isSuccess && <PopUp type="success" className={styles.popup}>{successMessage}</PopUp>}
-                    {error !== "" && <PopUp type="failure" className={styles.popup}>{error}</PopUp>}
+                    <PopUp
+                        isOpen={isSuccess}
+                        setIsOpen={setIsSuccess}
+                        type="success" className={styles.popup}>
+                        {successMessage}
+                    </PopUp>
+                    <PopUp
+                        isOpen={error !== ""}
+                        setIsOpen={() => setError("")}
+                        type="failure" className={styles.popup}>
+                        {error}
+                    </PopUp>
                 </>
             }
             <BaseForm<T>
@@ -333,23 +352,128 @@ const NestedSelectionFormItem = ({ icon, title, checkedIds, setCheckedIds, value
     );
 };
 
-const SelectionFormCheckbox = ({ item, checkedIds, setCheckedIds }: SelectionFormCheckboxProps) => {
+const SelectionFormCheckbox = ({ item, checkedIds, setCheckedIds, ...props }: SelectionFormCheckboxProps) => {
     return (
-        <Checkbox
-            forString={`select${item.id}`}
-            checked={checkedIds?.includes(item.id)}
-            onClick={() => checkedIds && setCheckedIds &&
-                setCheckedIds(
-                    (prevCheckedIds) => {
-                        if (prevCheckedIds.includes(item.id)) {
-                            return prevCheckedIds.filter((num) => num !== item.id);
-                        } else {
-                            return [...prevCheckedIds, item.id];
+        <div {...props}>
+            <Checkbox
+                forString={`select${item.id}`}
+                checked={checkedIds?.includes(item.id)}
+                onClick={() => checkedIds && setCheckedIds &&
+                    setCheckedIds(
+                        (prevCheckedIds) => {
+                            if (prevCheckedIds.includes(item.id)) {
+                                return prevCheckedIds.filter((num) => num !== item.id);
+                            } else {
+                                return [...prevCheckedIds, item.id];
+                            }
                         }
-                    }
-                )}
-            key={item.id}>
-            {item.value}
-        </Checkbox>
+                    )}
+                key={item.id}>
+                {item.value}
+            </Checkbox>
+        </div>
+    );
+};
+
+export const SerialForm = ({
+    title, data,
+    activeForm, setActiveForm,
+    setFormValue, additionalRef,
+    number,
+    ...props
+}: SerialFormProps) => {
+    const formRef = useRef<HTMLDivElement | null>(null);
+
+    const { control, setValue, getValues, reset, formState: { errors }, trigger } = useForm({ shouldUnregister: false });
+
+    useEffect(() => {
+        if (data.dataType === "pick" && data.value) {
+            setValue(data.id, data.value);
+        }
+    }, [data]);
+
+
+    return (
+        <>
+            <BaseForm
+                isOpened={activeForm === number}
+                setIsOpened={() => setActiveForm(number)}
+                formRef={formRef}
+                setActiveForm={() => setActiveForm(0)}
+                reset={reset}
+                additionalRef={additionalRef}
+            >
+                <div ref={formRef} className={cn(styles.wrapper, styles.selectWrapper, {
+                    "hidden": activeForm !== number
+                })} {...props}>
+                    <div className={styles.topPartWrapper}>
+                        <Paragraph size="l" className={styles.title}>{title}</Paragraph>
+                        {data.dataType === "scroll" &&
+                            <div className={styles.scrollWrapper}>
+                                {data.items.map((item, key) =>
+                                    <div key={key} className={styles.scrollItem}>
+                                        {item.value}
+                                        <div className={styles.scrollDescription}>{item.description}</div>
+                                    </div>
+                                )}
+                            </div>
+                        }
+                        {data.dataType === "pick" &&
+                            <div>
+                                <Controller
+                                    control={control}
+                                    rules={{
+                                        required: {
+                                            value: data.error.value,
+                                            message: data.error.message ? data.error.message : ""
+                                        }
+                                    }}
+                                    name={data.id}
+                                    render={({ field }) => (
+                                        <Input placeholder={data.placeholder ? String(data.placeholder) : ""} size="m"
+                                            ref={field.ref}
+                                            value={field.value} setValue={field.onChange}
+                                            inputType={data.inputType}
+                                            inputError={errors[data.id] ? String(errors[data.id]?.message) : ""}
+                                        />
+                                    )}
+                                />
+                                {data.value && data.description && <div className={styles.formDesc}>{data.description}</div>}
+                            </div>
+                        }
+                    </div>
+                    <div className={styles.buttonWrapper}>
+                        <Button appearance="ghost" size="m" type="button"
+                            onClick={() => {
+                                if (data.dataType === "pick") {
+                                    setValue(data.id, "");
+                                }
+                                setActiveForm(number - 1);
+                            }}
+                        >Назад</Button>
+                        <Button appearance="primary" size="m"
+                            onClick={async () => {
+                                if (data.dataType === "pick") {
+                                    const isValid = await trigger(data.id);
+                                    if (isValid) {
+                                        setActiveForm(activeForm + 1);
+                                        if (setFormValue) {
+                                            if (data.inputType === "string") {
+                                                setFormValue(getValues(data.id));
+                                            } else if (data.inputType === "number") {
+                                                setFormValue(parseFloat(getValues(data.id)));
+                                            }
+                                        }
+                                    }
+                                }
+                                if (data.dataType === "scroll") {
+                                    setActiveForm(activeForm + 1);
+                                }
+                            }}
+                        >Далее</Button>
+                    </div>
+                </div>
+            </BaseForm>
+        </>
     );
 };

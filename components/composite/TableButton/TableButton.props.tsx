@@ -11,7 +11,7 @@ export interface TableButtonProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
 }
 
 export type TableButtonType = {
-    type: "download" | "upload" | "add";
+    type: "download" | "upload" | "add" | "calculate";
     title?: string;
     appearance?: "primary" | "ghost";
     onClick?: () => void;

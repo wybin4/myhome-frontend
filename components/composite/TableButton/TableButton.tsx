@@ -39,6 +39,14 @@ export const TableButton = ({
                                     key={key}
                                 >Скачать</Button>
                             );
+                        case "calculate":
+                            return (
+                                <Button
+                                    symbol="calculate" size="m" appearance={button.appearance ? button.appearance : "primary"}
+                                    onClick={button.onClick}
+                                    key={key}
+                                >Сформировать</Button>
+                            );
                     }
                 })}
                 {isFiltersExist &&

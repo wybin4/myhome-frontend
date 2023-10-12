@@ -21,6 +21,7 @@
 
 .selectWrapper .topPartWrapper {
     min-height: 19rem;
+    max-width: 23rem;
 }
 
 .selectIcon svg {
@@ -47,18 +48,21 @@
 }
 
 .selectNestedWrapper::-webkit-scrollbar,
-.selectFlatWrapper::-webkit-scrollbar {
+.selectFlatWrapper::-webkit-scrollbar,
+.scrollWrapper::-webkit-scrollbar {
     width: 0.375rem;
 }
 
 .selectNestedWrapper::-webkit-scrollbar-track,
-.selectFlatWrapper::-webkit-scrollbar {
+.selectFlatWrapper::-webkit-scrollbar-track,
+.scrollWrapper::-webkit-scrollbar-track {
     background-color: var(--white);
     border-radius: 0.375rem;
 }
 
 .selectNestedWrapper::-webkit-scrollbar-thumb,
-.selectFlatWrapper::-webkit-scrollbar {
+.selectFlatWrapper::-webkit-scrollbar-thumb,
+.scrollWrapper::-webkit-scrollbar-thumb {
     border-radius: 0.375rem;
 
     background: var(--primary);
@@ -84,6 +88,27 @@
     position: fixed;
     top: 2rem;
     right: 2rem;
+}
+
+.scrollDescription {
+    font-size: 0.8125rem;
+    color: var(--grey);
+}
+
+.scrollWrapper {
+    overflow-y: auto;
+    max-height: 15.375rem;
+}
+
+.scrollItem {
+    margin-bottom: 0.8rem;
+}
+
+.formDesc {
+    font-size: 0.875rem;
+    color: var(--grey);
+
+    margin-top: 0.3rem;
 }
 
 @media (max-width: 900px) {

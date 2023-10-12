@@ -10,6 +10,7 @@ export const Icon = ({
     return (
         <>
             <span className={cn(styles.icon, className, {
+                [styles.xs]: size === "xs",
                 [styles.s]: size === "s",
                 [styles.l]: size === "l",
                 [styles.m]: size === "m",

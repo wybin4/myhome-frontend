@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
-import { DetailedHTMLProps, Dispatch, HTMLAttributes, ReactNode, SetStateAction } from "react";
+import { DetailedHTMLProps, Dispatch, HTMLAttributes, MutableRefObject, ReactNode, SetStateAction } from "react";
 import { FieldValues, Path, UseFormReset, UseFormReturn } from "react-hook-form";
 
 export interface BaseFormProps<T extends FieldValues> extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -12,6 +12,10 @@ export interface BaseFormProps<T extends FieldValues> extends DetailedHTMLProps<
     formRef: React.MutableRefObject<HTMLDivElement | null>;
 
     children: ReactNode;
+
+    setActiveForm?: () => void;
+    
+    additionalRef?: MutableRefObject<null>;
 }
 
 export interface SelectionFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -27,19 +31,44 @@ export interface SelectionFormProps extends DetailedHTMLProps<HTMLAttributes<HTM
     } | {
         dataType: "flat";
         items: SelectionDataItem[];
-    } | {
-        dataType: "scroll";
-        items: {
-            title: string;
-            description: string;
-        }[];
-    }
+    };
 
     isOpened: boolean;
     setIsOpened?: (newFormOpened: boolean) => void;
 
     checkedIds?: number[];
     setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+}
+
+export interface SerialFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    title: string;
+    data: {
+        dataType: "scroll";
+        items: {
+            value: string;
+            description: string;
+        }[];
+    } | {
+        id: string;
+        dataType: "pick";
+        inputType?: "string" | "number";
+        value: number | string | undefined;
+
+        placeholder?: number | string;
+
+        error: FormError;
+
+        description?: string;
+    };
+
+    activeForm: number;
+    setActiveForm: Dispatch<SetStateAction<number>>;
+
+    setFormValue?: (value: number | string) => void;
+
+    number: number;
+
+    additionalRef?: MutableRefObject<null>;
 }
 
 export interface NestedSelectionFormItemProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

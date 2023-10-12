@@ -14,10 +14,6 @@
     margin-bottom: 4rem;
 }
 
-.filterIcon {
-    display: none;
-}
-
 @media (max-width: 900px) {
     .topPart {
         flex-direction: column;

@@ -76,6 +76,10 @@
     fill: var(--black);
 }
 
+.ghost .calculate{
+    fill: var(--black);
+}
+
 .ghost .upload,
 .ghost .filter {
     stroke: var(--black);

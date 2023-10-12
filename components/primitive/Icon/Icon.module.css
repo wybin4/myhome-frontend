@@ -40,6 +40,16 @@
     height: 1rem;
 }
 
+.xs {
+    width: 2rem;
+    height: 2rem;
+}
+
+.xs svg {
+    width: 1rem;
+    height: 1rem;
+}
+
 .primary,
 .green,
 .red {

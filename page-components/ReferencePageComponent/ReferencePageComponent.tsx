@@ -1,8 +1,7 @@
 import { ReferencePageComponentProps } from "./ReferencePageComponent.props";
 // import styles from "./ReferencePageComponent.module.css";
 import { Form, Table } from "@/components";
-import { AppContext } from "@/context/app.context";
-import { useContext } from "react";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import RussianNounsJS from "russian-nouns-js";
 import { Gender } from "russian-nouns-js/src/Gender";
@@ -17,7 +16,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
-    const { isFormOpened, setIsFormOpened } = useContext(AppContext);
+    const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
 
     const rne = new RussianNounsJS.Engine();
 

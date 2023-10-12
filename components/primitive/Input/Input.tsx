@@ -13,7 +13,7 @@ export const Input = forwardRef(({
     inputError,
     ...props
 }: InputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
-
+    
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (inputType === "number") {
             const inputValue = event.target.value;
