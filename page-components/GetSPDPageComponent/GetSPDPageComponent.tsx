@@ -1,4 +1,4 @@
-import { Htag, SerialForm, SelectionForm, TableButton, TableFilter, TableRow, PopUp } from "@/components";
+import { Htag, SerialForm, SelectionForm, TableButton, TableFilter, TableRow, PopUp, InfoForm } from "@/components";
 import { ISubscriberReferenceDataItem } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { useEffect, useRef, useState } from "react";
 import HouseIcon from "./house.svg";
@@ -14,6 +14,7 @@ type GroupedSubscriber = {
 export const GetSPDPageComponent = ({
     data, fetchSPD,
     fetchKeyRate, keyRate, setKeyRate, cantGetKeyRate, setCantGetKeyRate,
+    spdError, downloadUrl,
     formCheckedIds, setFormCheckedIds,
     isHouses, setIsHouses
 }: GetSPDPageComponentProps): JSX.Element => {
@@ -160,6 +161,12 @@ export const GetSPDPageComponent = ({
                 type="link-failure" link="https://www.cbr.ru/hd_base/KeyRate/">
                 Не удалось получить данные о ключевой ставке с сайта Центробанка
             </PopUp>
+            <PopUp type="failure"
+                isOpen={spdError ? true : false}
+                setIsOpen={() => spdError ? true : false}
+            >
+                {spdError}
+            </PopUp>
             <SerialForm title="Проверьте данные о муниципальных тарифах"
                 data={{
                     dataType: "scroll",
@@ -216,6 +223,31 @@ export const GetSPDPageComponent = ({
                 }}
                 additionalRef={additionalRef}
             />
+            {!spdError &&
+                <InfoForm
+                    title="Формирование ЕПД окончено"
+                    text="Вы можете скачать полученные ЕПД или просмотреть их в браузере"
+                    icon="success"
+                    buttons={[
+                        {
+                            name: "Скачать", onClick: () => {
+                                if (downloadUrl) {
+                                    const a = document.createElement('a');
+                                    a.href = downloadUrl;
+                                    a.download = String(Date.now());
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    window.URL.revokeObjectURL(downloadUrl);
+                                }
+                            }
+                        },
+                        { name: "Просмотреть", onClick: () => "" },
+                    ]}
+                    activeForm={activeForm}
+                    setActiveForm={setActiveForm}
+                    number={5}
+                />
+            }
             <SelectionForm
                 {...selectionFormData()}
             />

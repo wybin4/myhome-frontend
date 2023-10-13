@@ -41,9 +41,11 @@ export const PopUp = ({
                             {type === "failure" && <FailureIcon />}
                             {type === "link-failure" && <FailureIcon />}
                         </Icon>
-                        <Icon type="icon" appearance="red" size="xs" className={styles.logoIconLittle}>
-                            {type === "link-failure" && <FailureIcon />}
-                        </Icon>
+                        {type === "link-failure" &&
+                            <Icon type="icon" appearance="red" size="xs" className={styles.logoIconLittle}>
+                                <FailureIcon />
+                            </Icon>
+                        }
                     </div>
                     <div className={styles.textBlock}>
                         <Htag size="h3" className={styles.title}>
@@ -56,7 +58,7 @@ export const PopUp = ({
                             <Copy setIsOpen={setIsOpen} link={link ? link : "#"} />
                         }
                     </div>
-                </div>
+                </div >
             }
         </>
     );

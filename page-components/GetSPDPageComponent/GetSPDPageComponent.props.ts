@@ -18,4 +18,7 @@ export interface GetSPDPageComponentProps extends DetailedHTMLProps<HTMLAttribut
 
     isHouses: boolean;
     setIsHouses: Dispatch<SetStateAction<boolean>>;
+
+    spdError: string | undefined;
+    downloadUrl: string | undefined;
 }

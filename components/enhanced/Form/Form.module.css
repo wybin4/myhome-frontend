@@ -19,7 +19,14 @@
     z-index: 3;
 }
 
-.selectWrapper .topPartWrapper {
+.infoWrapper .topPartWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.selectWrapper .topPartWrapper,
+.infoWrapper .topPartWrapper {
     min-height: 19rem;
     max-width: 23rem;
 }
@@ -68,6 +75,11 @@
     background: var(--primary);
 }
 
+.infoTitle {
+    margin-bottom: 1.44rem;
+    font-weight: 500;
+}
+
 .title {
     font-weight: 500;
     text-align: center;
@@ -82,6 +94,24 @@
 
     margin-top: 2.625rem;
     margin-bottom: 2rem;
+}
+
+.infoIcon {
+    margin-bottom: 2.44rem;
+    margin-top: 2.31rem;
+}
+
+.close {
+    position: absolute;
+    right: 10%;
+}
+
+.close svg {
+    width: 0.8125rem;
+
+    fill: var(--black);
+
+    cursor: pointer;
 }
 
 .popup {
@@ -104,9 +134,18 @@
     margin-bottom: 0.8rem;
 }
 
+.formText,
+.formDesc {
+    color: var(--grey);
+}
+
+.formText {
+    font-size: 1rem;
+    text-align: center;
+}
+
 .formDesc {
     font-size: 0.875rem;
-    color: var(--grey);
 
     margin-top: 0.3rem;
 }

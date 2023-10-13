@@ -12,50 +12,51 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
     const [isHouses, setIsHouses] = useState<boolean>(true);
     const [keyRate, setKeyRate] = useState<number | undefined>(undefined);
     const [cantGetKeyRate, setCantGetKeyRate] = useState<boolean>(false);
+    const [spdError, setSpdError] = useState<string | undefined>(undefined);
+    const [downloadUrl, setDownloadUrl] = useState<string | undefined>(undefined);
 
     const fetchSPD = async (keyRate: number) => {
-        try {
-            const formData: IGetSPDData = {
-                managementCompanyId: 1, // ИСПРАВИТЬ
-                keyRate: keyRate
-            };
+        const formData: IGetSPDData = {
+            managementCompanyId: 1, // ИСПРАВИТЬ
+            keyRate: keyRate,
+        };
 
-            if (!isHouses) {
-                formData["subscriberIds"] = formCheckedIds;
-            } else {
-                formData["houseIds"] = formCheckedIds;
-            }
+        if (!isHouses) {
+            formData["subscriberIds"] = formCheckedIds;
+        } else {
+            formData["houseIds"] = formCheckedIds;
+        }
 
-            const response = await axios.post(API.managementCompany.singlePaymentDocument.get, formData, {
-                responseType: 'blob',
-                timeout: 5000
-            });
-
+        await axios.post(API.managementCompany.singlePaymentDocument.get, formData, {
+            responseType: 'blob',
+            timeout: 5000,
+        }).then((response) => {
             if (response.status === 200) {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
-
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = String(Date.now());
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
+                setDownloadUrl(url);
             } else {
-                console.error('Ошибка при получении PDF:', response.statusText);
+                setSpdError("Что-то пошло не так");
             }
-        } catch (error) {
+        }).catch(async (error) => {
             if (axios.isCancel(error)) {
-                console.error('Запрос был отменен из-за превышения времени ожидания');
+                setSpdError("Превышено время ожидания");
+            } else if (error.response) {
+                const response = error.response;
+                const errorJson = JSON.parse(await response.data.text());
+                setSpdError(errorJson.message);
             } else {
-                console.error('Ошибка при получении PDF:', error);
+                setSpdError("Что-то пошло не так");
             }
-        }
+        });
     };
+
 
     const fetchKeyRate = async () => {
         try {
-            const { data } = await axios.post<{ keyRate: number }>(API.managementCompany.correction.cbr.get);
+            const { data } = await axios.post<{ keyRate: number }>(API.managementCompany.correction.cbr.get, null, {
+                timeout: 1000,
+            });
             return data;
         } catch (error) {
             setCantGetKeyRate(true);
@@ -65,7 +66,8 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
     return (
         <>
             <GetSPDPageComponent
-                data={data} fetchSPD={fetchSPD}
+                data={data}
+                fetchSPD={fetchSPD} spdError={spdError} downloadUrl={downloadUrl}
                 keyRate={keyRate} setKeyRate={setKeyRate} fetchKeyRate={fetchKeyRate}
                 cantGetKeyRate={cantGetKeyRate} setCantGetKeyRate={setCantGetKeyRate}
                 formCheckedIds={formCheckedIds} setFormCheckedIds={setFormCheckedIds}

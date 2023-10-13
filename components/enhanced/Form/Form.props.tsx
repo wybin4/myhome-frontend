@@ -14,7 +14,7 @@ export interface BaseFormProps<T extends FieldValues> extends DetailedHTMLProps<
     children: ReactNode;
 
     setActiveForm?: () => void;
-    
+
     additionalRef?: MutableRefObject<null>;
 }
 
@@ -38,6 +38,20 @@ export interface SelectionFormProps extends DetailedHTMLProps<HTMLAttributes<HTM
 
     checkedIds?: number[];
     setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+}
+
+export interface InfoFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    text: string;
+    icon?: "success" | "failure";
+
+    buttons: {
+        name: string;
+        onClick: () => void;
+    }[];
+
+    number: number;
+    activeForm: number;
+    setActiveForm: Dispatch<SetStateAction<number>>;
 }
 
 export interface SerialFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

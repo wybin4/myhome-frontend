@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps } from "./Form.props";
+import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps, InfoFormProps } from "./Form.props";
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePickerInput, Input, Paragraph, PopUp, Select } from "@/components";
+import { Button, Checkbox, DatePickerInput, Icon, Input, Paragraph, PopUp, Select } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 import ArrowIcon from "./arrow.svg";
+import SuccessIcon from "./success.svg";
+import FailureIcon from "./failure.svg";
+import CloseIcon from "./close.svg";
 
 export const BaseForm = <T extends FieldValues>({
     isOpened, setIsOpened,
@@ -471,6 +474,63 @@ export const SerialForm = ({
                                 }
                             }}
                         >Далее</Button>
+                    </div>
+                </div>
+            </BaseForm>
+        </>
+    );
+};
+
+export const InfoForm = ({
+    title, text, icon, buttons,
+    activeForm, setActiveForm, number,
+    ...props
+}: InfoFormProps) => {
+    const formRef = useRef<HTMLDivElement | null>(null);
+
+    return (
+        <>
+            <BaseForm
+                isOpened={activeForm === number}
+                setIsOpened={() => setActiveForm(number)}
+                formRef={formRef}
+                setActiveForm={() => setActiveForm(0)}
+            >
+                <div ref={formRef} className={cn(styles.wrapper, styles.infoWrapper, {
+                    "hidden": activeForm !== number
+                })} {...props}>
+                    <div className={styles.topPartWrapper}>
+                        <span
+                            className={styles.close}
+                            onClick={() => setActiveForm(0)}
+                        ><CloseIcon /></span>
+                        {icon &&
+                            <Icon size="l" type="icon" className={styles.infoIcon}
+                                appearance={icon === "success" ? "green" : "red"}
+                            >
+                                {icon === "success" && <SuccessIcon />}
+                                {icon === "failure" && <FailureIcon />}
+                            </Icon>
+                        }
+                        <Paragraph size="l" className={styles.infoTitle}>{title}</Paragraph>
+                        <div className={styles.formText}>{text}</div>
+                    </div>
+                    <div className={styles.buttonWrapper}>
+                        {buttons.map((button, index) => {
+                            if (index % 2 === 0) {
+                                return <Button
+                                    key={index}
+                                    appearance="ghost" size="m" type="button"
+                                    onClick={button.onClick}
+                                >{button.name}</Button>;
+                            } else {
+                                return <Button
+                                    key={index}
+                                    appearance="primary" size="m"
+                                    onClick={button.onClick}
+                                >{button.name}</Button>;
+                            }
+                        })}
                     </div>
                 </div>
             </BaseForm>
