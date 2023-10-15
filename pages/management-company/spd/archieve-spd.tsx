@@ -5,73 +5,72 @@ import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import PdfIcon from "./icons/pdf.svg";
 import { MouseEventHandler } from "react";
+import { bytesToSize, downloadPdf, monthNamesInNominativeCase } from "@/helpers/constants";
 
 function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
-
-    let cities = data.singlePaymentDocuments.map(spd => spd.city);
-    cities = Array.from(new Set(cities));
-
-    let streets = data.singlePaymentDocuments.map(spd => spd.street);
-    streets = Array.from(new Set(streets));
-
-    let houseNames = data.singlePaymentDocuments.map(spd => spd.houseName);
-    houseNames = Array.from(new Set(houseNames));
-
-    const bytesToSize = (bytes: number, decimals = 0) => {
-        const kbToBytes = 1000;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = [
-            'Б',
-            'КБ',
-            'МБ',
-            'ГБ',
-            'ТБ',
-        ];
-
-        const index = Math.floor(
-            Math.log(bytes) / Math.log(kbToBytes),
-        );
-
-        return `${parseFloat(
-            (bytes / Math.pow(kbToBytes, index)).toFixed(dm),
-        )} ${sizes[index]}`;
+    type SPDData = {
+        cities: string[];
+        streets: string[];
+        houseNames: string[];
+        spdNames: string[];
+        spdIds: number[];
+        fileSizes: string[];
     };
 
-    const spdNames = data.singlePaymentDocuments.map(spd => {
-        const date = new Date(spd.createdAt);
-        const monthNumber = date.getMonth();
-        const year = date.getFullYear();
+    const initialData: SPDData = {
+        cities: [],
+        streets: [],
+        houseNames: [],
+        spdNames: [],
+        spdIds: [],
+        fileSizes: [],
+    };
 
-        const monthNamesInNominativeCase = [
-            'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-        ];
-        return `${monthNamesInNominativeCase[monthNumber]} ${year}, ${spd.street} ${spd.houseName}`;
-    });
+    const uniqueArray = (arr: string[]) => {
+        return Array.from(new Set(arr));
+    };
 
-    const spdIds = data.singlePaymentDocuments.map(spd => spd.id);
+    const result: SPDData = data.singlePaymentDocuments.reduce(
+        (accumulator, spd) => {
+            accumulator.cities.push(spd.city);
+            accumulator.streets.push(spd.street);
+            accumulator.houseNames.push(spd.houseName);
 
-    const fileSizes = data.singlePaymentDocuments.map(spd => {
-        const fileSize = bytesToSize(spd.fileSize);
-        return fileSize;
-    });
+            const date = new Date(spd.createdAt);
+            const monthNumber = date.getMonth();
+            const year = date.getFullYear();
+
+            accumulator.spdNames.push(
+                `${monthNamesInNominativeCase[monthNumber]} ${year}, ${spd.street} ${spd.houseName}`
+            );
+
+            accumulator.spdIds.push(spd.id);
+
+            const fileSize = bytesToSize(spd.fileSize);
+            accumulator.fileSizes.push(fileSize);
+
+            return accumulator;
+        },
+        initialData
+    );
+
+    const {
+        cities,
+        streets,
+        houseNames,
+        spdNames,
+        spdIds,
+        fileSizes,
+    } = result;
+
+    const uniqueCities = uniqueArray(cities);
+    const uniqueStreets = uniqueArray(streets);
+    const uniqueHouseNames = uniqueArray(houseNames);
 
     const download: MouseEventHandler<HTMLDivElement> = (event) => {
         const spd = data.singlePaymentDocuments.find(s => s.id === Number(event.currentTarget.id));
         if (spd && spd.pdfBuffer) {
-            const base64Data = spd.pdfBuffer;
-            const buffer = Buffer.from(base64Data, 'base64');
-
-            const blob = new Blob([buffer]);
-            const url = window.URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${new Date(spd.createdAt).getTime()}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-
-            window.URL.revokeObjectURL(url);
+            downloadPdf(spd.pdfBuffer, String(spd.createdAt));
         }
     };
 
@@ -83,19 +82,19 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
                         title: "Город",
                         titleEng: "city",
                         type: "checkbox",
-                        items: cities
+                        items: uniqueCities
                     },
                     {
                         title: "Улица",
                         titleEng: "street",
                         type: "checkbox",
-                        items: streets
+                        items: uniqueStreets
                     },
                     {
                         title: "Дом",
                         titleEng: "houseName",
                         type: "checkbox",
-                        items: houseNames
+                        items: uniqueHouseNames
                     }
                 ]} rows={{
                     startIcon: <PdfIcon />,
@@ -119,7 +118,7 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
                         }
                     ],
                     keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true }
-                }} buttons={[]} />
+                }}  />
         </>
     );
 }
@@ -129,7 +128,7 @@ export default withLayout(ArchiveSPD);
 export async function getServerSideProps() {
     const apiUrl = API.managementCompany.singlePaymentDocument.get;
     const postData = {
-        managementCompanyId: 1
+        managementCompanyId: 1 // ИСПРАВИТЬ!!!!
     };
 
     try {

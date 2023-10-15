@@ -1,9 +1,10 @@
 import { TabsProps } from "./Tabs.props";
 import styles from "./Tabs.module.css";
 import cn from 'classnames';
-import { Button, Tag } from "@/components";
+import { Button, Htag, Tag } from "@/components";
 
 export const Tabs = ({
+    title,
     tabs,
     tagTexts, descriptionText,
     onAddButtonClick,
@@ -12,6 +13,7 @@ export const Tabs = ({
 }: TabsProps): JSX.Element => {
     return (
         <>
+            <Htag size="h1" className="mb-[3rem] lg:mb-[2rem] md:mb-[2rem] sm:mb-[2rem]">{title}</Htag>
             <div className={styles.tabs}>
                 {tabs && tabs.map(tab => (
                     <div

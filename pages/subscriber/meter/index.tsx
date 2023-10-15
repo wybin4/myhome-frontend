@@ -1,4 +1,4 @@
-import { Card, Form, Htag, Tabs } from "@/components";
+import { Card, Form, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import HeatingIcon from "./icons/heating.svg";
@@ -65,8 +65,8 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                     }
                 ]} urlToPost={""} successCode={200} successMessage={""}            >
             </Form>
-            <Htag size="h1" className="mb-[3rem] lg:mb-[2rem] md:mb-[2rem] sm:mb-[2rem]">Приборы учёта и показания</Htag>
             <Tabs
+                title="Приборы учёта и показания"
                 tabs={tabs}
                 tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
                 descriptionText="Срок передачи показаний — с 20 по 25 число"
@@ -129,7 +129,6 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
     return (
         <Card
             key={key}
-            className="w-[392px] h-[195px]"
             titlePart={{
                 text: titlePartText(meter.typeOfServiceName, meter.unitName),
                 iconLeft: iconLeft(meter.typeOfServiceId),

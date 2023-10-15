@@ -4,12 +4,12 @@ import { TableRowProps } from "@/components/composite/TableRow/TableRow.props";
 import { HTMLAttributes, DetailedHTMLProps } from "react";
 
 export interface TableProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    title: string;
+    title?: string;
 
-    filters: TableFilterItemProps[];
+    filters?: TableFilterItemProps[];
     rows: TableRowProps;
 
-    buttons: TableButtonType[];
+    buttons?: TableButtonType[];
 
     isSearch?: boolean;
 }

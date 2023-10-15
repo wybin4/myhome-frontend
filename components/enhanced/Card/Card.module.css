@@ -1,4 +1,6 @@
 .cardWrapper {
+    max-width: 26rem;
+
     background: var(--white);
 
     border: solid 1px var(--grey-light);

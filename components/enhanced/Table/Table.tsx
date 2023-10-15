@@ -17,19 +17,19 @@ export const Table = ({
         <div className={className} {...props}>
             <div>
                 <div className={styles.topPart}>
-                    <Htag size="h1" className={styles.title}>{title}</Htag>
-                    <TableButton buttons={buttons}
-                        isFiltersExist={filters.length !== 0}
+                    {title && <Htag size="h1" className={styles.title}>{title}</Htag>}
+                    {buttons && <TableButton buttons={buttons}
+                        isFiltersExist={filters !== undefined}
                         filterButtonRef={filterButtonRef}
                         isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
-                    />
+                    />}
                 </div>
                 <div className={styles.bottomPart}>
                     <div className="w-full">
                         {isSearch && <TableSearch size="l" className={cn("mb-8", styles.searchBar)} />}
                         <TableRow {...rows} className={styles.rows} />
                     </div>
-                    {filters.length !== 0 &&
+                    {filters &&
                         <TableFilter
                             isOpen={isFilterOpened}
                             setIsOpen={setIsFilterOpened}

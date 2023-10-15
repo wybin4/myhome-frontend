@@ -19,6 +19,9 @@ export const API: {
     subscriber: {
         meter: {
             index: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/get-meters-all-info-by-sid`
+        },
+        singlePaymentDocument: {
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-documents-by-sid`,
         }
     },
     managementCompany: {

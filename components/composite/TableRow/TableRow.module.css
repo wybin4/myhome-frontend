@@ -104,7 +104,17 @@
 }
 
 .itemMobile .iconWrapper {
-    margin-right: 0.5rem;
+    background-color: var(--primary);
+
+    width: fit-content;
+    height: fit-content;
+    border-radius: 100%;
+
+    padding: 0.5rem 0.75rem;
+}
+
+.itemMobile .iconWrapper svg {
+    fill: var(--white);
 }
 
 .firstItem {

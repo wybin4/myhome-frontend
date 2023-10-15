@@ -26,7 +26,7 @@ export const TableRow = ({
 };
 
 const TableRowDesktop = ({ startIcon, actions, ids, items, className, ...props }: TableRowProps) => {
-    const countOfRows = ids.length;
+    const countOfRows = ids ? ids.length : items[0].items?.length;
 
     const getActions = () => {
         if (countOfRows && actions) {
@@ -65,7 +65,7 @@ const TableRowDesktop = ({ startIcon, actions, ids, items, className, ...props }
                         key={key}
                         {...item} />)
                 }
-                {actions && actions.actions.length !== 0 && <div className="flex flex-col gap-4">
+                {actions?.actions && actions.actions.length !== 0 && <div className="flex flex-col gap-4">
                     <Paragraph size="s" className="font-medium">Действия</Paragraph>
                     {getActions()}
                 </div>}
@@ -135,7 +135,7 @@ const TableRowMobile = ({ startIcon, actions, ids, items, className, keyElements
                         keyElements={keyElements}
                         startIcon={startIcon}
                         actions={actions}
-                        elId={ids[key]}
+                        elId={ids ? ids[key] : 0}
                         items={i}
                     />)
                 }
@@ -173,23 +173,25 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
     return (
         <div className={cn(styles.itemMobile)} {...props}>
             <div className="flex justify-between">
-                <div>
-                    {secondItem &&
-                        <div className={cn("flex gap-x-1", styles.secondItem)}>
-                            {startIcon && <span className={styles.iconWrapper}>{startIcon}</span>}
-                            {!keyElements.isSecondNoNeedTitle && secondItem.title}
-                            {getElement(secondItem)}
-                        </div>
-                    }
-                    {firstItem && (
-                        <span className={cn(styles.firstItem, "flex gap-1")}>
-                            {firstItem.map((obj, index) => (
-                                <React.Fragment key={index}>
-                                    {getElement(obj, index)}
-                                </React.Fragment>
-                            ))}
-                        </span>
-                    )}
+                <div className="flex gap-4">
+                    {startIcon && <div className={styles.iconWrapper}>{startIcon}</div>}
+                    <div>
+                        {secondItem &&
+                            <div className={cn("flex gap-x-1 items-center", styles.secondItem)}>
+                                {!keyElements.isSecondNoNeedTitle && secondItem.title}
+                                {getElement(secondItem)}
+                            </div>
+                        }
+                        {firstItem && (
+                            <span className={cn(styles.firstItem, "flex gap-1")}>
+                                {firstItem.map((obj, index) => (
+                                    <React.Fragment key={index}>
+                                        {getElement(obj, index)}
+                                    </React.Fragment>
+                                ))}
+                            </span>
+                        )}
+                    </div>
                 </div>
                 {actions && <Action id={String(elId)} {...actions} />}
             </div>

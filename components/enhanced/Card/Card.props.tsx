@@ -12,7 +12,7 @@ export interface CardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
 export interface CardInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
     value?: string;
-    setValue?: Dispatch<SetStateAction<string | undefined>>;
+    setValue?: Dispatch<SetStateAction<string | number | undefined>>;
     placeholder?: string;
     textAlign?: "left" | "center";
     readOnly?: boolean;
