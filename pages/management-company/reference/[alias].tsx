@@ -13,7 +13,7 @@ import { ReferencePageComponent } from "@/page-components";
 import axios from "axios";
 import { format, isDate, isValid } from "date-fns";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 
 function ReferencePage({ data }: ReferencePageProps): JSX.Element {
@@ -257,6 +257,4 @@ async function fetchData<T extends IReferenceData>
 interface ReferencePageProps extends Record<string, unknown> {
     data: IReferenceData;
     role: UserRole;
-    isFormOpened: boolean;
-    setIsFormOpened: Dispatch<SetStateAction<boolean>>;
 }

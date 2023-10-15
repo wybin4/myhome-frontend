@@ -103,6 +103,10 @@
     position: relative;
 }
 
+.itemMobile .iconWrapper {
+    margin-right: 0.5rem;
+}
+
 .firstItem {
     color: var(--grey);
 

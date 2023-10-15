@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from "react";
 
 export interface TableRowProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     startIcon?: any;
-    actions: ITypeOfAction[];
+    actions?: ActionProps;
+    ids: number[];
     items: ITableRowArr[];
     keyElements?: RowKeyElements;
 }
@@ -16,7 +17,8 @@ export interface RowKeyElements {
 
 export interface TableRowItemMobileProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     startIcon?: any;
-    actions: ITypeOfAction[];
+    actions?: ActionProps;
+    elId: number;
     items?: ITableRowItem[];
     keyElements: RowKeyElements;
 }
@@ -40,7 +42,10 @@ export interface ITableRowArr {
 }
 
 export interface ActionProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    actions: ITypeOfAction[];
+    actions: {
+        type: ITypeOfAction;
+        onClick: MouseEventHandler<HTMLDivElement>;
+    }[];
 }
 
 export interface TableAttachmentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

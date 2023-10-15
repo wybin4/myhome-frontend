@@ -1,4 +1,4 @@
-import { Htag, SerialForm, SelectionForm, TableButton, TableFilter, TableRow, PopUp, InfoForm } from "@/components";
+import { Htag, SerialForm, SelectionForm, TableButton, TableFilter, TableRow, PopUp, InfoForm, Pdf } from "@/components";
 import { ISubscriberReferenceDataItem } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { useEffect, useRef, useState } from "react";
 import HouseIcon from "./house.svg";
@@ -252,6 +252,7 @@ export const GetSPDPageComponent = ({
                 {...selectionFormData()}
             />
             <>
+                {downloadUrl && <Pdf pdfUrl={downloadUrl} />}
                 <div className={styles.topPart}>
                     <Htag size="h1" className={styles.title}>Единый платёжный документ</Htag>
                     <TableButton
@@ -273,32 +274,28 @@ export const GetSPDPageComponent = ({
                 <div className={styles.bottomPart}>
                     <div className="w-full">
                         <TableRow
-                            actions={[]}
                             keyElements={{ first: [0], second: 1, isSecondNoNeedTitle: true }}
-                            items={
-                                isHouses ? [{
-                                    title: "Дома",
+                            items={isHouses ? [{
+                                title: "Дома",
+                                type: "text",
+                                items: (filter() as ISubscriberReferenceDataItem[]).
+                                    map(subscriber => {
+                                        return subscriber.houseName;
+                                    })
+                            }] : [
+                                {
+                                    title: "ФИО",
                                     type: "text",
-                                    items: (filter() as ISubscriberReferenceDataItem[]).
-                                        map(subscriber => {
-                                            return subscriber.houseName;
-                                        })
-                                }] : [
-                                    {
-                                        title: "ФИО",
-                                        type: "text",
-                                        items: ungroup(filter() as GroupedSubscriber[]).
-                                            map(subscriber => subscriber.ownerName)
-                                    },
-                                    {
-                                        title: "Лицевой счет",
-                                        type: "text",
-                                        items: ungroup(filter() as GroupedSubscriber[]).
-                                            map(subscriber => subscriber.personalAccount)
-                                    },
-                                ]
-                            }
-                        />
+                                    items: ungroup(filter() as GroupedSubscriber[]).
+                                        map(subscriber => subscriber.ownerName)
+                                },
+                                {
+                                    title: "Лицевой счет",
+                                    type: "text",
+                                    items: ungroup(filter() as GroupedSubscriber[]).
+                                        map(subscriber => subscriber.personalAccount)
+                                },
+                            ]} ids={[]} />
                     </div>
                     <TableFilter title="Параметры" items={[
                         {

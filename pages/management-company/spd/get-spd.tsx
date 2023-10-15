@@ -4,7 +4,7 @@ import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subs
 import { withLayout } from "@/layout/Layout";
 import { GetSPDPageComponent } from "@/page-components/GetSPDPageComponent/GetSPDPageComponent";
 import axios from "axios";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
 
 function GetSPD({ data }: IGetSPDProps): JSX.Element {
@@ -27,7 +27,7 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
             formData["houseIds"] = formCheckedIds;
         }
 
-        await axios.post(API.managementCompany.singlePaymentDocument.get, formData, {
+        await axios.post(API.managementCompany.singlePaymentDocument.calculate, formData, {
             responseType: 'blob',
             timeout: 5000,
         }).then((response) => {
@@ -107,8 +107,6 @@ export async function getServerSideProps() {
 interface IGetSPDProps extends Record<string, unknown> {
     data: ISubscriberReferenceData;
     role: UserRole;
-    isFormOpened: boolean;
-    setIsFormOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 interface IGetSPDData {

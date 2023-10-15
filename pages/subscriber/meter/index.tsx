@@ -9,15 +9,14 @@ import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { API } from "@/helpers/api";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { useState } from "react";
 import cn from "classnames";
-import { AppContext } from "@/context/app.context";
 import { useForm } from "react-hook-form";
 import { ISubscriberAddMeterForm } from "@/interfaces/reference/meter.interface";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data[0].apartmentId);
-    const { isFormOpened, setIsFormOpened } = useContext(AppContext);
+    const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
     const useFormData = useForm<ISubscriberAddMeterForm>();
 
     const tabs = data.map(obj => {
@@ -37,21 +36,18 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
                 title="Добавление счётчика"
-                selectors={
-                    [
-                        {
-                            size: "m", inputTitle: "Тип услуги", id: "typeOfService",
-                            options:
-                                [
-                                    { value: 1, text: "Газ" },
-                                    { value: 2, text: "Электричество" },
-                                    { value: 3, text: "ХВС" },
-                                ],
-                            numberInOrder: 1, type: "select",
-                            error: { value: true, message: "Заполните тип услуги" }
-                        }
-                    ]
-                }
+                selectors={[
+                    {
+                        size: "m", inputTitle: "Тип услуги", id: "typeOfService",
+                        options: [
+                            { value: 1, text: "Газ" },
+                            { value: 2, text: "Электричество" },
+                            { value: 3, text: "ХВС" },
+                        ],
+                        numberInOrder: 1, type: "select",
+                        error: { value: true, message: "Заполните тип услуги" }
+                    }
+                ]}
                 datePickers={[
                     {
                         id: "verificationDate", type: "datepicker", inputTitle: "Дата поверки", inputSize: "m", numberInOrder: 2,
@@ -67,8 +63,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                         id: "previousReading", type: "input", size: "m", title: "Предыдущее показание", numberInOrder: 4,
                         error: { value: true, message: "Заполните предыдущее показание" }
                     }
-                ]}
-            >
+                ]} urlToPost={""} successCode={200} successMessage={""}            >
             </Form>
             <Htag size="h1" className="mb-[3rem] lg:mb-[2rem] md:mb-[2rem] sm:mb-[2rem]">Приборы учёта и показания</Htag>
             <Tabs
@@ -188,8 +183,6 @@ export async function getServerSideProps() {
 interface MeterPageProps extends Record<string, unknown> {
     data: IGetMeterByAIDs[];
     role: UserRole;
-    isFormOpened: boolean;
-    setIsFormOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface IGetMeterByAIDs {

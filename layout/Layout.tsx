@@ -4,7 +4,7 @@ import { Header } from "./Header/Header";
 import { LayoutProps } from "./Layout.props";
 import styles from "./Layout.module.css";
 import { Navigation } from "./Navigation/Navigation";
-import {  AppContextProvider, IAppContext } from "@/context/app.context";
+import { AppContextProvider, IAppContext } from "@/context/app.context";
 import cn from 'classnames';
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
@@ -27,8 +27,6 @@ export const withLayout = <T extends Record<string, unknown> & IAppContext>(Comp
         return (
             <AppContextProvider
                 role={props.role}
-                isFormOpened={props.isFormOpened}
-                setIsFormOpened={props.setIsFormOpened}
             >
                 <Layout>
                     <Component {...props} />

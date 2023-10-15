@@ -12,8 +12,8 @@ export const API: {
     managementCompany: {
         reference: IData;
         common: IData;
-        correction: IData | { [key: string]: { get: string } };
-        singlePaymentDocument: { get: string };
+        correction: IData;
+        singlePaymentDocument: { get: string; calculate: string };
     };
 } = {
     subscriber: {
@@ -63,11 +63,14 @@ export const API: {
                 get: `${process.env.NEXT_PUBLIC_DOMAIN}/penalty/get-penalty-rules-by-mcid`
             },
             cbr: {
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/cbr/get-key-rate`
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/cbr/get-key-rate`,
+                add: ``,
+                addMany: ``
             }
         },
         singlePaymentDocument: {
-            get: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-document`
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-documents-by-mcid`,
+            calculate: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-document`,
         }
     },
 

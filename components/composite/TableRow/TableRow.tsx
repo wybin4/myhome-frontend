@@ -25,14 +25,15 @@ export const TableRow = ({
     );
 };
 
-const TableRowDesktop = ({ startIcon, actions, items, className, ...props }: TableRowProps) => {
-    const countOfRows = items[0].items?.length;
+const TableRowDesktop = ({ startIcon, actions, ids, items, className, ...props }: TableRowProps) => {
+    const countOfRows = ids.length;
 
     const getActions = () => {
         if (countOfRows && actions) {
             const elementsToRender = [];
             for (let i = 0; i < countOfRows; i++) {
-                elementsToRender.push(<Action key={i} actions={actions} />);
+                const id = ids[i];
+                elementsToRender.push(<Action key={i} id={String(id)} {...actions} />);
             }
             return elementsToRender;
         }
@@ -64,7 +65,7 @@ const TableRowDesktop = ({ startIcon, actions, items, className, ...props }: Tab
                         key={key}
                         {...item} />)
                 }
-                {actions.length !== 0 && <div className="flex flex-col gap-4">
+                {actions && actions.actions.length !== 0 && <div className="flex flex-col gap-4">
                     <Paragraph size="s" className="font-medium">Действия</Paragraph>
                     {getActions()}
                 </div>}
@@ -99,7 +100,7 @@ const TableRowItemDesktop = ({ title, type, items, ...props }: TableRowItemDeskt
     );
 };
 
-const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { first: [1], second: 2, isSecondNoNeedTitle: false }, ...props }: TableRowProps) => {
+const TableRowMobile = ({ startIcon, actions, ids, items, className, keyElements = { first: [1], second: 2, isSecondNoNeedTitle: false }, ...props }: TableRowProps) => {
     const rowItems: (ITableRowItem[] | undefined)[] = items.map(item => {
         return item.items?.map(i => {
             return {
@@ -134,6 +135,7 @@ const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { 
                         keyElements={keyElements}
                         startIcon={startIcon}
                         actions={actions}
+                        elId={ids[key]}
                         items={i}
                     />)
                 }
@@ -142,7 +144,7 @@ const TableRowMobile = ({ startIcon, actions, items, className, keyElements = { 
     );
 };
 
-const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }: TableRowItemMobileProps) => {
+const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...props }: TableRowItemMobileProps) => {
     const getElement = (item: ITableRowItem, key?: number): JSX.Element => {
         switch (item.type) {
             case "tag":
@@ -172,9 +174,9 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
         <div className={cn(styles.itemMobile)} {...props}>
             <div className="flex justify-between">
                 <div>
-                    {startIcon && <span className={styles.iconWrapper}>{startIcon}</span>}
                     {secondItem &&
                         <div className={cn("flex gap-x-1", styles.secondItem)}>
+                            {startIcon && <span className={styles.iconWrapper}>{startIcon}</span>}
                             {!keyElements.isSecondNoNeedTitle && secondItem.title}
                             {getElement(secondItem)}
                         </div>
@@ -189,7 +191,7 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
                         </span>
                     )}
                 </div>
-                <Action actions={actions} />
+                {actions && <Action id={String(elId)} {...actions} />}
             </div>
             {(itemsFiltered && itemsFiltered.length !== 0) &&
                 <>
@@ -212,17 +214,17 @@ const TableRowItemMobile = ({ items, startIcon, actions, keyElements, ...props }
 
 const Action = ({ actions, ...props }: ActionProps): JSX.Element => {
     return (
-        <div className={styles.actions} {...props}>
+        <div className={styles.actions} >
             {actions && actions.map((action, index) => {
-                switch (action) {
+                switch (action.type) {
                     case "editAndSave":
-                        return <EditIcon key={index} />;
+                        return <div key={index} {...props} onClick={action.onClick}><EditIcon /></div>;
                     case "delete":
-                        return <DeleteIcon key={index} />;
+                        return <div key={index} {...props} onClick={action.onClick}><DeleteIcon /></div>;
                     case "addComment":
-                        return <CommectIcon key={index} className={styles.comment} />;
+                        return <div key={index} {...props} onClick={action.onClick}><CommectIcon className={styles.comment} /></div>;
                     case "download":
-                        return <DownloadIcon key={index} />;
+                        return <div key={index} {...props} onClick={action.onClick}><DownloadIcon /></div>;
                 }
             })}
         </div>
