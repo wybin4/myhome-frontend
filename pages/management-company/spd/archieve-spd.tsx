@@ -95,7 +95,8 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
                         titleEng: "houseName",
                         type: "checkbox",
                         items: uniqueHouseNames
-                    }
+                    },
+                    // ИСПРАВИТЬ!!! ДОБАВИТЬ ВЫБОР ПЕРИОДА
                 ]} rows={{
                     startIcon: <PdfIcon />,
                     actions: {
