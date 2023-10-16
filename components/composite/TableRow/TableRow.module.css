@@ -103,18 +103,29 @@
     position: relative;
 }
 
-.itemMobile .iconWrapper {
+.itemMobile .iconWrapper,
+.itemMobile .icon {
     background-color: var(--primary);
 
     width: fit-content;
     height: fit-content;
     border-radius: 100%;
+}
 
+.itemMobile .icon {
+    padding: 0.4rem;
+}
+
+.itemMobile .iconWrapper {
     padding: 0.5rem 0.75rem;
 }
 
 .itemMobile .iconWrapper svg {
     fill: var(--white);
+}
+
+.itemMobile .icon svg {
+    stroke: var(--white);
 }
 
 .firstItem {

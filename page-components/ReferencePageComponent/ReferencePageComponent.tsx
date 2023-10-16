@@ -149,7 +149,8 @@ export const ReferencePageComponent = <T extends FieldValues>({
                         return [];
                     })}
                 rows={{
-                    actions: item.tableActions ? item.tableActions : ["editAndSave", "download"],
+                    actions: item.tableActions,
+                    ids: [], // ИСПРАВИТЬ
                     items: item.components.sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
                         title: capFirstLetter(phraseByArr(component.title)),
                         type: "text",

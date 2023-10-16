@@ -14,6 +14,7 @@ export const API: {
         common: IData;
         correction: IData;
         singlePaymentDocument: { get: string; calculate: string };
+        voting: { get: string; add: string };
     };
 } = {
     subscriber: {
@@ -74,6 +75,10 @@ export const API: {
         singlePaymentDocument: {
             get: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-documents-by-mcid`,
             calculate: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-document`,
+        },
+        voting: {
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/get-votings-by-mcid`,
+            add: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/add-voting`
         }
     },
 

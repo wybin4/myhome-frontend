@@ -13,7 +13,7 @@ export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        setRole && setRole("subscriber");
+        setRole && setRole("management-company");
     });
 
     const menu: IMenu[] = [

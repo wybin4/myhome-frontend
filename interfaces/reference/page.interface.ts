@@ -1,4 +1,4 @@
-import { ITypeOfAction, RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
+import { ActionProps, RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { FieldValues, Path } from "react-hook-form";
 import { Gender } from "russian-nouns-js/src/Gender";
@@ -17,7 +17,7 @@ export interface IReferencePageComponent<T extends FieldValues> {
     engName: string;
     gender: Gender[keyof Gender];
     components: IReferencePageItem<T>[];
-    tableActions?: ITypeOfAction[];
+    tableActions?: ActionProps;
     keyElements?: RowKeyElements;
 }
 

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from "react";
 
+export type RowType = "tag" | "text" | "attachment" | "icon" | "none";
+
 export interface TableRowProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     startIcon?: any;
     actions?: ActionProps;
@@ -25,20 +27,27 @@ export interface TableRowItemMobileProps extends DetailedHTMLProps<HTMLAttribute
 
 export interface TableRowItemDesktopProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
-    type: "tag" | "text" | "attachment";
+    type: RowType;
     items?: (string | undefined)[];
 }
 
 export interface ITableRowItem {
     title: string;
-    type: "tag" | "text" | "attachment" | "none";
+    type: RowType;
     item?: string;
+    icons?: ITableRowIcon[];
 }
 
 export interface ITableRowArr {
     title: string;
-    type: "tag" | "text" | "attachment";
+    type: RowType;
     items: string[];
+    icons?: ITableRowIcon[];
+}
+
+export interface ITableRowIcon {
+    key: string;
+    icon: any;
 }
 
 export interface ActionProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -58,6 +67,7 @@ export interface TableTextProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
 
 export interface TableTagProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     text?: string;
+    appearance?: "primary" | "primary-border";
 }
 
-export type ITypeOfAction = "editAndSave" | "delete" | "addComment" | "download";
+export type ITypeOfAction = "editAndSave" | "delete" | "addComment" | "download" | "view";

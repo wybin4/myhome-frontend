@@ -84,6 +84,10 @@ const TableRowItemDesktop = ({ title, type, items, ...props }: TableRowItemDeskt
                         return (
                             <TableTag text={item} key={key} />
                         );
+                    case "icon":
+                        return (
+                            <TableTag text={item} key={key} appearance="primary" />
+                        );
                     case "text":
                         return (
                             <TableText text={item} key={key} />
@@ -106,7 +110,8 @@ const TableRowMobile = ({ startIcon, actions, ids, items, className, keyElements
             return {
                 title: item.title,
                 item: i,
-                type: item.type
+                type: item.type,
+                icons: item.icons
             };
         });
     });
@@ -166,14 +171,17 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
 
     const firstItem = items ? items.filter((item, index) =>
         keyElements.first.includes(index + 1)) : undefined;
+    const iconsArr = items ? items.find(item => item.type === "icon") : undefined;
+    const icon = iconsArr?.icons?.find(i => i.key === iconsArr.item);
     const secondItem = items ? items[keyElements.second - 1] : undefined;
     const itemsFiltered = items ? items.filter((item, index) =>
         !keyElements.first.includes(index + 1) &&
-        index !== (keyElements.second - 1)) : undefined;
+        index !== (keyElements.second - 1) && item.type !== "icon") : undefined;
     return (
         <div className={cn(styles.itemMobile)} {...props}>
             <div className="flex justify-between">
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
+                    {icon && <div className={styles.icon}>{icon.icon}</div>}
                     {startIcon && <div className={styles.iconWrapper}>{startIcon}</div>}
                     <div>
                         {secondItem &&
@@ -259,10 +267,10 @@ const TableAttachment = ({ text, ...props }: TableAttachmentProps) => {
     );
 };
 
-const TableTag = ({ text, ...props }: TableTagProps) => {
+const TableTag = ({ text, appearance = "primary-border", ...props }: TableTagProps) => {
     return (
         <div {...props} className={styles.rowContent}>
-            <Tag className={styles.rowTag} appearance="primary-border" size="s">
+            <Tag className={styles.rowTag} appearance={appearance} size="s">
                 {text}
             </Tag>
         </div>
