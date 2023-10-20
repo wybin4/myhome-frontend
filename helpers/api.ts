@@ -15,6 +15,7 @@ export const API: {
         correction: IData;
         singlePaymentDocument: { get: string; calculate: string };
         voting: { get: string; add: string };
+        houseNotification: { get: string; add: string };
     };
 } = {
     subscriber: {
@@ -79,6 +80,10 @@ export const API: {
         voting: {
             get: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/get-votings-by-mcid`,
             add: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/add-voting`
+        },
+        houseNotification: {
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/house-notification/get-house-notifications-by-mcid`,
+            add: `${process.env.NEXT_PUBLIC_DOMAIN}/house-notification/add-house-notification`
         }
     },
 

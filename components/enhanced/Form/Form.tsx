@@ -3,7 +3,7 @@ import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProp
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePickerInput, Icon, Input, Paragraph, PopUp, Select } from "@/components";
+import { Button, Checkbox, DatePickerInput, Icon, Input, Paragraph, PopUp, Select, Textarea } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 import ArrowIcon from "./arrow.svg";
@@ -59,7 +59,7 @@ export const BaseForm = <T extends FieldValues>({
 
 export const Form = <T extends FieldValues>({
     title,
-    inputs, selectors, datePickers,
+    inputs, selectors, datePickers, textAreas,
     className, useFormData,
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
@@ -78,6 +78,7 @@ export const Form = <T extends FieldValues>({
         ...inputs || [],
         ...selectors || [],
         ...datePickers || [],
+        ...textAreas || [],
     ];
     formComponents.sort((a, b) => a.numberInOrder - b.numberInOrder);
     const elementCount = Math.max(...formComponents.map(component => component.numberInOrder));
@@ -87,12 +88,13 @@ export const Form = <T extends FieldValues>({
         return rest;
     });
 
+    type SelectorValue = { value: number | string; text: string };
     const onSubmit = async (formData: T) => {
         setSubmitCount(submitCount + 1);
 
         try {
 
-            let flatObject;
+            let flatObject: { [key: string]: string | number | SelectorValue };
             if (additionalFormData) {
                 flatObject = {
                     ...formData,
@@ -101,6 +103,13 @@ export const Form = <T extends FieldValues>({
             } else {
                 flatObject = { ...formData };
             }
+
+            for (const key in flatObject) {
+                if (typeof flatObject[key] === 'object' && 'value' in (flatObject as { [key: string]: SelectorValue })[key]) {
+                    flatObject[key] = (flatObject as { [key: string]: SelectorValue })[key].value;
+                }
+            }
+
             const response = await axios.post(urlToPost, flatObject);
             if (response.status === successCode) {
                 setIsSuccess(true);
@@ -243,6 +252,31 @@ export const Form = <T extends FieldValues>({
                                                         ref={field.ref}
                                                         className="mb-4"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                        {...component} />
+                                                )}
+                                            />
+                                        );
+                                    case "textarea":
+                                        return (
+                                            <Controller
+                                                key={key}
+                                                control={control}
+                                                name={component.id}
+                                                rules={
+                                                    {
+                                                        required: {
+                                                            value: component.error.value,
+                                                            message: component.error.message ? component.error.message : ""
+                                                        }
+                                                    }
+                                                }
+                                                render={({ field }) => (
+                                                    <Textarea
+                                                        text={field.value}
+                                                        setText={field.onChange}
+                                                        ref={field.ref}
+                                                        className="mb-4"
+                                                        textareaError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         {...component} />
                                                 )}
                                             />

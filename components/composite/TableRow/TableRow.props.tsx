@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from "react";
+import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { ActionProps } from "./Action/Action.props";
 
 export type RowType = "tag" | "text" | "attachment" | "icon" | "none";
 
@@ -48,13 +49,6 @@ export interface ITableRowArr {
 export interface ITableRowIcon {
     key: string;
     icon: any;
-}
-
-export interface ActionProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    actions: {
-        type: ITypeOfAction;
-        onClick: MouseEventHandler<HTMLDivElement>;
-    }[];
 }
 
 export interface TableAttachmentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

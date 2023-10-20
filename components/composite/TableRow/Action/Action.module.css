@@ -1,0 +1,40 @@
+.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.actions svg {
+    width: 1rem;
+    height: 1rem !important;
+
+    min-width: 1rem;
+    min-height: 1rem !important;
+
+    cursor: pointer;
+}
+
+.actions div {
+    cursor: pointer;
+}
+
+.actions svg:not(.comment) {
+    fill: var(--black);
+}
+
+@media (max-width: 900px) {
+
+    .actions {
+        align-items: center;
+
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .actions {
+        gap: 0.5rem;
+    }
+
+}

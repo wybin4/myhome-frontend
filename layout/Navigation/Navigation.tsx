@@ -47,7 +47,7 @@ export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
                     name: "Обращения", route: "appeal", number: 3,
                 },
                 {
-                    name: "Уведомления", route: "notification", number: 4,
+                    name: "Уведомления", route: "house-notification", number: 4,
                 }]
         },
         {

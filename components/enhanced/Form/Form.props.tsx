@@ -114,6 +114,7 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     selectors?: SelectorFormProps<T>[];
     datePickers?: DatePickerFormProps<T>[];
     inputs?: InputFormProps<T>[];
+    textAreas?: TextAreaFormProps<T>[];
 
     isOpened: boolean;
     setIsOpened?: (newFormOpened: boolean) => void;
@@ -128,7 +129,7 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
 export type FormSuccess = 200 | 201;
 export type FormErrors = 400 | 404 | 409 | 422 | 500 | 504;
 
-export type FormElementProps<T extends FieldValues> = SelectorFormProps<T> | DatePickerFormProps<T> | InputFormProps<T>;
+export type FormElementProps<T extends FieldValues> = SelectorFormProps<T> | DatePickerFormProps<T> | InputFormProps<T> | TextAreaFormProps<T>;
 
 export interface FormError {
     value: boolean; message?: string;
@@ -155,7 +156,6 @@ export interface DatePickerFormProps<T extends FieldValues> {
     error: FormError;
 }
 
-
 export interface InputFormProps<T extends FieldValues> {
     title: string;
     size: "l" | "m" | "s";
@@ -163,6 +163,15 @@ export interface InputFormProps<T extends FieldValues> {
 
     id: Path<T>;
     type: "input";
+    numberInOrder: number;
+    error: FormError;
+}
+
+export interface TextAreaFormProps<T extends FieldValues> {
+    title: string;
+
+    id: Path<T>;
+    type: "textarea";
     numberInOrder: number;
     error: FormError;
 }

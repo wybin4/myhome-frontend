@@ -15,11 +15,11 @@ import { useForm } from "react-hook-form";
 import { ISubscriberAddMeterForm } from "@/interfaces/reference/meter.interface";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
-    const [apartmentId, setApartmentId] = useState<number>(data[0].apartmentId);
+    const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
     const useFormData = useForm<ISubscriberAddMeterForm>();
 
-    const tabs = data.map(obj => {
+    const tabs = data.meters.map(obj => {
         return {
             name: "Квартира " + obj.apartmentNumber,
             id: obj.apartmentNumber
@@ -28,7 +28,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
 
     // ИСПРАВИТЬ MOCK-DATA 
 
-    const selectedData = data.find(obj => obj.apartmentId === apartmentId);
+    const selectedData = data.meters.find(obj => obj.apartmentId === apartmentId);
 
     return (
         <>
@@ -73,12 +73,12 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
                 activeTab={apartmentId} setActiveTab={setApartmentId}
                 className={cn(
-                    "grid grid-cols-2 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1",
-                    "gap-y-[3.25rem] lg:gap-y-[2rem] md:gap-y-[2rem] sm:gap-y-[2rem]"
+                    "grid grid-cols-3 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1",
+                    "gap-y-[3.25rem] gap-x-4 lg:gap-y-[2rem] md:gap-y-[2rem] sm:gap-y-[2rem]"
                 )}
             >
-                {selectedData?.meters && selectedData?.meters.map((meter) =>
-                    <MeterCard {...meter} key={meter.id} />
+                {selectedData?.meters && selectedData?.meters.map((meter, index) =>
+                    <MeterCard {...meter} key={index} />
                 )}
             </Tabs>
         </>
@@ -180,7 +180,7 @@ export async function getServerSideProps() {
 }
 
 interface MeterPageProps extends Record<string, unknown> {
-    data: IGetMeterByAIDs[];
+    data: { meters: IGetMeterByAIDs[] };
     role: UserRole;
 }
 

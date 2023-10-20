@@ -1,55 +1,51 @@
 import { Form, Table } from "@/components";
 import { API } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
-import { IVoting, VotingStatus } from "@/interfaces/voting.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import { format } from "date-fns";
-import CloseIcon from "./close.svg";
-import OpenIcon from "./open.svg";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
+import { HouseNotificationType, IHouseNotification } from "@/interfaces/notification.interface";
 
-function Voting({ data }: IVotingProps): JSX.Element {
-    const useFormData = useForm<IVoting>();
+function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
+    const useFormData = useForm<IHouseNotification>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
-    type VotingData = {
+
+    type HouseNotificationData = {
         id: number[];
         title: string[];
+        text: string[];
+        type: string[];
         createdAt: string[];
-        expiredAt: string[];
-        status: string[];
         houseName: string[];
-        result: string[];
     };
 
-    const initialData: VotingData = {
+    const initialData: HouseNotificationData = {
         id: [],
         title: [],
+        text: [],
+        type: [],
         createdAt: [],
-        expiredAt: [],
-        status: [],
-        houseName: [],
-        result: []
+        houseName: []
     };
 
-    const votings: VotingData = data.votings.reduce(
-        (accumulator, voting) => {
-            accumulator.id.push(voting.id);
-            accumulator.title.push(voting.title);
-            const statusArr = Object.entries(VotingStatus).find(([key]) => key === voting.status);
-            let status: string;
-            if (statusArr) {
-                status = statusArr[1];
+    const notifications: HouseNotificationData = data.notifications.reduce(
+        (accumulator, notification) => {
+            accumulator.id.push(notification.id);
+            accumulator.title.push(notification.title);
+            accumulator.text.push(notification.text);
+            const typeArr = Object.entries(HouseNotificationType).find(([key]) => key === notification.type);
+            let type: string;
+            if (typeArr) {
+                type = typeArr[1];
             } else {
-                status = "";
+                type = "";
             }
-            accumulator.status.push(status);
-            accumulator.houseName.push(voting.houseName);
-            accumulator.result.push(voting.result);
-            accumulator.createdAt.push(format(new Date(voting.createdAt), "dd.mm.yyyy"));
-            accumulator.expiredAt.push(format(new Date(voting.expiredAt), "dd.mm.yyyy"));
+            accumulator.type.push(type);
+            accumulator.houseName.push(notification.houseName);
+            accumulator.createdAt.push(format(new Date(notification.createdAt), "dd.MM.yyyy"));
             return accumulator;
         },
         initialData
@@ -62,34 +58,39 @@ function Voting({ data }: IVotingProps): JSX.Element {
         };
     });
 
+    const types = Object.entries(HouseNotificationType).map(([key, value]) => ({
+        text: value,
+        value: key,
+    }));
+
     const {
-        id, title, status, result, houseName, createdAt, expiredAt
-    } = votings;
+        id, title, type, text, houseName, createdAt
+    } = notifications;
 
     return (
         <>
-            <Form<IVoting>
-                successMessage={"Опрос добавлен"}
+            <Form<IHouseNotification>
+                successMessage={"Уведомление отправлено"}
                 successCode={201}
                 additionalFormData={
-                    [{ managementCompanyId: 1 }]
+                    [{ managementCompanyId: 1, createdAt: new Date() }]
                 }
-                urlToPost={""}
+                urlToPost={API.managementCompany.houseNotification.add}
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
-                title={"Добавление опроса"}
+                title={"Отправка уведомления"}
                 inputs={[
                     {
-                        title: "Тема опроса",
+                        title: "Тема уведомления",
                         size: "m",
                         inputType: "string",
                         id: "title",
                         type: "input",
-                        numberInOrder: 2,
+                        numberInOrder: 3,
                         error: {
-                            value: true, message: "Введите тему опроса"
+                            value: true, message: "Введите тему уведомления"
                         }
-                    }
+                    },
                 ]}
                 selectors={[{
                     size: "m",
@@ -101,20 +102,30 @@ function Voting({ data }: IVotingProps): JSX.Element {
                     error: {
                         value: true, message: "Выберите дом"
                     }
+                },
+                {
+                    size: "m",
+                    inputTitle: "Тип уведомления",
+                    options: types,
+                    id: "type",
+                    type: "select",
+                    numberInOrder: 2,
+                    error: {
+                        value: true, message: "Выберите тип уведомления"
+                    }
                 }]}
-                datePickers={[{
-                    inputTitle: "Дата окончания",
-                    inputSize: "m",
-                    id: "expiredAt",
-                    type: "datepicker",
+                textAreas={[{
+                    title: "Подробности",
+                    id: "text",
+                    type: "textarea",
                     numberInOrder: 4,
                     error: {
-                        value: true, message: "Введите дату окончания"
+                        value: true, message: "Введите текст уведомления"
                     }
                 }]}
             />
             <Table
-                title="Опросы"
+                title="Уведомления"
                 filters={[
                     {
                         title: "Дата",
@@ -130,7 +141,7 @@ function Voting({ data }: IVotingProps): JSX.Element {
                 }]}
                 rows={{
                     actions: {
-                        actions: [{ type: "view", onClick: () => { } }]
+                        actions: [{ type: "view", onClick: () => { }, id: 0 }]
                     },
                     ids: id,
                     items: [
@@ -140,17 +151,9 @@ function Voting({ data }: IVotingProps): JSX.Element {
                             items: title
                         },
                         {
-                            title: "Статус",
-                            type: "icon",
-                            items: status,
-                            icons: [{
-                                key: String(VotingStatus.Close),
-                                icon: <CloseIcon />
-                            },
-                            {
-                                key: String(VotingStatus.Open),
-                                icon: <OpenIcon />
-                            }]
+                            title: "Тип",
+                            type: "text",
+                            items: type
                         },
                         {
                             title: "Дом",
@@ -158,28 +161,23 @@ function Voting({ data }: IVotingProps): JSX.Element {
                             items: houseName
                         },
                         {
-                            title: "Результат",
-                            type: "text",
-                            items: result
-                        },
-                        {
-                            title: "Дата начала",
+                            title: "Дата создания",
                             type: "text",
                             items: createdAt
                         },
                         {
-                            title: "Дата окончания",
+                            title: "Подробности",
                             type: "text",
-                            items: expiredAt
-                        }
+                            items: text
+                        },
                     ],
-                    keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true }
+                    keyElements: { first: [2], second: 1, isSecondNoNeedTitle: true }
                 }} />
         </>
     );
 }
 
-export default withLayout(Voting);
+export default withLayout(HouseNotification);
 
 export async function getServerSideProps() {
     const postData = {
@@ -187,9 +185,9 @@ export async function getServerSideProps() {
     };
 
     try {
-        const votings = await axios.post<{ votings: IVotingData[] }>(API.managementCompany.voting.get, postData);
-        const houses = await axios.post<{ houses: IVotingData[] }>(API.managementCompany.reference.house.get, postData);
-        if (!votings.data || !houses.data) {
+        const notifications = await axios.post<{ notifications: IHouseNotificationData[] }>(API.managementCompany.houseNotification.get, postData);
+        const houses = await axios.post<{ houses: IHouse[] }>(API.managementCompany.reference.house.get, postData);
+        if (!notifications.data || !houses.data) {
             return {
                 notFound: true
             };
@@ -197,7 +195,7 @@ export async function getServerSideProps() {
         return {
             props: {
                 data: {
-                    votings: votings.data.votings,
+                    notifications: notifications.data.notifications,
                     houses: houses.data.houses
                 }
             }
@@ -209,13 +207,12 @@ export async function getServerSideProps() {
     }
 }
 
-interface IVotingProps extends Record<string, unknown> {
-    data: { votings: IVotingData[]; houses: IHouse[] };
+interface IHouseNotificationProps extends Record<string, unknown> {
+    data: { notifications: IHouseNotificationData[]; houses: IHouse[] };
     role: UserRole;
 }
 
-interface IVotingData extends IVoting {
+interface IHouseNotificationData extends IHouseNotification {
     id: number;
     houseName: string;
-    result: string;
 }

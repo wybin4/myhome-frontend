@@ -1,31 +1,105 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Paragraph, Tag } from "@/components";
-import { ActionProps, ITableRowItem, TableAttachmentProps, TableRowItemDesktopProps, TableRowItemMobileProps, TableRowProps, TableTagProps, TableTextProps } from "./TableRow.props";
+import { InfoWindow, Paragraph, Tag } from "@/components";
+import { ITableRowArr, ITableRowItem, TableAttachmentProps, TableRowItemDesktopProps, TableRowItemMobileProps, TableRowProps, TableTagProps, TableTextProps } from "./TableRow.props";
 import styles from "./TableRow.module.css";
 import cn from 'classnames';
-import DownloadIcon from "./download.svg";
-import CommectIcon from "./comment.svg";
-import DeleteIcon from "./delete.svg";
-import EditIcon from "./edit.svg";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Action } from "./Action/Action";
+
+function combineArrays(...arrays: (ITableRowItem[] | undefined)[]): ITableRowItem[][] {
+    const maxLength = Math.max(...arrays.map(arr => arr?.length || 0));
+
+    const newArrays: ITableRowItem[][] = [];
+    for (let i = 0; i < maxLength; i++) {
+        const newArray: ITableRowItem[] = [];
+        for (const arr of arrays) {
+            newArray.push(arr?.[i] || { type: "none", item: undefined, title: "" });
+        }
+        newArrays.push(newArray);
+    }
+
+    return newArrays;
+}
+
+const getRowItems = (items: ITableRowArr[]): (ITableRowItem[] | undefined)[] => {
+    return items.map(item => {
+        return item.items?.map(i => {
+            return {
+                title: item.title,
+                item: i,
+                type: item.type,
+                icons: item.icons
+            };
+        });
+    });
+};
 
 export const TableRow = ({
-    startIcon, actions, items,
+    startIcon, actions, items, ids,
     keyElements = { first: [1], isSecondNoNeedTitle: false, second: 2 },
     className, ...props
 }: TableRowProps): JSX.Element => {
+    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
+    const [selectedId, setSelectedId] = useState<number>(0);
+    const [infoWindowData, setInfoWindowData] = useState(
+        {
+            title: "",
+            description: "",
+            text: "",
+            tags: [""],
+        }
+    );
+
+    if (actions) {
+        actions.actions.map(action => {
+            if (action.type === "view") {
+                action.onClick = () => {
+                    setIsInfoWindowOpen(!isInfoWindowOpen);
+                };
+                action.setSelectedId = setSelectedId;
+                return action;
+            }
+        });
+    }
+
+    useEffect(() => {
+        const index = ids.findIndex(id => id === selectedId);
+        const item = combineArrays(...getRowItems(items))[index];
+
+        if (item) {
+            const [title, tags0, tags1, description, text, ...restTags] = item;
+            setInfoWindowData({
+                title: String(title?.item) || "",
+                description: String(description?.item) || "",
+                text: String(text?.item) || "",
+                tags: [tags0, tags1, ...restTags].filter(Boolean).map(item => String(item.item)),
+            });
+        }
+    }, [selectedId]);
 
     return (
         <>
-            <TableRowDesktop startIcon={startIcon} actions={actions} items={items}
-                className={cn(className, "md:hidden sm:hidden")} {...props} />
-            <TableRowMobile startIcon={startIcon} actions={actions} items={items} keyElements={keyElements}
-                className={cn(className, "md:flex sm:flex 3xl:hidden 2xl:hidden xl:hidden lg:hidden")} {...props} />
+            <InfoWindow
+                {...infoWindowData}
+                isOpen={isInfoWindowOpen}
+                setIsOpen={setIsInfoWindowOpen} />
+            <TableRowDesktop
+                startIcon={startIcon} actions={actions} items={items} ids={ids}
+                className={cn(className, "md:hidden sm:hidden")}
+                {...props} />
+            <TableRowMobile
+                startIcon={startIcon} actions={actions} items={items} ids={ids}
+                keyElements={keyElements}
+                className={cn(className, "md:flex sm:flex 3xl:hidden 2xl:hidden xl:hidden lg:hidden")}
+                {...props} />
         </>
     );
 };
 
-const TableRowDesktop = ({ startIcon, actions, ids, items, className, ...props }: TableRowProps) => {
+const TableRowDesktop = ({
+    startIcon, actions, ids, items,
+    className, ...props
+}: TableRowProps) => {
     const countOfRows = ids ? ids.length : items[0].items?.length;
 
     const getActions = () => {
@@ -33,7 +107,13 @@ const TableRowDesktop = ({ startIcon, actions, ids, items, className, ...props }
             const elementsToRender = [];
             for (let i = 0; i < countOfRows; i++) {
                 const id = ids[i];
-                elementsToRender.push(<Action key={i} id={String(id)} {...actions} />);
+                const thisActions = actions;
+                if (thisActions) {
+                    thisActions.actions.map(action => {
+                        return action.id = id;
+                    });
+                }
+                elementsToRender.push(<Action key={i} {...thisActions} />);
             }
             return elementsToRender;
         }
@@ -65,10 +145,12 @@ const TableRowDesktop = ({ startIcon, actions, ids, items, className, ...props }
                         key={key}
                         {...item} />)
                 }
-                {actions?.actions && actions.actions.length !== 0 && <div className="flex flex-col gap-4">
-                    <Paragraph size="s" className="font-medium">Действия</Paragraph>
-                    {getActions()}
-                </div>}
+                {actions?.actions && actions.actions.length !== 0 &&
+                    <div className="flex flex-col gap-4">
+                        <Paragraph size="s" className="font-medium">Действия</Paragraph>
+                        {getActions()}
+                    </div>
+                }
             </div>
         </>
     );
@@ -104,33 +186,16 @@ const TableRowItemDesktop = ({ title, type, items, ...props }: TableRowItemDeskt
     );
 };
 
-const TableRowMobile = ({ startIcon, actions, ids, items, className, keyElements = { first: [1], second: 2, isSecondNoNeedTitle: false }, ...props }: TableRowProps) => {
-    const rowItems: (ITableRowItem[] | undefined)[] = items.map(item => {
-        return item.items?.map(i => {
-            return {
-                title: item.title,
-                item: i,
-                type: item.type,
-                icons: item.icons
-            };
-        });
-    });
-
-    function combineArrays(...arrays: (ITableRowItem[] | undefined)[]): ITableRowItem[][] {
-        const maxLength = Math.max(...arrays.map(arr => arr?.length || 0));
-
-        const newArrays: ITableRowItem[][] = [];
-        for (let i = 0; i < maxLength; i++) {
-            const newArray: ITableRowItem[] = [];
-            for (const arr of arrays) {
-                newArray.push(arr?.[i] || { type: "none", item: undefined, title: "" });
-            }
-            newArrays.push(newArray);
-        }
-
-        return newArrays;
-    }
+const TableRowMobile = ({
+    startIcon, actions, ids, items,
+    className,
+    keyElements = {
+        first: [1], second: 2, isSecondNoNeedTitle: false
+    },
+    ...props }: TableRowProps) => {
+    const rowItems = getRowItems(items);
     const newRowItems = combineArrays(...rowItems);
+
     return (
         <>
             <div className={cn(className, styles.rowsMobileWrapper)} {...props}>
@@ -177,6 +242,7 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
     const itemsFiltered = items ? items.filter((item, index) =>
         !keyElements.first.includes(index + 1) &&
         index !== (keyElements.second - 1) && item.type !== "icon") : undefined;
+
     return (
         <div className={cn(styles.itemMobile)} {...props}>
             <div className="flex justify-between">
@@ -201,7 +267,12 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
                         )}
                     </div>
                 </div>
-                {actions && <Action id={String(elId)} {...actions} />}
+                {actions &&
+                    <Action
+                        isMobile={true}
+                        actions={actions.actions.map(action => ({ ...action, id: elId }))}
+                    />
+                }
             </div>
             {(itemsFiltered && itemsFiltered.length !== 0) &&
                 <>
@@ -221,31 +292,11 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
     );
 };
 
-
-const Action = ({ actions, ...props }: ActionProps): JSX.Element => {
-    return (
-        <div className={styles.actions} >
-            {actions && actions.map((action, index) => {
-                switch (action.type) {
-                    case "editAndSave":
-                        return <div key={index} {...props} onClick={action.onClick}><EditIcon /></div>;
-                    case "delete":
-                        return <div key={index} {...props} onClick={action.onClick}><DeleteIcon /></div>;
-                    case "addComment":
-                        return <div key={index} {...props} onClick={action.onClick}><CommectIcon className={styles.comment} /></div>;
-                    case "download":
-                        return <div key={index} {...props} onClick={action.onClick}><DownloadIcon /></div>;
-                }
-            })}
-        </div>
-    );
-};
-
 const TableText = ({ text, ...props }: TableTextProps) => {
     return (
-        <div {...props}>
+        <div className={styles.mobileTextWrapper} {...props}>
             {text ? (
-                <div className={styles.rowContent}>{text}</div>
+                <div className={cn(styles.rowContent, styles.mobileText)}>{text}</div>
             ) : (
                 <div className={styles.rowContent}>—</div>
             )}

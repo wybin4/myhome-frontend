@@ -4,6 +4,7 @@ export * from "./primitive/Tag/Tag";
 export * from "./primitive/Paragraph/Paragraph";
 export * from "./primitive/Icon/Icon";
 export * from "./primitive/Input/Input";
+export * from "./primitive/Textarea/Textarea";
 export * from "./primitive/Select/Select";
 export * from "./primitive/TableSearch/TableSearch";
 export * from "./primitive/Checkbox/Checkbox";
@@ -17,6 +18,7 @@ export * from "./composite/TableFilter/TableFilter";
 export * from "./composite/TableRow/TableRow";
 export * from "./composite/TableButton/TableButton";
 export * from "./composite/Tabs/Tabs";
+export * from "./composite/TableRow/InfoWindow/InfoWindow";
 
 export * from "./enhanced/Table/Table";
 export * from "./enhanced/Card/Card";
