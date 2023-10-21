@@ -1,7 +1,7 @@
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, MutableRefObject, SetStateAction } from "react";
 
 export interface TableButtonProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    buttons: TableButtonType[];
+    buttons?: TableButtonType[];
 
     filterAppearance?: "primary" | "ghost";
     isFiltersExist: boolean;

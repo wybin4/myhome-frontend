@@ -16,6 +16,7 @@ export const API: {
         singlePaymentDocument: { get: string; calculate: string };
         voting: { get: string; add: string };
         houseNotification: { get: string; add: string };
+        appeal: { get: string };
     };
 } = {
     subscriber: {
@@ -84,6 +85,9 @@ export const API: {
         houseNotification: {
             get: `${process.env.NEXT_PUBLIC_DOMAIN}/house-notification/get-house-notifications-by-mcid`,
             add: `${process.env.NEXT_PUBLIC_DOMAIN}/house-notification/add-house-notification`
+        },
+        appeal: {
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/get-appeals-by-mcid`,
         }
     },
 

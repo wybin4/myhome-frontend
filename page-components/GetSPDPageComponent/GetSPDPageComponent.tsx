@@ -5,6 +5,7 @@ import HouseIcon from "./house.svg";
 import { SelectionDataItem, SelectionFormProps } from "@/components/enhanced/Form/Form.props";
 import { GetSPDPageComponentProps } from "./GetSPDPageComponent.props";
 import styles from "./GetSPDPageComponent.module.css";
+import { formatNumber } from "@/helpers/constants";
 
 type GroupedSubscriber = {
     houseId: number,
@@ -112,15 +113,6 @@ export const GetSPDPageComponent = ({
             checkedIds: formCheckedIds,
             setCheckedIds: setFormCheckedIds
         };
-    };
-
-    const formatNumber = (number: string) => {
-        const length = 7;
-        if (number.length <= length) {
-            return number;
-        }
-        const truncatedString = number.slice(0, length - 3);
-        return `${truncatedString}...${number.slice(-1)}`;
     };
 
     useEffect(() => {

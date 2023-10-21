@@ -64,6 +64,7 @@ export const Form = <T extends FieldValues>({
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
     successCode, successMessage,
+    oneRow = false,
     ...props
 }: FormProps<T>): JSX.Element => {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -172,7 +173,7 @@ export const Form = <T extends FieldValues>({
                     })} {...props} ref={formRef}>
                         <Paragraph size="l" className={styles.title}>{title}</Paragraph>
                         <div className={cn(styles.content, {
-                            "grid grid-cols-2 gap-x-8 min-w-[42.25rem]": elementCount > 3,
+                            "grid grid-cols-2 gap-x-8 min-w-[42.25rem]": elementCount > 3 && !oneRow,
                             "lg:grid-cols-1 lg:min-w-fit": elementCount > 3,
                             "md:grid-cols-1 md:min-w-fit": elementCount > 3,
                             "sm:grid-cols-1 sm:min-w-fit": elementCount > 3,

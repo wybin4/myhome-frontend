@@ -16,6 +16,7 @@ export interface RowKeyElements {
     first: number[];
     isSecondNoNeedTitle?: boolean;
     second: number;
+    tags?: number[];
 }
 
 export interface TableRowItemMobileProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -37,6 +38,7 @@ export interface ITableRowItem {
     title: string;
     type: RowType;
     item?: string;
+    infoItem?: string;
     icons?: ITableRowIcon[];
 }
 
@@ -44,6 +46,7 @@ export interface ITableRowArr {
     title: string;
     type: RowType;
     items: string[];
+    infoItems?: string[];
     icons?: ITableRowIcon[];
 }
 

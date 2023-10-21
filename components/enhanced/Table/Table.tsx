@@ -18,7 +18,7 @@ export const Table = ({
             <div>
                 <div className={styles.topPart}>
                     {title && <Htag size="h1" className={styles.title}>{title}</Htag>}
-                    {buttons && <TableButton buttons={buttons}
+                    {(buttons || filters) && <TableButton buttons={buttons}
                         isFiltersExist={filters !== undefined}
                         filterButtonRef={filterButtonRef}
                         isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}

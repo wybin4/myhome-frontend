@@ -124,6 +124,8 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     successCode: FormSuccess;
     // errorCode?: FormErrors[];
     successMessage: string;
+
+    oneRow?: boolean;
 }
 
 export type FormSuccess = 200 | 201;

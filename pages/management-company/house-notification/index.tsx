@@ -79,6 +79,7 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
                 title={"Отправка уведомления"}
+                oneRow={true}
                 inputs={[
                     {
                         title: "Тема уведомления",
@@ -131,6 +132,12 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                         title: "Дата",
                         titleEng: "createdAt",
                         type: "date"
+                    },
+                    {
+                        title: "Тип уведомления",
+                        titleEng: "type",
+                        type: "checkbox",
+                        items: type
                     }
                 ]}
                 buttons={[{
@@ -171,7 +178,10 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                             items: text
                         },
                     ],
-                    keyElements: { first: [2], second: 1, isSecondNoNeedTitle: true }
+                    keyElements: {
+                        first: [2], second: 1, tags: [3, 4],
+                        isSecondNoNeedTitle: true
+                    }
                 }} />
         </>
     );

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { InfoWindow, Paragraph, Tag } from "@/components";
-import { ITableRowArr, ITableRowItem, TableAttachmentProps, TableRowItemDesktopProps, TableRowItemMobileProps, TableRowProps, TableTagProps, TableTextProps } from "./TableRow.props";
+import { ITableRowArr, ITableRowItem, RowKeyElements, TableAttachmentProps, TableRowItemDesktopProps, TableRowItemMobileProps, TableRowProps, TableTagProps, TableTextProps } from "./TableRow.props";
 import styles from "./TableRow.module.css";
 import cn from 'classnames';
 import React, { useEffect, useState } from "react";
@@ -23,15 +23,36 @@ function combineArrays(...arrays: (ITableRowItem[] | undefined)[]): ITableRowIte
 
 const getRowItems = (items: ITableRowArr[]): (ITableRowItem[] | undefined)[] => {
     return items.map(item => {
-        return item.items?.map(i => {
+        return item.items?.map((i, key) => {
             return {
                 title: item.title,
+                infoItem: item.infoItems ? item.infoItems[key] : undefined,
                 item: i,
                 type: item.type,
                 icons: item.icons
             };
         });
     });
+};
+
+const getKeyElements = (items: ITableRowItem[] | undefined, keyElements: RowKeyElements, isInfo: boolean = false) => {
+    const firstItem = items ? items.filter((item, index) =>
+        keyElements.first.includes(index + 1)) : undefined;
+    const secondItem = items ? items[keyElements.second - 1] : undefined;
+
+    let itemsFiltered: ITableRowItem[] | undefined, tags: ITableRowItem[] | undefined;
+    if (!isInfo) {
+        itemsFiltered = items ? items.filter((item, index) =>
+            !keyElements.first.includes(index + 1) &&
+            index !== (keyElements.second - 1) && item.type !== "icon") : undefined;
+    } else {
+        tags = items ? items.filter((item, index) =>
+            keyElements.tags?.includes(index + 1)) : undefined;
+        itemsFiltered = items ? items.filter((item, index) =>
+            !keyElements.first.includes(index + 1) && !keyElements.tags?.includes(index + 1) &&
+            index !== (keyElements.second - 1)) : undefined;
+    }
+    return { firstItem, secondItem, tags, itemsFiltered };
 };
 
 export const TableRow = ({
@@ -41,12 +62,19 @@ export const TableRow = ({
 }: TableRowProps): JSX.Element => {
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(0);
-    const [infoWindowData, setInfoWindowData] = useState(
+    const [infoWindowData, setInfoWindowData] = useState<
+        {
+            title: string;
+            description: string;
+            text: string;
+            tags: string[] | undefined;
+        }
+    >(
         {
             title: "",
             description: "",
             text: "",
-            tags: [""],
+            tags: undefined,
         }
     );
 
@@ -67,12 +95,21 @@ export const TableRow = ({
         const item = combineArrays(...getRowItems(items))[index];
 
         if (item) {
-            const [title, tags0, tags1, description, text, ...restTags] = item;
+            const { firstItem, secondItem, tags, itemsFiltered } = getKeyElements(item, keyElements, true);
             setInfoWindowData({
-                title: String(title?.item) || "",
-                description: String(description?.item) || "",
-                text: String(text?.item) || "",
-                tags: [tags0, tags1, ...restTags].filter(Boolean).map(item => String(item.item)),
+                title: String(secondItem?.infoItem ? secondItem?.infoItem : secondItem?.item) || "",
+                description: String(
+                    firstItem?.
+                        map(fi => fi.infoItem ? fi.infoItem : fi.item).
+                        join(" ")
+                ) || "",
+                text: String(itemsFiltered?.
+                    map(r => r.infoItem ? r.infoItem : r.item).
+                    join(" ")
+                ) || "",
+                tags: tags?.map(item => String(
+                    item.infoItem ? item.infoItem : item.item
+                ))
             });
         }
     }, [selectedId]);
@@ -248,14 +285,9 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
         }
     };
 
-    const firstItem = items ? items.filter((item, index) =>
-        keyElements.first.includes(index + 1)) : undefined;
+    const { firstItem, secondItem, itemsFiltered } = getKeyElements(items, keyElements);
     const iconsArr = items ? items.find(item => item.type === "icon") : undefined;
     const icon = iconsArr?.icons?.find(i => i.key === iconsArr.item);
-    const secondItem = items ? items[keyElements.second - 1] : undefined;
-    const itemsFiltered = items ? items.filter((item, index) =>
-        !keyElements.first.includes(index + 1) &&
-        index !== (keyElements.second - 1) && item.type !== "icon") : undefined;
 
     return (
         <div className={cn(styles.itemMobile)} {...props}>
