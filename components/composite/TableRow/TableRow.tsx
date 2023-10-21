@@ -98,91 +98,105 @@ export const TableRow = ({
 
 const TableRowDesktop = ({
     startIcon, actions, ids, items,
-    className, ...props
+    className
 }: TableRowProps) => {
-    const countOfRows = ids ? ids.length : items[0].items?.length;
-
-    const getActions = () => {
-        if (countOfRows && actions) {
-            const elementsToRender = [];
-            for (let i = 0; i < countOfRows; i++) {
-                const id = ids[i];
-                const thisActions = actions;
-                if (thisActions) {
-                    thisActions.actions.map(action => {
-                        return action.id = id;
-                    });
-                }
-                elementsToRender.push(<Action key={i} {...thisActions} />);
-            }
-            return elementsToRender;
-        }
-        return null;
-    };
-
-    const getStartIcons = () => {
-        if (countOfRows && startIcon) {
-            const elementsToRender = [];
-            for (let i = 0; i < countOfRows; i++) {
-                elementsToRender.push(
-                    React.cloneElement(startIcon, { key: i })
-                );
-            }
-            return elementsToRender;
-        }
-        return null;
-    };
+    const rowItems = getRowItems(items);
+    const newRowItems = combineArrays(...rowItems);
 
     return (
         <>
-            <div className={cn("flex gap-12", styles.rowDesktop, className)} {...props}>
+            <table className={cn(
+                "border-separate border-spacing-3",
+                className
+            )}>
+                <thead>
+                    <tr>
+                        {items && items.map((item, key) =>
+                            <th key={key} className="align-top">
+                                <Paragraph size="s"
+                                    className="font-medium text-left"
+                                >{item.title}</Paragraph>
+                            </th>
+                        )}
+                        {actions &&
+                            <th className="align-top">
+                                <Paragraph size="s"
+                                    className="font-medium text-left">
+                                    Действия
+                                </Paragraph>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    {newRowItems && newRowItems.map((item, key) => {
+                        const elId = ids ? ids[key] : 0;
+                        return (
+                            <TableRowItemDesktop
+                                startIcon={startIcon}
+                                items={item} key={key}
+                                actions={actions}
+                                elId={elId}
+                            />
+                        );
+                    })}
+                </tbody>
+            </table>
+            {/* <div className={cn("flex gap-12", )} {...props}>
                 {startIcon && <div className={cn("flex flex-col gap-4", styles.iconWrapper)}>
                     <Paragraph size="s" className="font-medium">⠀</Paragraph>
                     {getStartIcons()}
                 </div>}
-                {items && items.map((item, key) =>
+                 {items && items.map((item, key) =>
                     <TableRowItemDesktop
                         key={key}
                         {...item} />)
-                }
+                } 
                 {actions?.actions && actions.actions.length !== 0 &&
                     <div className="flex flex-col gap-4">
                         <Paragraph size="s" className="font-medium">Действия</Paragraph>
                         {getActions()}
                     </div>
                 }
-            </div>
+            </div>  */}
         </>
     );
 };
 
-const TableRowItemDesktop = ({ title, type, items, ...props }: TableRowItemDesktopProps) => {
+const TableRowItemDesktop = ({ items, elId, startIcon, actions, ...props }: TableRowItemDesktopProps) => {
     return (
-        <div className="flex flex-col gap-4" {...props}>
-            <Paragraph size="s" className="font-medium">{title}</Paragraph>
+        <tr className="align-top" {...props}>
+            {startIcon && <td>{startIcon}</td>}
             {items && items.map((item, key) => {
-                switch (type) {
+                switch (item.type) {
                     case "tag":
                         return (
-                            <TableTag text={item} key={key} />
+                            <td key={key}><TableTag text={item.item} /></td>
                         );
                     case "icon":
                         return (
-                            <TableTag text={item} key={key} appearance="primary" />
+                            <td key={key}><TableTag text={item.item} appearance="primary" /></td>
                         );
                     case "text":
                         return (
-                            <TableText text={item} key={key} />
+                            <td key={key}><TableText text={item.item} /></td>
                         );
                     case "attachment":
                         return (
-                            <TableAttachment text={item} key={key} />
+                            <td key={key}><TableAttachment text={item.item} /></td>
                         );
                     default:
                         return <></>;
                 }
             })}
-        </div>
+            <td>
+                {actions &&
+                    <Action
+                        actions={actions && actions.actions.map(action => ({ ...action, id: elId }))}
+                    />
+                }
+            </td>
+        </tr>
     );
 };
 
@@ -270,7 +284,7 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
                 {actions &&
                     <Action
                         isMobile={true}
-                        actions={actions.actions.map(action => ({ ...action, id: elId }))}
+                        actions={actions && actions.actions.map(action => ({ ...action, id: elId }))}
                     />
                 }
             </div>
@@ -294,9 +308,9 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
 
 const TableText = ({ text, ...props }: TableTextProps) => {
     return (
-        <div className={styles.mobileTextWrapper} {...props}>
+        <div className={styles.tableTextWrapper} {...props}>
             {text ? (
-                <div className={cn(styles.rowContent, styles.mobileText)}>{text}</div>
+                <div className={cn(styles.rowContent, styles.tableText)}>{text}</div>
             ) : (
                 <div className={styles.rowContent}>—</div>
             )}

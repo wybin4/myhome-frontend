@@ -27,6 +27,7 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
     engName: "apartment",
     rusName: [{ word: "жилое", isChangeable: true }, { word: "помещение", isChangeable: true }],
     gender: "средний",
+    tableActions: { actions: [{ type: "editAndSave", onClick: () => { }, id: 0 }] },
     components: [
         {
             type: "select", selectorOptions: [

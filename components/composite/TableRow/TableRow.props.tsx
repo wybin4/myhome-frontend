@@ -26,10 +26,11 @@ export interface TableRowItemMobileProps extends DetailedHTMLProps<HTMLAttribute
     keyElements: RowKeyElements;
 }
 
-export interface TableRowItemDesktopProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    title: string;
-    type: RowType;
-    items?: (string | undefined)[];
+export interface TableRowItemDesktopProps extends DetailedHTMLProps<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement> {
+    startIcon?: any;
+    elId: number;
+    items: ITableRowItem[];
+    actions?: ActionProps;
 }
 
 export interface ITableRowItem {

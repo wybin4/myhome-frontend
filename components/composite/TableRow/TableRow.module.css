@@ -1,32 +1,7 @@
 @media (max-width: 900px) {
-    .rowDesktop {
-        column-gap: 0.5rem;
-        row-gap: 2rem;
-
-        font-size: 0.75rem;
-    }
-
-    .rowDesktop * {
-        row-gap: 1rem;
-
-        justify-items: center;
-    }
-
-    .rowDesktop *:not(.rowTag) {
-        min-height: 2rem;
-        height: 2rem;
-    }
-
     .rowContent {
         display: flex;
         align-items: center;
-    }
-}
-
-@media (max-width: 600px) {
-    .rowDesktop * {
-        column-gap: 1.5rem;
-        row-gap: 2rem;
     }
 }
 
@@ -84,14 +59,14 @@
     border-radius: 100%;
 }
 
-.mobileTextWrapper {
+.tableTextWrapper {
     display: block;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
 }
 
-.mobileText {
+.tableText {
     display: -webkit-box;
     max-width: 17rem;
     width: 100%;
