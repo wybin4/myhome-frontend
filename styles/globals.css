@@ -7,6 +7,8 @@
     --white: white;
     --grey: #858585;
     --grey-light: #D3D3D3;
+    --voting: rgb(118, 83, 252, 10%);
+    --voting-dark: rgb(118, 83, 252, 32%);
     --primary-light: #F1EDFE;
     --primary: #7653FC;
     --primary-hover: #6144d4;

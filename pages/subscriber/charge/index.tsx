@@ -78,7 +78,8 @@ function Charge({ data }: IChargeProps): JSX.Element {
                             actions: {
                                 actions: [{
                                     type: "download",
-                                    onClick: download
+                                    onClick: download,
+                                    id: 0
                                 }]
                             },
                             ids: spdIds,

@@ -11,6 +11,7 @@ export * from "./primitive/Checkbox/Checkbox";
 export * from "./primitive/Radio/Radio";
 export * from "./primitive/DatePicker/components/DatePickerInput";
 export * from "./primitive/Pdf/Pdf";
+export * from "./primitive/Voting/Voting";
 
 export * from "./composite/PopUp/PopUp";
 export * from "./composite/Menu/Menu";

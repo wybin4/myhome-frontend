@@ -128,6 +128,7 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
 
     return (
         <Card
+            maxWidth="26rem"
             key={key}
             titlePart={{
                 text: titlePartText(meter.typeOfServiceName, meter.unitName),

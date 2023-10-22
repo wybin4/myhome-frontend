@@ -1,34 +1,54 @@
 import { CardBottomProps, CardInputProps, CardProps, CardTitleProps } from "./Card.props";
 import styles from "./Card.module.css";
 import cn from "classnames";
-import { Input, Paragraph } from "@/components";
+import { Input, Paragraph, Tag, Voting } from "@/components";
 import React, { useState } from "react";
+import AttachmentIcon from "./attachment.svg";
 
 export const Card = ({
     titlePart, description, text,
-    input, bottom,
+    input, bottom, voting,
+    maxWidth,
     className, ...props
 }: CardProps): JSX.Element => {
-    const [inputValue, setInputValue] = useState<string | undefined>(input?.value);
+    const [inputValue, setInputValue] = useState<string | number | undefined>(input?.value);
 
     return (
         <div
+            style={{ maxWidth: maxWidth ? maxWidth : "100%" }}
             className={cn(styles.cardWrapper, className)}
             {...props}>
-            <CardTitle className={styles.title} {...titlePart} />
+            <CardTitle  {...titlePart} />
             <Paragraph size="xs" className={styles.description}>{description}</Paragraph>
             {input && <CardInput className={styles.input} {...input} value={inputValue} setValue={setInputValue} />}
+            {voting && <Voting {...voting} />}
+            {text && <p>{text}</p>}
             {bottom && <CardBottom {...bottom} />}
         </div>
     );
 };
 
-export const CardTitle = ({ text, iconLeft, tag, symbolRight, ...props }: CardTitleProps): JSX.Element => {
+export const CardTitle = ({
+    text, description,
+    iconLeft, iconLeftSize = "s",
+    tag, symbolRight,
+    ...props }: CardTitleProps): JSX.Element => {
     return (
-        <div {...props}>
-            <span className={styles.iconLeft}>{iconLeft}</span>
-            <Paragraph size="m" className="font-medium">{text}</Paragraph>
-            <span className={styles.symbolRight}>{symbolRight}</span>
+        <div className={styles.title} {...props}>
+            <div className={styles.titleWrapper}>
+                <span className={cn(styles.iconLeft, {
+                    [styles.iconLeftL]: iconLeftSize === "l",
+                    [styles.iconLeftS]: iconLeftSize === "s",
+                })}>{iconLeft}</span>
+                <div className={cn({
+                    [styles.titleWithLeftLIcon]: iconLeftSize === "l"
+                })}>
+                    <Paragraph size="m" className="font-medium">{text}</Paragraph>
+                    {description && <Paragraph size="xs" className={styles.titleDesc}>{description}</Paragraph>}
+                </div>
+                <span className={styles.symbolRight}>{symbolRight}</span>
+            </div>
+            {tag && <Tag size="l">{tag}</Tag>}
         </div>
     );
 };
@@ -57,6 +77,15 @@ export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props
                     {text}
                 </Paragraph>
             }
+            <div className={styles.bottomTagAtt}>
+                {tag && <Tag size="l" className={styles.bottomTag}>{tag}</Tag>}
+                {attachment &&
+                    <p className={styles.attachment}>
+                        <AttachmentIcon />
+                        {attachment}
+                    </p>
+                }
+            </div>
         </div>
     );
 };

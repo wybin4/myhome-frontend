@@ -1,6 +1,4 @@
 .cardWrapper {
-    max-width: 26rem;
-
     background: var(--white);
 
     border: solid 1px var(--grey-light);
@@ -15,13 +13,24 @@
     position: relative;
 }
 
+.titleWrapper {
+    display: flex;
+    align-items: last baseline;
+}
+
 .description,
 .input {
     margin-bottom: 1rem;
 }
 
-.description {
+.description,
+.titleDesc {
     color: var(--grey);
+}
+
+.titleDesc {
+    margin-top: 0.4rem;
+    margin-bottom: 1rem;
 }
 
 .inputCenter {
@@ -30,12 +39,33 @@
 }
 
 .iconLeft svg {
-    width: 1.375rem;
-    height: 1.375rem;
-
     fill: var(--black);
 
     margin-right: 1rem;
+}
+
+.iconLeftL svg {
+    width: 3.375rem;
+    height: 3.375rem;
+}
+
+@media (max-width: 600px) {
+    .iconLeftL {
+        display: none;
+    }
+
+    .titleWithLeftLIcon {
+        text-align: center;
+    }
+
+    .titleWithLeftLIcon .titleDesc {
+        margin-top: 0.8rem;
+    }
+}
+
+.iconLeftS svg {
+    width: 1.375rem;
+    height: 1.375rem;
 }
 
 .symbolRight {
@@ -55,6 +85,7 @@
 .title {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .bottomText {
@@ -63,4 +94,33 @@
 
 .bottomText strong {
     color: var(--black);
+}
+
+.bottomTag {
+    margin-top: 1.4375rem;
+    margin-left: 0;
+}
+
+.bottomTagAtt {
+    display: flex;
+    align-items: last baseline;
+    gap: 1.5rem;
+}
+
+.attachment {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    font-size: 0.875rem;
+
+    color: var(--grey);
+
+    cursor: pointer;
+}
+
+.attachment svg {
+    fill: var(--grey);
+
+    height: 0.8rem;
 }
