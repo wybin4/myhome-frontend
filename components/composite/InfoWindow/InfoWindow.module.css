@@ -80,28 +80,6 @@
     border-radius: 2rem;
 }
 
-.icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--primary);
-
-    width: 3.69rem;
-    height: 3.69rem;
-
-    border-radius: 100%;
-
-    margin-bottom: 1.46rem;
-}
-
-.icon svg {
-    width: 1.6rem;
-    height: 1.6rem;
-
-    stroke: var(--white);
-}
-
 @media (max-width: 900px) {
     .wrapper {
         max-width: 100%;

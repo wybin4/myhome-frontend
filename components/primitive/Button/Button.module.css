@@ -15,7 +15,12 @@
     transition: all 0.2s;
 }
 
-.l {}
+.l {
+    width: 17.6875rem;
+    height: 2.85375rem;
+
+    border-radius: 1.4375rem;
+}
 
 .m {
     width: 10.375rem;

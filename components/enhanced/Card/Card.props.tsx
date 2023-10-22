@@ -42,6 +42,14 @@ export interface CardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
     attachment?: string;
 }
 
+export interface ChargeCardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    button?: {
+        name: string;
+        onClick: () => void;
+    };
+    text?: ReactNode;
+}
+
 export interface BaseCardProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     maxWidth?: string;
     bottom?: CardBottomProps;
@@ -58,8 +66,7 @@ export interface CardProps extends BaseCardProps {
 
 export interface ChargeCardProps extends BaseCardProps {
     titlePart: ChargeCardTitleProps;
-    text?: string;
-    input?: CardInputProps;
-    voting?: VotingProps;
+    text?: ReactNode;
+    bottom: ChargeCardBottomProps;
     onClick: () => void;
 }

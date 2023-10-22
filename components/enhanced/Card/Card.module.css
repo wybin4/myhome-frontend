@@ -29,6 +29,13 @@
     margin-top: 0.5rem;
 }
 
+.titleMainWrapper {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .description,
 .titleDesc {
     color: var(--grey);
@@ -39,8 +46,32 @@
     margin-bottom: 0.3rem;
 }
 
-.chargeCard .titleDesc {
+.chargeCard {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.chargeCard .titleDesc,
+.chargeCard .titleText {
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+
     margin-top: 0;
+    padding: 0.1rem 0.5625rem;
+
+    color: var(--white);
+    font-size: 0.875rem;
+}
+
+.chargeCard .titleDesc {
+    margin: 0;
+}
+
+.chargeCard .bottom {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 3.875rem;
 }
 
 .inputCenter {
@@ -103,6 +134,14 @@
     justify-content: space-between;
 }
 
+.chargeCard .title {
+    justify-content: center;
+
+    padding-bottom: 1.3125rem;
+
+    border-bottom: solid 1px var(--grey-light);
+}
+
 .bottomText {
     color: var(--grey);
 }
@@ -154,21 +193,11 @@
     }
 
     .tagIcon {
-        display: block;
-        background-color: var(--primary);
+        display: flex;
 
-        width: fit-content;
-        height: fit-content;
-        border-radius: 100%;
-
-        padding: 0.7rem;
         margin-right: 0.8125rem;
 
         align-self: baseline;
-    }
-
-    .tagIcon svg {
-        stroke: var(--white);
     }
 
     .symbolRightL {
@@ -181,6 +210,49 @@
     }
 
     .chargeCard {
+        padding: 1.3125rem 1.5625rem;
+
         cursor: pointer;
+    }
+
+    .chargeCard .title {
+        justify-content: space-between;
+
+        padding-bottom: 0;
+
+        border-bottom: none;
+    }
+
+    .chargeCard .titleMainWrapper {
+        display: block;
+    }
+
+    .chargeCard .titleDesc,
+    .chargeCard .titleText {
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .chargeCard .titleDesc {
+        margin-bottom: 0.3rem;
+
+        color: var(--grey);
+    }
+
+    .chargeCard .titleText {
+        font-weight: 500;
+        font-size: 0.92rem;
+
+        color: var(--black);
+    }
+
+    .chargeCard .bottom {
+        display: block;
+
+        margin-top: 0.5rem;
+    }
+
+    .chargeCard .bottom button {
+        display: none;
     }
 }

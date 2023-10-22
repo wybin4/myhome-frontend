@@ -22,12 +22,13 @@
 .m:not(.iconRounded) {
     font-size: 16px;
 
-    padding: 10px 14px;
+    width: 3.69rem;
+    height: 3.69rem;
 }
 
 .m svg {
-    width: 15px;
-    height: 15px;
+    width: 1.6rem;
+    height: 1.6rem;
 }
 
 .s {
@@ -36,8 +37,8 @@
 }
 
 .s svg {
-    width: 1rem;
-    height: 1rem;
+    width: 1.2rem;
+    height: 1.2rem;
 }
 
 .xs {
@@ -70,10 +71,6 @@
     background: var(--red-light);
 }
 
-.primary svg {
-    fill: var(--white);
-}
-
 .green svg {
     fill: var(--green);
 }
@@ -84,4 +81,12 @@
 
 .none svg {
     fill: var(--primary);
+}
+
+.fill svg {
+    fill: var(--white);
+}
+
+.stroke svg {
+    stroke: var(--white);
 }

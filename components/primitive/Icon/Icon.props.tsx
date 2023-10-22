@@ -4,5 +4,6 @@ export interface IconProps extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElem
     size: "l" | "m" | "s" | "xs";
     appearance?: "primary" | "red" | "green" | "none";
     type: "letter" | "icon" | "iconRounded";
+    fillType?: "fill" | "stroke";
     children: ReactNode;
 }

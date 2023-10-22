@@ -5,10 +5,16 @@
 
 .chargeText {
     display: flex;
+
+    padding: 0 1.5625rem;
 }
 
-.chargeText span {
+.chargeText span:nth-child(2) {
     flex: 1;
+}
+
+.chargeText span:nth-child(1) {
+    flex: 2;
 }
 
 .chargeText span:nth-child(2) {
@@ -23,12 +29,30 @@
 }
 
 .mediumText {
-    font-size: 1.2rem;
-    font-weight: 500;
+    font-size: 2.5rem;
+    font-weight: 600;
 
-    margin-bottom: 1.54rem;
+    margin-bottom: 3.8125rem;
+    margin-top: 5.75rem;
+}
+
+.mediumText span:nth-child(2) {
+    text-align: center;
 }
 
 .downloadText {
     margin-top: 1.54rem;
+}
+
+@media (max-width: 600px) {
+    .mediumText {
+        font-size: 1.2rem;
+        font-weight: 500;
+
+        margin-bottom: 1.54rem;
+    }
+
+    .mediumText span:nth-child(2) {
+        text-align: end;
+    }
 }

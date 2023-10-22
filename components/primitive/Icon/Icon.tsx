@@ -5,6 +5,7 @@ import cn from 'classnames';
 export const Icon = ({
     className, children,
     type, appearance = "primary", size,
+    fillType = "fill",
     ...props
 }: IconProps): JSX.Element => {
     return (
@@ -14,6 +15,8 @@ export const Icon = ({
                 [styles.s]: size === "s",
                 [styles.l]: size === "l",
                 [styles.m]: size === "m",
+                [styles.fill]: fillType === "fill",
+                [styles.stroke]: fillType === "stroke",
                 [styles.primary]: appearance === "primary",
                 [styles.red]: appearance === "red",
                 [styles.green]: appearance === "green",

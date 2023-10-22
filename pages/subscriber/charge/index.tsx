@@ -13,7 +13,7 @@ import { useState } from "react";
 
 function Charge(): JSX.Element {
     const [activeTab, setActiveTab] = useState<number>(1);
-    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(true);
+    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
 
     return (
         <>

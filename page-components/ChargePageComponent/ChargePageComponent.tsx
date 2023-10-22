@@ -9,6 +9,14 @@ export const ChargePageComponent = ({
     activeTab, setActiveTab,
     isInfoWindowOpen, setIsInfoWindowOpen
 }: ChargePageComponentProps): JSX.Element => {
+    const chargeCard = {
+        total: "2 703,70",
+        amount: "2 612,18",
+        debt: "91,52",
+        date: "февраль 2023",
+        downloadUrl: "https://www.youtube.com/watch?v=xchCnyDyvVw"
+    };
+
     return (
         <>
             <InfoWindow
@@ -16,11 +24,7 @@ export const ChargePageComponent = ({
                 description="ТСЖ Прогресс | Февраль 2023"
                 text={
                     <ChargeText
-                        total="2 703,70"
-                        amount="2 612,18"
-                        debt="91,52"
-                        date="февраль 2023"
-                        downloadUrl="https://www.youtube.com/watch?v=xchCnyDyvVw"
+                        {...chargeCard}
                     />
                 }
                 isOpen={isInfoWindowOpen}
@@ -39,6 +43,7 @@ export const ChargePageComponent = ({
             >
                 {activeTab === 1 &&
                     <ChargeCard
+                        maxWidth="26.19rem"
                         titlePart={{
                             text: "пер. Соборный 99, кв. 11",
                             description: "ТСЖ Прогресс",
@@ -48,9 +53,23 @@ export const ChargePageComponent = ({
                             },
                             textRight: "2703,70₽"
                         }}
-
-                        bottom={{ text: "Февраль 2023" }}
-                        onClick={() => setIsInfoWindowOpen(!isInfoWindowOpen)}
+                        text={
+                            <ChargeText
+                                className="md:hidden sm:hidden"
+                                {...chargeCard}
+                            />}
+                        bottom={{
+                            text: "Февраль 2023",
+                            button: {
+                                name: "Оплатить",
+                                onClick: () => { }
+                            }
+                        }}
+                        onClick={() => {
+                            if (window.innerWidth <= 600) {
+                                setIsInfoWindowOpen(!isInfoWindowOpen);
+                            }
+                        }}
                     />
                 }
                 {activeTab === 2 &&
@@ -69,9 +88,9 @@ const ChargeText = ({
     date, downloadUrl, ...props
 }: ChargeTextProps): JSX.Element => {
     return (
-        <div className={styles.textWrapper} {...props}>
+        <div className={cn(styles.textWrapper)} {...props}>
             <div className={cn(styles.chargeText, styles.mediumText)}>
-                <span>Общая сумма</span>
+                <span className="hidden md:block sm:block">Общая сумма</span>
                 <span>{total}₽</span>
             </div>
             <div className={styles.chargeText}>

@@ -2,7 +2,7 @@ import { InfoWindowProps } from "./InfoWindow.props";
 import cn from "classnames";
 import styles from "./InfoWindow.module.css";
 import CloseIcon from "./close.svg";
-import { Button, Tag } from "@/components";
+import { Button, Icon, Tag } from "@/components";
 import { useEffect, useRef } from "react";
 
 export const InfoWindow = ({
@@ -54,7 +54,11 @@ export const InfoWindow = ({
                     <CloseIcon />
                 </div>
                 <div className={styles.titleWrapper}>
-                    {icon && <span className={styles.icon}>{icon}</span>}
+                    {icon &&
+                        <Icon size="m" type="icon" fillType="stroke"
+                            className="mb-[1.46rem]">
+                            {icon}
+                        </Icon>}
                     <p className={styles.mainTitle}>{title}</p>
                     <p className={styles.description}>{description}</p>
                 </div>

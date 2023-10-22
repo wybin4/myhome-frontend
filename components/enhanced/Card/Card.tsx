@@ -1,7 +1,7 @@
-import { CardBottomProps, CardInputProps, CardProps, CardTitleProps, ChargeCardProps, ChargeCardTitleProps } from "./Card.props";
+import { CardBottomProps, CardInputProps, CardProps, CardTitleProps, ChargeCardBottomProps, ChargeCardProps, ChargeCardTitleProps } from "./Card.props";
 import styles from "./Card.module.css";
 import cn from "classnames";
-import { Input, Paragraph, Tag, Voting } from "@/components";
+import { Button, Icon, Input, Paragraph, Tag, Voting } from "@/components";
 import React, { useState } from "react";
 import AttachmentIcon from "./attachment.svg";
 
@@ -82,9 +82,9 @@ export const CardInput = ({ readOnly = false, title, value = "", setValue, textA
 
 export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props }: CardBottomProps): JSX.Element => {
     return (
-        <div className={cn(styles.bottom, "viewAction")}>
+        <div className={styles.bottom}>
             {text &&
-                <Paragraph size="xs" className={cn(styles.bottomText, "viewAction", {
+                <Paragraph size="xs" className={cn(styles.bottomText, {
                     "text-center": textAlign === "center"
                 })} {...props}>
                     {text}
@@ -107,7 +107,7 @@ export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props
 };
 
 export const ChargeCard = ({
-    titlePart,
+    titlePart, text,
     bottom,
     maxWidth,
     className, ...props
@@ -122,7 +122,8 @@ export const ChargeCard = ({
                 className)}
             {...props}>
             <ChargeCardTitle  {...titlePart} />
-            {bottom && <CardBottom {...bottom} />}
+            {text}
+            {bottom && <ChargeCardBottom {...bottom} />}
         </div>
     );
 };
@@ -136,16 +137,51 @@ export const ChargeCardTitle = ({
     return (
         <div className={cn(styles.title, "gap-2", "viewAction")} {...props}>
             <div className={cn(styles.titleWrapper, "viewAction")}>
-                {tag && <span className={cn(styles.tagIcon, "viewAction")}>{tag.tagIcon}</span>}
-                <div>
-                    <p className="font-medium text-[0.92rem] viewAction">{text}</p>
+                {tag && <Icon
+                    className={cn("viewAction", styles.tagIcon)}
+                    size="s" type="icon"
+                    fillType="stroke"
+                >
+                    {tag.tagIcon}
+                </Icon>}
+                <div className={styles.titleMainWrapper}>
+                    <p className={cn(styles.titleText, "viewAction")}>{text}</p>
                     {description &&
                         <p className={cn(styles.titleDesc, "text-[0.77rem] viewAction")}>
                             {description}
                         </p>}
                 </div>
             </div>
-            <div className={cn(styles.textRight, "viewAction")}>{textRight}</div>
+            <div className={cn(
+                styles.textRight,
+                "viewAction hidden md:block sm:block"
+            )}>{textRight}</div>
+        </div>
+    );
+};
+
+export const ChargeCardBottom = ({
+    text, button,
+    ...props
+}: ChargeCardBottomProps): JSX.Element => {
+    return (
+        <div className={cn(styles.bottom, "viewAction")}>
+            {text &&
+                <Paragraph size="xs" className={cn(
+                    styles.bottomText, "viewAction",
+                    "hidden md:block sm:block"
+                )} {...props}>
+                    {text}
+                </Paragraph>
+            }
+            {button &&
+                <Button
+                    appearance="primary" size="l"
+                    onClick={button.onClick}
+                >
+                    {button.name}
+                </Button>
+            }
         </div>
     );
 };
