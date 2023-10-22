@@ -8,8 +8,6 @@
 }
 
 .title {
-    margin-bottom: 0.5rem;
-
     position: relative;
 }
 
@@ -23,6 +21,10 @@
     margin-bottom: 1rem;
 }
 
+.description {
+    margin-top: 0.5rem;
+}
+
 .description,
 .titleDesc {
     color: var(--grey);
@@ -30,12 +32,16 @@
 
 .titleDesc {
     margin-top: 0.4rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.3rem;
 }
 
 .inputCenter {
     display: flex;
     justify-content: center;
+}
+
+.iconLeft {
+    align-self: baseline;
 }
 
 .iconLeft svg {
@@ -49,18 +55,8 @@
     height: 3.375rem;
 }
 
-@media (max-width: 600px) {
-    .iconLeftL {
-        display: none;
-    }
-
-    .titleWithLeftLIcon {
-        text-align: center;
-    }
-
-    .titleWithLeftLIcon .titleDesc {
-        margin-top: 0.8rem;
-    }
+.tagIcon {
+    display: none;
 }
 
 .iconLeftS svg {
@@ -76,10 +72,21 @@
 .symbolRight svg {
     fill: var(--black);
 
+    cursor: pointer;
+}
+
+.symbolRightL {
+    display: none;
+}
+
+.symbolRightL svg {
+    width: 1.33rem;
+    height: 1.67rem;
+}
+
+.symbolRightS svg {
     width: 0.6rem;
     height: 0.8rem;
-
-    cursor: pointer;
 }
 
 .title {
@@ -123,4 +130,44 @@
     fill: var(--grey);
 
     height: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .iconLeftL {
+        display: none;
+    }
+
+    .titleWithLeftLIcon {
+        text-align: center;
+    }
+
+    .titleWithLeftLIcon .titleDesc {
+        margin-top: 0.8rem;
+    }
+
+    .tagIcon {
+        display: block;
+        background-color: var(--primary);
+
+        width: fit-content;
+        height: fit-content;
+        border-radius: 100%;
+
+        padding: 0.7rem;
+        margin-right: 0.8125rem;
+
+        align-self: baseline;
+    }
+
+    .tagIcon svg {
+        stroke: var(--white);
+    }
+
+    .attachment {
+        margin-top: 0.3rem;
+    }
+
+    .symbolRightL {
+        display: block;
+    }
 }

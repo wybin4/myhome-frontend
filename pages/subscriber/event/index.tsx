@@ -24,6 +24,7 @@ function Event(): JSX.Element {
                     filterButtonRef={filterButtonRef}
                     isFilterOpened={isFilterOpened}
                     setIsFilterOpened={setIsFilterOpened}
+                    filterAppearance="primary"
                 />
             </div>
             <div className="flex flex-row-reverse justify-end gap-[4vw]">

@@ -19,7 +19,7 @@ export * from "./composite/TableFilter/TableFilter";
 export * from "./composite/TableRow/TableRow";
 export * from "./composite/TableButton/TableButton";
 export * from "./composite/Tabs/Tabs";
-export * from "./composite/TableRow/InfoWindow/InfoWindow";
+export * from "./composite/InfoWindow/InfoWindow";
 
 export * from "./enhanced/Table/Table";
 export * from "./enhanced/Card/Card";

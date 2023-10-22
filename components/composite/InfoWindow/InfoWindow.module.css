@@ -60,6 +60,18 @@
     margin: 1.4375rem 0;
 }
 
+.buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    margin-top: 2rem;
+}
+
+.buttons button {
+    border-radius: 2rem;
+}
+
 @media (max-width: 900px) {
     .wrapper {
         max-width: 100%;

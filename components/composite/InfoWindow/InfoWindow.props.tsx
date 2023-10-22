@@ -5,6 +5,10 @@ export interface InfoWindowProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
     description: string;
 
     tags?: string[];
+    buttons?: {
+        name: string;
+        onClick: () => void;
+    }[];
 
     text: string;
 

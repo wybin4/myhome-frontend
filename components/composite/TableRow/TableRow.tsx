@@ -179,23 +179,6 @@ const TableRowDesktop = ({
                     })}
                 </tbody>
             </table>
-            {/* <div className={cn("flex gap-12", )} {...props}>
-                {startIcon && <div className={cn("flex flex-col gap-4", styles.iconWrapper)}>
-                    <Paragraph size="s" className="font-medium">⠀</Paragraph>
-                    {getStartIcons()}
-                </div>}
-                 {items && items.map((item, key) =>
-                    <TableRowItemDesktop
-                        key={key}
-                        {...item} />)
-                } 
-                {actions?.actions && actions.actions.length !== 0 &&
-                    <div className="flex flex-col gap-4">
-                        <Paragraph size="s" className="font-medium">Действия</Paragraph>
-                        {getActions()}
-                    </div>
-                }
-            </div>  */}
         </>
     );
 };

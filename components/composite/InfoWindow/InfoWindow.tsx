@@ -1,12 +1,12 @@
 import { InfoWindowProps } from "./InfoWindow.props";
 import cn from "classnames";
 import styles from "./InfoWindow.module.css";
-import CloseIcon from "../icons/close.svg";
-import { Tag } from "@/components";
+import CloseIcon from "./close.svg";
+import { Button, Tag } from "@/components";
 import { useEffect, useRef } from "react";
 
 export const InfoWindow = ({
-    title, description, text, tags,
+    title, description, text, tags, buttons,
     isOpen, setIsOpen, ...props
 }: InfoWindowProps): JSX.Element => {
     const windowRef = useRef(null);
@@ -66,6 +66,17 @@ export const InfoWindow = ({
                 <div className={styles.text}>
                     {text}
                 </div>
+                {buttons && <div className={styles.buttons}>
+                    {
+                        buttons.map((button, key) =>
+                            <Button
+                                key={key}
+                                appearance="primary"
+                                size="m"
+                            >{button.name}</Button>
+                        )
+                    }
+                </div>}
             </div>
         </>
     );

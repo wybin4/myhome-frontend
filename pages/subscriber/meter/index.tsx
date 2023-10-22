@@ -133,7 +133,11 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
             titlePart={{
                 text: titlePartText(meter.typeOfServiceName, meter.unitName),
                 iconLeft: iconLeft(meter.typeOfServiceId),
-                symbolRight: <ArrowIcon />,
+                symbolRight: {
+                    symbol: <ArrowIcon />,
+                    size: "s",
+                    onClick: () => { }
+                },
             }}
             description={`${meter.factoryNumber} · Поверка ${formatedDateMMYYYY(meter.verifiedAt)}`}
             input={{

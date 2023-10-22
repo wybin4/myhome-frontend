@@ -37,8 +37,9 @@ export const Tabs = ({
                         }
                         {descriptionText && <div className={styles.description}>{descriptionText}</div>}
                     </div>
-                    <div className={styles.buttonWrapper}>
-                        {onAddButtonClick &&
+
+                    {onAddButtonClick &&
+                        <div className={styles.buttonWrapper}>
                             <Button
                                 appearance="primary"
                                 symbol="add"
@@ -46,8 +47,8 @@ export const Tabs = ({
                                 size="s"
                                 onClick={onAddButtonClick}
                             >Добавить счётчик</Button>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
                 <div className={cn(styles.content, className)}>
                     {children}

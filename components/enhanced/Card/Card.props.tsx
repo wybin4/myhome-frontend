@@ -8,8 +8,15 @@ export interface CardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
     description?: string;
     iconLeft?: any;
     iconLeftSize?: "s" | "l";
-    tag?: string;
-    symbolRight?: any;
+    tag?: {
+        tag: string;
+        tagIcon: any;
+    }
+    symbolRight?: {
+        symbol: any;
+        size: "s" | "l";
+        onClick: () => void;
+    };
 }
 
 export interface CardInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -33,6 +40,7 @@ export interface CardProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEleme
     description?: string;
     maxWidth?: string;
     text?: string;
+    isMobileText?: boolean;
     input?: CardInputProps;
     voting?: VotingProps;
     bottom?: CardBottomProps;

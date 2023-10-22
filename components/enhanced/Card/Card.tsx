@@ -6,7 +6,8 @@ import React, { useState } from "react";
 import AttachmentIcon from "./attachment.svg";
 
 export const Card = ({
-    titlePart, description, text,
+    titlePart, description,
+    text, isMobileText = true,
     input, bottom, voting,
     maxWidth,
     className, ...props
@@ -19,10 +20,12 @@ export const Card = ({
             className={cn(styles.cardWrapper, className)}
             {...props}>
             <CardTitle  {...titlePart} />
-            <Paragraph size="xs" className={styles.description}>{description}</Paragraph>
+            {description && <Paragraph size="xs" className={styles.description}>{description}</Paragraph>}
             {input && <CardInput className={styles.input} {...input} value={inputValue} setValue={setInputValue} />}
             {voting && <Voting {...voting} />}
-            {text && <p>{text}</p>}
+            {text && <p className={cn({
+                "md:hidden sm:hidden": !isMobileText
+            })}>{text}</p>}
             {bottom && <CardBottom {...bottom} />}
         </div>
     );
@@ -31,11 +34,13 @@ export const Card = ({
 export const CardTitle = ({
     text, description,
     iconLeft, iconLeftSize = "s",
-    tag, symbolRight,
+    tag,
+    symbolRight,
     ...props }: CardTitleProps): JSX.Element => {
     return (
         <div className={styles.title} {...props}>
             <div className={styles.titleWrapper}>
+                {tag && <span className={styles.tagIcon}>{tag.tagIcon}</span>}
                 <span className={cn(styles.iconLeft, {
                     [styles.iconLeftL]: iconLeftSize === "l",
                     [styles.iconLeftS]: iconLeftSize === "s",
@@ -46,9 +51,17 @@ export const CardTitle = ({
                     <Paragraph size="m" className="font-medium">{text}</Paragraph>
                     {description && <Paragraph size="xs" className={styles.titleDesc}>{description}</Paragraph>}
                 </div>
-                <span className={styles.symbolRight}>{symbolRight}</span>
+                {
+                    symbolRight && <span
+                        className={cn(styles.symbolRight, {
+                            [styles.symbolRightL]: symbolRight.size === "l",
+                            [styles.symbolRightS]: symbolRight.size === "s",
+                        })}
+                        onClick={symbolRight.onClick}
+                    >{symbolRight.symbol}</span>
+                }
             </div>
-            {tag && <Tag size="l">{tag}</Tag>}
+            {tag && <Tag size="l" className="md:!hidden sm:!hidden">{tag.tag}</Tag>}
         </div>
     );
 };
@@ -78,10 +91,13 @@ export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props
                 </Paragraph>
             }
             <div className={styles.bottomTagAtt}>
-                {tag && <Tag size="l" className={styles.bottomTag}>{tag}</Tag>}
+                {tag && <Tag size="l" className={cn(
+                    styles.bottomTag,
+                    "md:!hidden sm:!hidden"
+                )}>{tag}</Tag>}
                 {attachment &&
                     <p className={styles.attachment}>
-                        <AttachmentIcon />
+                        <span className="md:hidden sm:hidden"><AttachmentIcon /></span>
                         {attachment}
                     </p>
                 }

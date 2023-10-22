@@ -58,6 +58,10 @@
         padding-bottom: 2rem;
     }
 
+    .tabs {
+        flex-wrap: wrap;
+    }
+
     .tab {
         box-sizing: border-box;
 
@@ -68,6 +72,7 @@
         background: var(--primary);
         color: var(--white);
 
+        margin-top: 0.5rem;
         padding: 0.3125rem 0.625rem;
 
         font-size: 0.875rem;
