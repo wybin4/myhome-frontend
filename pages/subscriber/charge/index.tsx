@@ -7,34 +7,21 @@
 // import { API } from "@/helpers/api";
 // import axios from "axios";
 
-import { Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
+import { ChargePageComponent } from "@/page-components";
 import { useState } from "react";
 
 function Charge(): JSX.Element {
     const [activeTab, setActiveTab] = useState<number>(1);
+    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(true);
 
     return (
         <>
-            <Tabs
-                title="Начисления"
-                tabs={[
-                    { id: 1, name: "Оплата" },
-                    { id: 2, name: "Графики" },
-                    { id: 3, name: "Квитанции" },
-                ]}
-                activeTab={activeTab} setActiveTab={setActiveTab}
-            >
-                {activeTab === 1 &&
-                    <div>Оплата</div>
-                }
-                {activeTab === 2 &&
-                    <div>Графики</div>
-                }
-                {activeTab === 3 &&
-                    <div>Квитанции</div>
-                }
-            </Tabs>
+            <ChargePageComponent
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                isInfoWindowOpen={isInfoWindowOpen}
+                setIsInfoWindowOpen={setIsInfoWindowOpen} />
         </>
     );
 }

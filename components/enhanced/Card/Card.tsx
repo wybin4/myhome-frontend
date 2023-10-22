@@ -1,4 +1,4 @@
-import { CardBottomProps, CardInputProps, CardProps, CardTitleProps } from "./Card.props";
+import { CardBottomProps, CardInputProps, CardProps, CardTitleProps, ChargeCardProps, ChargeCardTitleProps } from "./Card.props";
 import styles from "./Card.module.css";
 import cn from "classnames";
 import { Input, Paragraph, Tag, Voting } from "@/components";
@@ -82,9 +82,9 @@ export const CardInput = ({ readOnly = false, title, value = "", setValue, textA
 
 export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props }: CardBottomProps): JSX.Element => {
     return (
-        <div>
+        <div className={cn(styles.bottom, "viewAction")}>
             {text &&
-                <Paragraph size="xs" className={cn(styles.bottomText, {
+                <Paragraph size="xs" className={cn(styles.bottomText, "viewAction", {
                     "text-center": textAlign === "center"
                 })} {...props}>
                     {text}
@@ -102,6 +102,50 @@ export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props
                     </p>
                 }
             </div>
+        </div>
+    );
+};
+
+export const ChargeCard = ({
+    titlePart,
+    bottom,
+    maxWidth,
+    className, ...props
+}: ChargeCardProps): JSX.Element => {
+    return (
+        <div
+            style={{ maxWidth: maxWidth ? maxWidth : "100%" }}
+            className={cn(
+                "viewAction",
+                styles.cardWrapper,
+                styles.chargeCard,
+                className)}
+            {...props}>
+            <ChargeCardTitle  {...titlePart} />
+            {bottom && <CardBottom {...bottom} />}
+        </div>
+    );
+};
+
+export const ChargeCardTitle = ({
+    text, description,
+    tag,
+    textRight,
+    ...props
+}: ChargeCardTitleProps): JSX.Element => {
+    return (
+        <div className={cn(styles.title, "gap-2", "viewAction")} {...props}>
+            <div className={cn(styles.titleWrapper, "viewAction")}>
+                {tag && <span className={cn(styles.tagIcon, "viewAction")}>{tag.tagIcon}</span>}
+                <div>
+                    <p className="font-medium text-[0.92rem] viewAction">{text}</p>
+                    {description &&
+                        <p className={cn(styles.titleDesc, "text-[0.77rem] viewAction")}>
+                            {description}
+                        </p>}
+                </div>
+            </div>
+            <div className={cn(styles.textRight, "viewAction")}>{textRight}</div>
         </div>
     );
 };

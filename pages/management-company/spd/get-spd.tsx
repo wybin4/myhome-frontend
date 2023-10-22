@@ -2,7 +2,7 @@ import { API } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { withLayout } from "@/layout/Layout";
-import { GetSPDPageComponent } from "@/page-components/GetSPDPageComponent/GetSPDPageComponent";
+import { GetSPDPageComponent } from "@/page-components";
 import axios from "axios";
 import { useState } from "react";
 

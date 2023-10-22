@@ -3,20 +3,27 @@
 import { VotingProps } from "@/components/primitive/Voting/Voting.props";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, ReactNode, SetStateAction } from "react";
 
-export interface CardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface BaseCardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     text: string;
     description?: string;
-    iconLeft?: any;
-    iconLeftSize?: "s" | "l";
     tag?: {
         tag: string;
         tagIcon: any;
-    }
+    };
+}
+
+export interface CardTitleProps extends BaseCardTitleProps {
+    iconLeft?: any;
+    iconLeftSize?: "s" | "l";
     symbolRight?: {
         symbol: any;
         size: "s" | "l";
-        onClick: () => void;
+        onClick?: () => void;
     };
+}
+
+export interface ChargeCardTitleProps extends BaseCardTitleProps {
+    textRight: string;
 }
 
 export interface CardInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -35,13 +42,24 @@ export interface CardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
     attachment?: string;
 }
 
-export interface CardProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface BaseCardProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    maxWidth?: string;
+    bottom?: CardBottomProps;
+}
+
+export interface CardProps extends BaseCardProps {
     titlePart: CardTitleProps;
     description?: string;
-    maxWidth?: string;
     text?: string;
     isMobileText?: boolean;
     input?: CardInputProps;
     voting?: VotingProps;
-    bottom?: CardBottomProps;
+}
+
+export interface ChargeCardProps extends BaseCardProps {
+    titlePart: ChargeCardTitleProps;
+    text?: string;
+    input?: CardInputProps;
+    voting?: VotingProps;
+    onClick: () => void;
 }

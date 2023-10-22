@@ -6,7 +6,7 @@ import { Button, Tag } from "@/components";
 import { useEffect, useRef } from "react";
 
 export const InfoWindow = ({
-    title, description, text, tags, buttons,
+    title, description, text, icon, tags, buttons,
     isOpen, setIsOpen, ...props
 }: InfoWindowProps): JSX.Element => {
     const windowRef = useRef(null);
@@ -27,11 +27,10 @@ export const InfoWindow = ({
             }
         }
 
-
         if (
             windowRef.current &&
             !(windowRef.current as Node).contains(e.target as Node)
-            && targetClass !== "viewAction"
+            && !(targetClass && targetClass?.split(" ")?.includes("viewAction"))
         ) {
             setIsOpen(false);
         }
@@ -55,6 +54,7 @@ export const InfoWindow = ({
                     <CloseIcon />
                 </div>
                 <div className={styles.titleWrapper}>
+                    {icon && <span className={styles.icon}>{icon}</span>}
                     <p className={styles.mainTitle}>{title}</p>
                     <p className={styles.description}>{description}</p>
                 </div>

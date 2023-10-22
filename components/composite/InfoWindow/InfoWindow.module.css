@@ -42,7 +42,11 @@
 }
 
 .titleWrapper {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
     margin-top: 1rem;
 }
 
@@ -57,7 +61,11 @@
 }
 
 .tags {
-    margin: 1.4375rem 0;
+    margin-top: 1.4375rem;
+}
+
+.text {
+    margin-top: 1.4375rem;
 }
 
 .buttons {
@@ -70,6 +78,28 @@
 
 .buttons button {
     border-radius: 2rem;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--primary);
+
+    width: 3.69rem;
+    height: 3.69rem;
+
+    border-radius: 100%;
+
+    margin-bottom: 1.46rem;
+}
+
+.icon svg {
+    width: 1.6rem;
+    height: 1.6rem;
+
+    stroke: var(--white);
 }
 
 @media (max-width: 900px) {

@@ -7,6 +7,10 @@
     padding: 1.3125rem 1.5625rem;
 }
 
+.bottom {
+    margin-top: 1rem;
+}
+
 .title {
     position: relative;
 }
@@ -33,6 +37,10 @@
 .titleDesc {
     margin-top: 0.4rem;
     margin-bottom: 0.3rem;
+}
+
+.chargeCard .titleDesc {
+    margin-top: 0;
 }
 
 .inputCenter {
@@ -163,11 +171,16 @@
         stroke: var(--white);
     }
 
-    .attachment {
-        margin-top: 0.3rem;
-    }
-
     .symbolRightL {
         display: block;
+    }
+
+    .textRight {
+        font-size: 1.23rem;
+        font-weight: 500;
+    }
+
+    .chargeCard {
+        cursor: pointer;
     }
 }

@@ -1,0 +1,34 @@
+.textWrapper {
+    margin-top: 4.77rem;
+    margin-bottom: 5.62rem;
+}
+
+.chargeText {
+    display: flex;
+}
+
+.chargeText span {
+    flex: 1;
+}
+
+.chargeText span:nth-child(2) {
+    text-align: end;
+}
+
+.download {
+    display: flex;
+    justify-content: flex-end;
+
+    cursor: pointer;
+}
+
+.mediumText {
+    font-size: 1.2rem;
+    font-weight: 500;
+
+    margin-bottom: 1.54rem;
+}
+
+.downloadText {
+    margin-top: 1.54rem;
+}
