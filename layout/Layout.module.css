@@ -28,7 +28,7 @@
 .body {
     grid-area: body;
 
-    margin-top: 2rem;
+    /* margin-top: 2rem; */
 
     padding: 0 2.5rem;
 }
@@ -40,12 +40,7 @@
 .navigation {
     grid-area: nav;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2.875rem;
-
-    margin-top: 5px;
+    z-index: 3;
 }
 
 @media (max-width: 1200px) {
@@ -56,8 +51,6 @@
             "footer footer";
         grid-template-columns: minmax(320px, 1fr);
     }
-
-
 }
 
 @media (max-width: 900px) {
@@ -69,21 +62,21 @@
         grid-template-columns: minmax(320px, 1fr);
     }
 
-    .navigation {
-        display: none;
-    }
-
-
-}
-
-@media (max-width: 600px) {
     .header {
+        z-index: 4;
+
         padding: 0 2.5rem;
     }
 
     .body {
-        margin-top: 2.9rem;
+        margin-top: 6rem;
 
+        padding: 0 2.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .body {
         padding: 0 2.5rem;
     }
 }

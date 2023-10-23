@@ -12,6 +12,11 @@
 }
 
 @media (max-width: 900px) {
+    .logo {
+        position: absolute;
+        top: 1.9rem;
+    }
+
     .title {
         display: none;
     }

@@ -1,19 +1,22 @@
 import { AppContext } from "@/context/app.context";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavigationProps } from "./Navigation.props";
 import { IMenu } from "@/interfaces/menu.interface";
 import styles from "./Navigation.module.css";
 import cn from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import CloseIcon from "./close.svg";
+import MenuIcon from "./menu.svg";
 
-export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
+export const Navigation = ({ className, ...props }: NavigationProps): JSX.Element => {
     const { role, setRole } = useContext(AppContext);
+    const [isMenu, setIsMenu] = useState<boolean>(false);
 
     const router = useRouter();
 
     useEffect(() => {
-        setRole && setRole("management-company");
+        setRole && setRole("subscriber");
     });
 
     const menu: IMenu[] = [
@@ -63,21 +66,42 @@ export const Navigation = ({ ...props }: NavigationProps): JSX.Element => {
     const currentMenu = menu.find((m: IMenu) => m.role === role);
 
     return (
-        <div {...props}>
-            {role !== "none" &&
-                currentMenu &&
-                currentMenu.items.map(menuItem => {
-                    return <div key={menuItem.route}
-                        className={cn(styles.item, {
-                            [styles.activeItem]: router.asPath.split("/")[2] == menuItem.route
+        <>
+            {isMenu && <span onClick={() => setIsMenu(!isMenu)} className={styles.closeIcon}><CloseIcon /></span>}
+            {!isMenu && <span onClick={() => setIsMenu(!isMenu)} className={styles.menuIcon}><MenuIcon /></span>}
+            {isMenu &&
+                <div className={cn(className, styles.mobileNavWrapper)} {...props}>
+                    <p className={styles.mobileText}>Навигация по сайту</p>
+                    {role !== "none" &&
+                        currentMenu &&
+                        currentMenu.items.map(menuItem => {
+                            return <div key={menuItem.route}
+                                className={cn(styles.item, {
+                                    [styles.activeItem]: router.asPath.split("/")[2] == menuItem.route
+                                })}
+                            >
+                                <Link href={`/${currentMenu.role}/${menuItem.route}`}>
+                                    <span>{menuItem.name}</span>
+                                </Link>
+                            </div>;
                         })}
-                    >
-                        <Link href={`/${currentMenu.role}/${menuItem.route}`}>
-                            <span>{menuItem.name}</span>
-                        </Link>
-                    </div>;
-                }
-                )}
-        </div>
+                </div>
+            }
+            <div className={cn(className, styles.desktopNavWrapper)} {...props}>
+                {role !== "none" &&
+                    currentMenu &&
+                    currentMenu.items.map(menuItem => {
+                        return <div key={menuItem.route}
+                            className={cn(styles.item, {
+                                [styles.activeItem]: router.asPath.split("/")[2] == menuItem.route
+                            })}
+                        >
+                            <Link href={`/${currentMenu.role}/${menuItem.route}`}>
+                                <span>{menuItem.name}</span>
+                            </Link>
+                        </div>;
+                    })}
+            </div>
+        </>
     );
 };
