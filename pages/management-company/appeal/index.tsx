@@ -1,10 +1,10 @@
 import { Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
+import { UserRoleType } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import { format } from "date-fns";
-import { AppealStatus, IAppeal } from "@/interfaces/appeal.interface";
+import { AppealStatus, IAppeal } from "@/interfaces/event/appeal.interface";
 import ProcessingIcon from "./processing.svg";
 import ClosedIcon from "./closed.svg";
 import RejectedIcon from "./rejected.svg";
@@ -171,7 +171,7 @@ export async function getServerSideProps() {
 
 interface AppealProps extends Record<string, unknown> {
     data: { appeals: AppealData[] };
-    role: UserRole;
+    role: UserRoleType;
 }
 
 interface AppealData extends IAppeal {

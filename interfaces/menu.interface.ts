@@ -1,7 +1,7 @@
-import { UserRole } from "./account/user.interface";
+import { UserRoleType } from "./account/user.interface";
 
 export interface IMenu {
-    role: UserRole;
+    role: UserRoleType;
     items: IMenuItem[];
 }
 export interface IMenuItem {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/helpers/api";
-import { IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IUserReferenceData, IUserReferenceDataItem, UserRoleType, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
 import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData } from "@/interfaces/reference/meter.interface";
 import { IReferencePageComponent, IReferencePageItem, IReferenceData } from "@/interfaces/reference/page.interface";
@@ -256,5 +256,5 @@ async function fetchData<T extends IReferenceData>
 
 interface ReferencePageProps extends Record<string, unknown> {
     data: IReferenceData;
-    role: UserRole;
+    role: UserRoleType;
 }

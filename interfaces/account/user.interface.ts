@@ -1,6 +1,12 @@
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../reference/page.interface";
 
-export type UserRole = "admin" | "subscriber" | "management-company" | "none";
+export type UserRoleType = "admin" | "subscriber" | "management-company" | "none";
+
+export enum UserRole {
+    ManagementCompany = 'ManagementCompany',
+    Owner = 'Owner',
+    Admin = 'Admin',
+}
 
 export interface IUser {
     id?: number;

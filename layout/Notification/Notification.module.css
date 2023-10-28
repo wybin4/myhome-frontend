@@ -1,0 +1,113 @@
+.notificationIcon svg {
+    width: 1.61rem;
+
+    fill: var(--black);
+}
+
+.closeIcon,
+.mobileText,
+.mobileNotifWrapper {
+    display: none;
+}
+
+.desktopNotifWrapper {
+    position: fixed;
+    top: 1rem;
+}
+
+.notificationBody {
+    display: flex;
+    gap: 0.77rem;
+}
+
+.title {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.description,
+.createdAt {
+    font-size: 0.9rem;
+}
+
+.createdAt {
+    color: var(--grey);
+}
+
+.icon {
+    margin-top: 0.4rem;
+}
+
+.text {
+    margin: 0.7rem 0;
+}
+
+@media (max-width: 900px) {
+    .desktopNotifWrapper {
+        display: none;
+    }
+
+    .mobileNotifWrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 2rem;
+
+        width: 100%;
+        height: 100%;
+
+        margin: 0;
+        padding: 7rem 2.5rem 0 2.5rem;
+
+        background-color: var(--white);
+
+        z-index: 4;
+    }
+
+    .mobileText {
+        display: flex;
+        position: absolute;
+        top: 1.8rem;
+        left: 0;
+        right: 0;
+
+        width: fit-content;
+
+        font-weight: 600;
+        font-size: 1.08rem;
+
+        margin: auto;
+    }
+
+    .closeIcon,
+    .notificationIcon {
+        display: block;
+
+        cursor: pointer;
+    }
+
+    .closeIcon {
+        position: absolute;
+        top: 2.1rem;
+        right: 2.5rem;
+
+        z-index: 3;
+    }
+
+    .closeIcon svg {
+        stroke: var(--black);
+        stroke-width: 2;
+    }
+
+    .notificationIcon {
+        position: absolute;
+        top: 1.9rem;
+        right: 5.2rem;
+    }
+
+}

@@ -3,7 +3,7 @@
 // import { MouseEventHandler, useState } from "react";
 // import PdfIcon from "./pdf.svg";
 // import { bytesToSize, downloadPdf, monthNamesInNominativeCase } from "@/helpers/constants";
-// import { UserRole } from "@/interfaces/account/user.interface";
+// import { UserRoleType } from "@/interfaces/account/user.interface";
 // import { API } from "@/helpers/api";
 // import axios from "axios";
 
@@ -157,7 +157,7 @@ export default withLayout(Charge);
 
 // interface IChargeProps extends Record<string, unknown> {
 //     data: { singlePaymentDocuments: ISpdData[] };
-//     role: UserRole;
+//     role: UserRoleType;
 // }
 
 // interface ISpdData {

@@ -1,6 +1,6 @@
 import { Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
+import { UserRoleType } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import PdfIcon from "./icons/pdf.svg";
@@ -119,7 +119,7 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
                         }
                     ],
                     keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true }
-                }}  />
+                }} />
         </>
     );
 }
@@ -153,7 +153,7 @@ export async function getServerSideProps() {
 
 interface IArchieveSPDProps extends Record<string, unknown> {
     data: { singlePaymentDocuments: IArchieveSPDData[] };
-    role: UserRole;
+    role: UserRoleType;
 }
 
 interface IArchieveSPDData {

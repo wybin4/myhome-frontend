@@ -6,7 +6,7 @@ import styles from "./Navigation.module.css";
 import cn from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import CloseIcon from "./close.svg";
+import CloseIcon from "../close.svg";
 import MenuIcon from "./menu.svg";
 
 export const Navigation = ({ className, ...props }: NavigationProps): JSX.Element => {

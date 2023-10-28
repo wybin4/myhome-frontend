@@ -1,18 +1,18 @@
-import { UserRole } from "@/interfaces/account/user.interface";
+import { UserRoleType } from "@/interfaces/account/user.interface";
 import { createContext, PropsWithChildren, useState } from "react";
 
 export interface IAppContext {
-	role: UserRole;
-	setRole?: (newRole: UserRole) => void;
+	role: UserRoleType;
+	setRole?: (newRole: UserRoleType) => void;
 }
 export const AppContext = createContext<IAppContext>({
 	role: "none"
 });
 
 export const AppContextProvider = ({ role, children }: PropsWithChildren<IAppContext>): JSX.Element => {
-	const [roleState, setRoleState] = useState<UserRole>(role);
+	const [roleState, setRoleState] = useState<UserRoleType>(role);
 
-	const setRole = (newRole: UserRole) => {
+	const setRole = (newRole: UserRoleType) => {
 		setRoleState(newRole);
 	};
 

@@ -1,13 +1,13 @@
 import { Form, Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
+import { UserRoleType } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
-import { HouseNotificationType, IHouseNotification } from "@/interfaces/notification.interface";
+import { HouseNotificationType, IHouseNotification } from "@/interfaces/event/notification.interface";
 
 function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
     const useFormData = useForm<IHouseNotification>();
@@ -219,7 +219,7 @@ export async function getServerSideProps() {
 
 interface IHouseNotificationProps extends Record<string, unknown> {
     data: { notifications: IHouseNotificationData[]; houses: IHouse[] };
-    role: UserRole;
+    role: UserRoleType;
 }
 
 interface IHouseNotificationData extends IHouseNotification {
