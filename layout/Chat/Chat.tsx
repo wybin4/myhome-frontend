@@ -20,6 +20,8 @@ import { API } from "@/helpers/api";
 export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => {
     const [isChat, setIsChat] = useState<boolean>(false);
     const [isChatItem, setIsChatItem] = useState<string>("");
+    const chatsRef = useRef(null);
+    const chatItemRef = useRef(null);
 
     // ИСПРАВИТЬ!!!!
     const user = {
@@ -31,21 +33,83 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
         return format(new Date(message.createdAt), "HH:mm");
     };
 
+    const closeChats = (e: MouseEvent) => {
+        if (chatsRef) {
+            let targetClass;
+            const target = e.target as HTMLElement | null;
+            if (target) {
+                if (!target.classList.contains("viewChats")) {
+                    const parent = target.parentElement;
+                    if (parent && parent.classList.contains("viewChats")) {
+                        targetClass = parent.className;
+                    } else if (parent && parent.parentElement && parent.parentElement.classList.contains("viewChats")) {
+                        targetClass = parent.parentElement.className;
+                    }
+                } else {
+                    targetClass = target.className;
+                }
+            }
+            if (
+                chatsRef.current
+                && !(chatsRef.current as Node).contains(e.target as Node)
+                && !(targetClass && targetClass?.split(" ")?.includes("viewChats"))
+            ) {
+                setIsChat(false);
+            }
+        }
+    };
+
+    const closeChatItem = (e: MouseEvent) => {
+        if (chatItemRef) {
+            let targetClass;
+            const target = e.target as HTMLElement | null;
+            if (target) {
+                if (!target.classList.contains("viewChatItem")) {
+                    const parent = target.parentElement;
+                    if (parent && parent.classList.contains("viewChatItem")) {
+                        targetClass = parent.className;
+                    } else if (parent && parent.parentElement && parent.parentElement.classList.contains("viewChatItem")) {
+                        targetClass = parent.parentElement.className;
+                    }
+                } else {
+                    targetClass = target.className;
+                }
+            }
+            if (
+                chatItemRef.current
+                && !(chatItemRef.current as Node).contains(e.target as Node)
+                && !(targetClass && targetClass?.split(" ")?.includes("viewChatItem"))
+            ) {
+                setIsChatItem("");
+            }
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", closeChats);
+        document.addEventListener("click", closeChatItem);
+        return () => {
+            document.removeEventListener("click", closeChats);
+            document.removeEventListener("click", closeChatItem);
+        };
+    }, []);
+
     return (
         <div className={className} {...props}>
-            <div className={styles.icon}>
+            <div className={cn(styles.icon, "viewChats")}>
                 {!isChat &&
                     <Icon
                         size="s" type="icon"
+                        className="viewChats"
                         onClick={() => setIsChat(!isChat)}
                     >
                         <ChatIcon />
                     </Icon>
                 }
-                {isChat && <Icon size="s" type="icon"><WriteIcon /></Icon>}
+                {isChat && <Icon size="s" type="icon" className={styles.writeIcon}><WriteIcon /></Icon>}
             </div>
             {isChat &&
-                <div className={styles.chatsWrapper}>
+                <div className={styles.chatsWrapper} ref={chatsRef}>
                     <span
                         onClick={() => setIsChat(!isChat)}
                         className={styles.closeIcon}
@@ -69,17 +133,17 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
 
                             return (
                                 <div
-                                    className={styles.chat} key={key}
+                                    className={cn(styles.chat, "viewChatItem")} key={key}
                                     onClick={() => {
                                         setIsChatItem(chat._id ? chat._id : "");
                                         setIsChat(!isChat);
                                     }}
                                 >
-                                    <div className={styles.photoIcon}>{cap}</div>
+                                    <div className={cn(styles.photoIcon, "viewChatItem")}>{cap}</div>
                                     <div>
-                                        <div className={styles.name}>{name}</div>
+                                        <div className={cn(styles.name, "viewChatItem")}>{name}</div>
                                         {lastMessage &&
-                                            <div className={styles.lastMessage}>
+                                            <div className={cn(styles.lastMessage, "viewChatItem")}>
                                                 {
                                                     lastMessage.sender.userId === user.userId &&
                                                     lastMessage.sender.userRole === user.userRole &&
@@ -90,9 +154,9 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                                         }
                                     </div>
                                     {lastMessage &&
-                                        <div className={styles.thirdCol}>
-                                            <div className={styles.time}>{getTime(lastMessage)}</div>
-                                            <div className={styles.countUnread}>{
+                                        <div className={cn(styles.thirdCol, "viewChatItem")}>
+                                            <div className={cn(styles.time, "viewChatItem")}>{getTime(lastMessage)}</div>
+                                            <div className={cn(styles.countUnread, "viewChatItem")}>{
                                                 chat.messages?.reduce((count, message) => {
                                                     if (
                                                         message.status === MessageStatus.Unread &&
@@ -116,6 +180,7 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                     chat={chats.find(c => c._id === isChatItem)}
                     className={styles.chatItemWrapper}
                     user={user}
+                    innerRef={chatItemRef}
                 >
                     <div
                         className={styles.backIcon}
@@ -132,7 +197,7 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
     );
 };
 
-const ChatItem = ({ chat, user, children, className, ...props }: ChatItemProps): JSX.Element => {
+const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatItemProps): JSX.Element => {
     const [message, setMessage] = useState("");
     const lastMessageRef = useRef(null);
     const inputRef = useRef(null);
@@ -166,7 +231,7 @@ const ChatItem = ({ chat, user, children, className, ...props }: ChatItemProps):
     };
 
     const handleTextareaInput = async () => {
-        if (chat) {
+        if (chat && message !== "") {
             const postData = {
                 chatId: chat._id,
                 text: message,
@@ -185,7 +250,7 @@ const ChatItem = ({ chat, user, children, className, ...props }: ChatItemProps):
     return (
         <>
             {chat &&
-                <div className={className} {...props}>
+                <div className={className} {...props} ref={innerRef}>
                     <div className={styles.chatTopWrapper}>
                         {children}
                         <div className={styles.photoIcon}>{getName(chat, user).cap}</div>
