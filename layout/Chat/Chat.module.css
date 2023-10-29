@@ -7,6 +7,7 @@
 }
 
 .closeIcon,
+.backIcon,
 .mobileText {
     display: none;
 }
@@ -29,6 +30,11 @@
 .name {
     font-size: 1.1rem;
     font-weight: 500;
+}
+
+.description {
+    font-size: 0.92rem;
+    color: var(--grey);
 }
 
 .lastMessage {
@@ -82,6 +88,102 @@
     margin-bottom: 1.38rem;
 }
 
+.myDate,
+.anotherDate {
+    font-size: 0.85rem;
+    color: var(--grey);
+}
+
+.myDate {
+    align-self: flex-end;
+}
+
+.myMessageItem,
+.anotherMessageItem {
+    position: relative;
+
+    width: max-content;
+    height: max-content;
+
+    border-radius: 1rem;
+
+    padding: 0.75rem 1rem;
+
+    margin-top: 1rem;
+}
+
+.myMessageItem {
+    background-color: var(--primary);
+    color: var(--white);
+
+    align-self: flex-end;
+}
+
+.anotherMessageItem {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.myMessageItem .messageTail {
+    right: -0.5rem;
+    bottom: -0.1rem;
+}
+
+.anotherMessageItem .messageTail {
+    left: -0.3rem;
+    bottom: -0.1rem;
+}
+
+.messageTail {
+    position: absolute;
+
+    flex-shrink: 0;
+}
+
+.myMessageItem .messageTail svg {
+    fill: var(--primary);
+
+    transform: rotate(125deg);
+}
+
+.anotherMessageItem .messageTail svg {
+    fill: var(--black);
+
+    transform: rotate(125deg);
+}
+
+.messageInput {
+    width: 80%;
+    height: 3.23rem;
+
+    padding-top: 0.8rem;
+
+    font-size: 1.07rem;
+    color: var(--primary);
+    background-color: var(--primary-light);
+
+    outline: none;
+    resize: none;
+}
+
+.messageInputWrapper svg {
+    fill: var(--primary);
+    cursor: pointer;
+}
+
+.messageInputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    margin-left: -2rem;
+    padding-left: 1rem;
+}
+
+.messageInput::placeholder {
+    color: var(--primary);
+}
+
 @media (max-width: 900px) {
     .mobileText {
         display: flex;
@@ -99,15 +201,21 @@
     }
 
     .closeIcon {
-        display: block;
-
-        cursor: pointer;
-
-        position: absolute;
         top: 2.1rem;
         right: 2.5rem;
 
         z-index: 3;
+    }
+
+    .backIcon,
+    .closeIcon {
+        display: block;
+
+        cursor: pointer;
+    }
+
+    .closeIcon {
+        position: absolute;
     }
 
     .closeIcon svg {
@@ -115,7 +223,12 @@
         stroke-width: 2;
     }
 
-    .chatsWrapper {
+    .backIcon svg {
+        fill: var(--black);
+    }
+
+    .chatsWrapper,
+    .chatItemWrapper {
         position: fixed;
         top: 0;
         left: 0;
@@ -124,27 +237,84 @@
         height: 100%;
 
         margin: 0;
-        padding: 7rem 2.5rem 0 2.5rem;
 
         background-color: var(--white);
-
-        z-index: 4;
 
         overflow-y: scroll;
     }
 
-    .chatsWrapper::-webkit-scrollbar {
+    .dateMark {
+        align-self: center;
+
+        width: fit-content;
+        height: fit-content;
+        border-radius: 0.58rem;
+        padding: 0.1rem 0.5rem;
+
+        font-size: 0.85rem;
+        color: var(--primary);
+        background-color: var(--primary-light);
+    }
+
+    .chatsWrapper {
+        padding: 7rem 2.5rem 0 2.5rem;
+
+        z-index: 4;
+    }
+
+    .chatItemWrapper {
+        padding: 1rem 2.5rem 0 2rem;
+        z-index: 5;
+    }
+
+    .chatTopWrapper {
+        position: fixed;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        width: 100%;
+
+        margin-top: -1rem;
+        margin-left: -2rem;
+        padding-left: 2rem;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+
+        background-color: var(--white);
+
+        z-index: 6;
+    }
+
+    .messageInputWrapper {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: var(--primary-light);
+    }
+
+    .messageWrapper {
+        margin: 4rem 0;
+    }
+
+    .chatsWrapper::-webkit-scrollbar,
+    .messageInput::-webkit-scrollbar,
+    .chatItemWrapper::-webkit-scrollbar {
         width: 0.375rem;
     }
 
-    .chatsWrapper::-webkit-scrollbar-track {
-        background-color: var(--white);
+    .chatsWrapper::-webkit-scrollbar-track,
+    .messageInput::-webkit-scrollbar-track,
+    .chatItemWrapper::-webkit-scrollbar-track {
+        background-color: transparent;
         border-radius: 0.375rem;
     }
 
-    .chatsWrapper::-webkit-scrollbar-thumb {
+    .chatsWrapper::-webkit-scrollbar-thumb,
+    .messageInput::-webkit-scrollbar-thumb,
+    .chatItemWrapper::-webkit-scrollbar-thumb {
         border-radius: 0.375rem;
 
-        background: var(--primary);
+        background: transparent;
     }
 }

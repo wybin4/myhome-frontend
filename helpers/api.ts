@@ -8,7 +8,7 @@ interface IData {
 }
 
 export const API: {
-    serviceNotification: { sse: string; };
+    chat: { send: string; };
     subscriber: any,
     managementCompany: {
         reference: IData;
@@ -20,8 +20,8 @@ export const API: {
         appeal: { get: string };
     };
 } = {
-    serviceNotification: {
-        sse: `${process.env.NEXT_PUBLIC_DOMAIN}/service-notification/sse`
+    chat: {
+        send: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-message`
     },
     subscriber: {
         meter: {
