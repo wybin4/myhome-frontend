@@ -34,7 +34,7 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
     };
 
     const closeChats = (e: MouseEvent) => {
-        if (chatsRef) {
+        if (chatsRef && window.innerWidth >= 900) {
             let targetClass;
             const target = e.target as HTMLElement | null;
             if (target) {
@@ -111,7 +111,9 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
             {isChat &&
                 <div className={styles.chatsWrapper} ref={chatsRef}>
                     <span
-                        onClick={() => setIsChat(!isChat)}
+                        onClick={() => {
+                            setIsChat(!isChat);
+                        }}
                         className={styles.closeIcon}
                     >
                         <CloseIcon />
@@ -130,13 +132,28 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                         .map((chat, key) => {
                             const lastMessage = chat.messages?.[chat.messages.length - 1];
                             const { name, cap } = getName(chat, user);
-
+                            const countUnread = chat.messages?.reduce((count, message) => {
+                                if (
+                                    message.status === MessageStatus.Unread &&
+                                    (message.sender.userId !== user.userId || message.sender.userRole !== user.userRole)
+                                ) {
+                                    return count + 1;
+                                }
+                                return count;
+                            }, 0);
                             return (
                                 <div
                                     className={cn(styles.chat, "viewChatItem")} key={key}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         setIsChatItem(chat._id ? chat._id : "");
                                         setIsChat(!isChat);
+                                        if (chat._id) {
+                                            await axios.post(API.chat.read, {
+                                                userId: user.userId,
+                                                userRole: user.userRole,
+                                                chatId: chat._id
+                                            });
+                                        }
                                     }}
                                 >
                                     <div className={cn(styles.photoIcon, "viewChatItem")}>{cap}</div>
@@ -156,17 +173,9 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                                     {lastMessage &&
                                         <div className={cn(styles.thirdCol, "viewChatItem")}>
                                             <div className={cn(styles.time, "viewChatItem")}>{getTime(lastMessage)}</div>
-                                            <div className={cn(styles.countUnread, "viewChatItem")}>{
-                                                chat.messages?.reduce((count, message) => {
-                                                    if (
-                                                        message.status === MessageStatus.Unread &&
-                                                        (message.sender.userId !== user.userId || message.sender.userRole !== user.userRole)
-                                                    ) {
-                                                        return count + 1;
-                                                    }
-                                                    return count;
-                                                }, 0)
-                                            }</div>
+                                            {countUnread !== 0 && <div className={cn(styles.countUnread, "viewChatItem")}>{
+                                                countUnread
+                                            }</div>}
                                         </div>
                                     }
                                 </div>

@@ -8,7 +8,7 @@ import { AppContextProvider, IAppContext } from "@/context/app.context";
 import cn from 'classnames';
 import { Notification } from "./Notification/Notification";
 import { Chat } from "./Chat/Chat";
-import { IChat } from "@/interfaces/chat.interface";
+import { IChat, IMessage } from "@/interfaces/chat.interface";
 import { IServiceNotification } from "@/interfaces/event/notification.interface";
 import { io } from "socket.io-client";
 
@@ -62,14 +62,19 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             setChats((chats) => {
                 if (chats) {
                     const updatedChats = chats.map((chat) => {
-                        if (chat._id === data.chatId) {
-                            const updatedChat = { ...chat };
-                            if (updatedChat.messages) {
-                                updatedChat.messages = [...updatedChat.messages, data];
+                        if (chat._id === data.createdMessage.chatId) {
+                            if (chat.messages) {
+                                const updatedChat = chat.messages.map((message) => {
+                                    const updatedMessage = data.updatedMessages.find((m: IMessage) => m._id === message._id);
+                                    if (updatedMessage) {
+                                        return updatedMessage;
+                                    }
+                                    return message;
+                                });
+                                chat.messages = [...updatedChat, data.createdMessage];
                             } else {
-                                updatedChat.messages = [data];
+                                chat.messages = [data.createdMessage];
                             }
-                            return updatedChat;
                         }
                         return chat;
                     });
@@ -78,7 +83,30 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                     return [];
                 }
             });
+        });
 
+        socket.on('readMessages', function (data) {
+            setChats((chats) => {
+                if (chats) {
+                    const updatedChats = chats.map((chat) => {
+                        if (chat._id === data.chatId) {
+                            if (chat.messages) {
+                                chat.messages = chat.messages.map((message) => {
+                                    const updatedMessage = data.messages.find((m: IMessage) => m._id === message._id);
+                                    if (updatedMessage) {
+                                        return updatedMessage;
+                                    }
+                                    return message;
+                                });
+                            }
+                        }
+                        return chat;
+                    });
+                    return updatedChats;
+                } else {
+                    return [];
+                }
+            });
         });
 
         socket.on('disconnect', function () {

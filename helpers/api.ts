@@ -8,7 +8,7 @@ interface IData {
 }
 
 export const API: {
-    chat: { send: string; };
+    chat: { send: string; read: string; };
     subscriber: any,
     managementCompany: {
         reference: IData;
@@ -21,7 +21,8 @@ export const API: {
     };
 } = {
     chat: {
-        send: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-message`
+        send: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-message`,
+        read: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/read-messages`
     },
     subscriber: {
         meter: {
