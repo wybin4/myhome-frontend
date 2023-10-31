@@ -8,7 +8,7 @@ interface IData {
 }
 
 export const API: {
-    chat: { send: string; read: string; };
+    chat: { addChat: string; sendMessage: string; readMessages: string; getReceivers: string; };
     serviceNotification: { read: string; readAll: string; };
     subscriber: any,
     managementCompany: {
@@ -22,8 +22,10 @@ export const API: {
     };
 } = {
     chat: {
-        send: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-message`,
-        read: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/read-messages`
+        addChat: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-chat`,
+        sendMessage: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-message`,
+        readMessages: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/read-messages`,
+        getReceivers: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/get-receivers`
     },
     serviceNotification: {
         read: `${process.env.NEXT_PUBLIC_DOMAIN}/service-notification/update-service-notification`,

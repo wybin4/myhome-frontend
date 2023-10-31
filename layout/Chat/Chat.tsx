@@ -1,15 +1,15 @@
-import { ChatItemProps, ChatProps } from "./Chat.props";
+import { ChatItemProps, ChatProps, ReceiversItemProps } from "./Chat.props";
 import styles from "./Chat.module.css";
 import { useEffect, useRef, useState } from "react";
 import ChatIcon from "./chat.svg";
 import WriteIcon from "./write.svg";
 import BackIcon from "./back.svg";
-import { Icon } from "@/components";
+import { Icon, TableSearch } from "@/components";
 import SendIcon from "./send.svg";
 import EmojiIcon from "./emoji.svg";
 import CloseIcon from "../close.svg";
 import TailIcon from "./tail.svg";
-import { IChat, IMessage, MessageStatus } from "@/interfaces/chat.interface";
+import { IChat, IChatUser, IMessage, MessageStatus } from "@/interfaces/chat.interface";
 import { format, isToday, isYesterday } from "date-fns";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { ru } from "date-fns/locale";
@@ -17,17 +17,16 @@ import cn from "classnames";
 import axios from "axios";
 import { API } from "@/helpers/api";
 
-export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => {
+export const Chat = ({
+    user,
+    chats, isChatItemRef,
+    className, ...props
+}: ChatProps): JSX.Element => {
     const [isChat, setIsChat] = useState<boolean>(false);
-    const [isChatItem, setIsChatItem] = useState<string>("");
+    const [isReceiversItem, setIsReceiversItem] = useState<boolean>(false);
+    const [receivers, setReceivers] = useState<IChatUser[]>();
     const chatsRef = useRef(null);
     const chatItemRef = useRef(null);
-
-    // ИСПРАВИТЬ!!!!
-    const user = {
-        userId: 1,
-        userRole: UserRole.Owner
-    };
 
     const getTime = (message: IMessage) => {
         return format(new Date(message.createdAt), "HH:mm");
@@ -59,6 +58,30 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
         }
     };
 
+    const closeRecieversItem = (e: MouseEvent) => {
+        if (window.innerWidth >= 900) {
+            let targetClass;
+            const target = e.target as HTMLElement | null;
+            if (target) {
+                if (!target.classList.contains("viewRecievers")) {
+                    const parent = target.parentElement;
+                    if (parent && parent.classList.contains("viewRecievers")) {
+                        targetClass = parent.className;
+                    } else if (parent && parent.parentElement && parent.parentElement.classList.contains("viewRecievers")) {
+                        targetClass = parent.parentElement.className;
+                    }
+                } else {
+                    targetClass = target.className;
+                }
+            }
+            if (
+                !(targetClass && targetClass?.split(" ")?.includes("viewRecievers"))
+            ) {
+                setIsReceiversItem(false);
+            }
+        }
+    };
+
     const closeChatItem = (e: MouseEvent) => {
         if (chatItemRef) {
             let targetClass;
@@ -80,7 +103,7 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                 && !(chatItemRef.current as Node).contains(e.target as Node)
                 && !(targetClass && targetClass?.split(" ")?.includes("viewChatItem"))
             ) {
-                setIsChatItem("");
+                isChatItemRef.current = "";
             }
         }
     };
@@ -88,17 +111,19 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
     useEffect(() => {
         document.addEventListener("click", closeChats);
         document.addEventListener("click", closeChatItem);
+        document.addEventListener("click", closeRecieversItem);
         return () => {
             document.removeEventListener("click", closeChats);
             document.removeEventListener("click", closeChatItem);
+            document.removeEventListener("click", closeRecieversItem);
         };
     }, []);
 
     useEffect(() => {
-        if (isChat || isChatItem) {
+        if (isChat || isChatItemRef) {
             document.body.style.overflowY = "hidden";
         } else document.body.style.overflowY = "";
-    }, [isChat, isChatItem]);
+    }, [isChat, isChatItemRef]);
 
     return (
         <div className={className} {...props}>
@@ -112,7 +137,6 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                         <ChatIcon />
                     </Icon>
                 }
-                {isChat && <Icon size="s" type="icon" className={styles.writeIcon}><WriteIcon /></Icon>}
             </div>
             {isChat &&
                 <div className={styles.chatsWrapper} ref={chatsRef}>
@@ -124,6 +148,26 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                     >
                         <CloseIcon />
                     </span>
+                    <Icon
+                        onClick={async () => {
+                            if (!receivers) {
+                                const { data } = await axios.post(API.chat.getReceivers, {
+                                    userId: user.userId,
+                                    userRole: user.userRole
+                                });
+                                if (data.receivers) {
+                                    setReceivers(data.receivers);
+                                }
+                                setIsReceiversItem(!isReceiversItem);
+                            } else {
+                                setIsReceiversItem(!isReceiversItem);
+                            }
+                        }}
+                        size="s" type="icon"
+                        className={cn(styles.writeIcon, "viewRecievers")}
+                    >
+                        <WriteIcon />
+                    </Icon>
                     <div className={styles.mobileText}>Чаты</div>
                     {chats && chats
                         .sort((a, b) => {
@@ -151,14 +195,16 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                                 <div
                                     className={cn(styles.chat, "viewChatItem")} key={key}
                                     onClick={async () => {
-                                        setIsChatItem(chat._id ? chat._id : "");
-                                        setIsChat(!isChat);
-                                        if (chat._id) {
-                                            await axios.post(API.chat.read, {
-                                                userId: user.userId,
-                                                userRole: user.userRole,
-                                                chatId: chat._id
-                                            });
+                                        if (chat) {
+                                            isChatItemRef.current = chat._id ? chat._id : "";
+                                            setIsChat(!isChat);
+                                            if (chat._id) {
+                                                await axios.post(API.chat.readMessages, {
+                                                    userId: user.userId,
+                                                    userRole: user.userRole,
+                                                    chatId: chat._id
+                                                });
+                                            }
                                         }
                                     }}
                                 >
@@ -190,9 +236,9 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                         })}
                 </div>
             }
-            {isChatItem !== "" &&
+            {isChatItemRef.current !== "" &&
                 <ChatItem
-                    chat={chats.find(c => c._id === isChatItem)}
+                    chat={chats.find(c => c._id === isChatItemRef.current)}
                     className={styles.chatItemWrapper}
                     user={user}
                     innerRef={chatItemRef}
@@ -200,13 +246,19 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
                     <div
                         className={styles.backIcon}
                         onClick={() => {
-                            setIsChatItem("");
+                            isChatItemRef.current = "";
                             setIsChat(!isChat);
                         }}
                     >
                         <BackIcon />
                     </div>
                 </ChatItem>
+            }
+            {isReceiversItem && receivers &&
+                <ReceiversItem receivers={receivers} user={user}
+                    isChatItemRef={isChatItemRef}
+                    setIsReceiverItem={setIsReceiversItem}
+                />
             }
         </div>
     );
@@ -253,7 +305,7 @@ const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatI
                 senderId: user.userId,
                 senderRole: user.userRole
             };
-            await axios.post(API.chat.send, postData);
+            await axios.post(API.chat.sendMessage, postData);
             setMessage("");
             if (inputRef && inputRef.current) {
                 const ref = inputRef.current as HTMLElement;
@@ -347,6 +399,54 @@ const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatI
                     </div>
                 </div >
             }
+        </>
+    );
+};
+
+const ReceiversItem = ({
+    user, receivers,
+    isChatItemRef, setIsReceiverItem,
+    ...props
+}: ReceiversItemProps): JSX.Element => {
+    return (
+        <>
+            <div className={cn(styles.chatsWrapper, "flex flex-col gap-6 viewRecievers")}  {...props}>
+                <span
+                    onClick={() => {
+                        setIsReceiverItem(false);
+                    }}
+                    className={styles.closeIcon}
+                >
+                    <CloseIcon />
+                </span>
+                <TableSearch size="m" placeholder="Поиск по пользователям" className="viewRecievers" />
+                {receivers.map((receiver, key) => {
+                    const cap = getCap(receiver.name);
+                    return (
+                        <div
+                            className="flex gap-4 items-center viewRecievers cursor-pointer" key={key}
+                            onClick={async () => {
+                                const { data } = await axios.post(API.chat.addChat, {
+                                    users: [user, receiver]
+                                });
+                                if (data.chat) {
+                                    setIsReceiverItem(false);
+                                    isChatItemRef.current = data.chat._id;
+                                }
+                            }}
+                        >
+                            <div className={cn(styles.photoIcon, "viewRecievers")}>{cap}</div>
+                            <div>
+                                <div className={cn(styles.name, "viewRecievers")}>{receiver.name}</div>
+                                <div className={cn(styles.description, "viewRecievers")}>{
+                                    receiver.userRole === UserRole.ManagementCompany ?
+                                        "Управляющая компания" : "Владелец"
+                                }</div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </>
     );
 };

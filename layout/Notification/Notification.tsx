@@ -13,18 +13,11 @@ import Link from "next/link";
 import { AppContext } from "@/context/app.context";
 import axios from "axios";
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
 import cn from "classnames";
 
-export const Notification = ({ notifications, className, ...props }: NotificationProps): JSX.Element => {
+export const Notification = ({ user, notifications, className, ...props }: NotificationProps): JSX.Element => {
     const [isNotification, setIsNotification] = useState<boolean>(false);
     const { role } = useContext(AppContext);
-
-    // ИСПРАВИТЬ!!!!
-    const user = {
-        userId: 1,
-        userRole: UserRole.Owner
-    };
 
     useEffect(() => {
         if (isNotification) {

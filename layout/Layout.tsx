@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Footer } from "./Footer/Footer";
 import { Header } from "./Header/Header";
 import { LayoutProps } from "./Layout.props";
@@ -11,11 +11,21 @@ import { Chat } from "./Chat/Chat";
 import { IChat, IMessage } from "@/interfaces/chat.interface";
 import { IServiceNotification } from "@/interfaces/event/notification.interface";
 import { io } from "socket.io-client";
+import axios from "axios";
+import { API } from "@/helpers/api";
+import { UserRole } from "@/interfaces/account/user.interface";
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
     const [chats, setChats] = useState<IChat[]>([]);
     const [notifications, setNotifications] = useState<IServiceNotification[]>([]);
+    // const [isChatItem, setIsChatItem] = useState<string>("");
+    const isChatItemRef = useRef("");
 
+    // ИСПРАВИТЬ!!!!
+    const user = {
+        userId: 1,
+        userRole: UserRole.Owner
+    };
     useEffect(() => {
         const socket = io('http://localhost:3100', {
             extraHeaders: {
@@ -64,7 +74,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             setChats(data.chats);
         });
 
-        socket.on('newChat', function (data) {
+        socket.on('newChat', async function (data) {
             setChats((chats: IChat[] | null) => {
                 if (chats) {
                     const newChats = [...chats, data];
@@ -75,7 +85,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             });
         });
 
-        socket.on('newMessage', function (data) {
+        socket.on('newMessage', async function (data) {
             setChats((chats) => {
                 if (chats) {
                     const updatedChats = chats.map((chat) => {
@@ -100,6 +110,14 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                     return [];
                 }
             });
+
+            if (data.createdMessage && isChatItemRef.current === data.createdMessage.chatId) {
+                await axios.post(API.chat.readMessages, {
+                    userId: user.userId,
+                    userRole: user.userRole,
+                    chatId: data.createdMessage.chatId
+                });
+            }
         });
 
         socket.on('readMessages', function (data) {
@@ -141,8 +159,11 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
         })}>
             <Header className={styles.header} />
             <Navigation className={styles.navigation} />
-            <Notification notifications={notifications} className={styles.notification} />
-            <Chat chats={chats} />
+            <Notification user={user} notifications={notifications} className={styles.notification} />
+            <Chat
+                isChatItemRef={isChatItemRef}
+                user={user} chats={chats}
+            />
             <div className={styles.body}>
                 {children}
             </div>

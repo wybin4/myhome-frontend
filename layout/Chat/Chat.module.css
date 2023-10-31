@@ -16,6 +16,8 @@
     right: 8.3rem;
 
     z-index: 5;
+
+    cursor: pointer;
 }
 
 .closeIcon,
