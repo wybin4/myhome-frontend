@@ -9,6 +9,7 @@ interface IData {
 
 export const API: {
     chat: { send: string; read: string; };
+    serviceNotification: { read: string; readAll: string; };
     subscriber: any,
     managementCompany: {
         reference: IData;
@@ -23,6 +24,10 @@ export const API: {
     chat: {
         send: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-message`,
         read: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/read-messages`
+    },
+    serviceNotification: {
+        read: `${process.env.NEXT_PUBLIC_DOMAIN}/service-notification/update-service-notification`,
+        readAll: `${process.env.NEXT_PUBLIC_DOMAIN}/service-notification/update-all-service-notifications`
     },
     subscriber: {
         meter: {

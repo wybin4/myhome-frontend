@@ -43,6 +43,23 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             });
         });
 
+        socket.on('readNotifications', function (data) {
+            if (data) {
+                setNotifications((notifications) => {
+                    if (notifications) {
+                        return notifications.map((notification) => {
+                            const exists = data.find((n: IServiceNotification) => n.id === notification.id);
+                            if (exists) {
+                                return exists;
+                            } else return notification;
+                        });
+                    } else {
+                        return [];
+                    }
+                });
+            }
+        });
+
         socket.on('chats', function (data) {
             setChats(data.chats);
         });

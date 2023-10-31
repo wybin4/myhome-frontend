@@ -94,13 +94,19 @@ export const Chat = ({ chats, className, ...props }: ChatProps): JSX.Element => 
         };
     }, []);
 
+    useEffect(() => {
+        if (isChat || isChatItem) {
+            document.body.style.overflowY = "hidden";
+        } else document.body.style.overflowY = "";
+    }, [isChat, isChatItem]);
+
     return (
         <div className={className} {...props}>
             <div className={cn(styles.icon, "viewChats")}>
                 {!isChat &&
                     <Icon
                         size="s" type="icon"
-                        className="viewChats"
+                        className={cn("viewChats", styles.chatIcon)}
                         onClick={() => setIsChat(!isChat)}
                     >
                         <ChatIcon />

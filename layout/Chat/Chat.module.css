@@ -2,15 +2,20 @@
     position: fixed;
     bottom: 6rem;
     right: 3.3rem;
-    z-index: 5;
 
     cursor: pointer;
+}
+
+.chatIcon {
+    z-index: 4;
 }
 
 .writeIcon {
     position: fixed;
     bottom: 3.3rem;
     right: 8.3rem;
+
+    z-index: 5;
 }
 
 .closeIcon,

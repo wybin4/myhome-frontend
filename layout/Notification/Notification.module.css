@@ -1,18 +1,118 @@
+.notificationWrapper {
+    position: absolute;
+    top: 3rem;
+    right: 2.2rem;
+
+    width: 25rem;
+    height: 32rem;
+
+    margin: 0;
+    padding: 0 1rem 0 1rem;
+
+    background-color: var(--white);
+    border: solid 1px var(--grey-light);
+    border-radius: 1rem;
+
+    z-index: 4;
+
+    overflow-y: scroll;
+}
+
+.notificationsContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2rem;
+
+    margin-top: 1rem;
+}
+
+.buttonWrapper {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: space-evenly;
+
+    margin: auto;
+    padding: 0.7rem 0;
+
+    background-color: var(--white);
+}
+
+.readAll {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+
+    color: var(--primary);
+
+    font-size: 0.9rem;
+}
+
+.viewAll {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 0.5rem 0.7rem;
+
+    border-radius: 0.5rem;
+
+    font-size: 0.9rem;
+}
+
+.readAll svg {
+    fill: var(--primary);
+}
+
+.readNotif {
+    color: var(--grey);
+
+    margin: -0.5rem 0;
+}
+
+.topWrapper {
+    position: sticky;
+    top: 0;
+    padding-top: 1.4rem;
+    padding-bottom: 1rem;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    background-color: var(--white);
+}
+
+.mobileText {
+    display: flex;
+    margin-left: 0.4rem;
+    width: fit-content;
+
+    font-weight: 600;
+    font-size: 1.08rem;
+}
+
+.notificationIcon {
+    position: absolute;
+    top: 0.7rem;
+    right: 2.2rem;
+    cursor: pointer;
+}
+
 .notificationIcon svg {
     width: 1.61rem;
 
     fill: var(--black);
 }
 
-.closeIcon,
-.mobileText,
-.mobileNotifWrapper {
+.closeIcon {
     display: none;
-}
-
-.desktopNotifWrapper {
-    position: fixed;
-    top: 1rem;
 }
 
 .notificationBody {
@@ -42,59 +142,68 @@
     margin: 0.7rem 0;
 }
 
-@media (max-width: 900px) {
-    .desktopNotifWrapper {
-        display: none;
-    }
+.notificationWrapper::-webkit-scrollbar {
+    width: 0.375rem;
+}
 
-    .mobileNotifWrapper {
+.notificationWrapper::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 0.375rem;
+}
+
+.notificationWrapper::-webkit-scrollbar-thumb {
+    border-radius: 0.375rem;
+
+    background: transparent;
+}
+
+@media (max-width: 900px) {
+    .notificationWrapper {
         position: fixed;
         top: 0;
         left: 0;
 
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 2rem;
-
         width: 100%;
         height: 100%;
 
-        margin: 0;
-        padding: 7rem 2.5rem 0 2.5rem;
+        padding: 5rem 2.5rem 0 2.5rem;
 
-        background-color: var(--white);
+        border: none;
+        border-radius: 0;
+    }
 
-        z-index: 4;
+    .notificationsContent {
+        margin-top: 0.5rem;
+        margin-bottom: 6rem;
+    }
+
+    .topWrapper {
+        position: fixed;
+
+        width: 82%;
+
+        padding-top: 1.8rem;
     }
 
     .mobileText {
-        display: flex;
-        position: absolute;
-        top: 1.8rem;
-        left: 0;
-        right: 0;
-
-        width: fit-content;
-
-        font-weight: 600;
-        font-size: 1.08rem;
-
         margin: auto;
     }
 
-    .closeIcon,
-    .notificationIcon {
-        display: block;
+    .buttonWrapper {
+        position: fixed;
 
-        cursor: pointer;
+        padding: 1.3rem 0;
+    }
+
+    .notificationIcon {
+        top: 1.9rem;
+        right: 5.2rem;
     }
 
     .closeIcon {
-        position: absolute;
-        top: 2.1rem;
-        right: 2.5rem;
+        display: block;
+
+        cursor: pointer;
 
         z-index: 3;
     }
@@ -103,11 +212,4 @@
         stroke: var(--black);
         stroke-width: 2;
     }
-
-    .notificationIcon {
-        position: absolute;
-        top: 1.9rem;
-        right: 5.2rem;
-    }
-
 }
