@@ -10,15 +10,20 @@ interface IData {
 export const API: {
     chat: { addChat: string; sendMessage: string; readMessages: string; getReceivers: string; };
     serviceNotification: { read: string; readAll: string; };
-    subscriber: any,
+    event: { get: string };
+    subscriber: {
+        meter: { index: string };
+        singlePaymentDocument: { get: string };
+        voting: { update: string };
+    },
     managementCompany: {
         reference: IData;
         common: IData;
         correction: IData;
         singlePaymentDocument: { get: string; calculate: string };
-        voting: { get: string; add: string };
-        houseNotification: { get: string; add: string };
-        appeal: { get: string };
+        voting: { add: string };
+        houseNotification: { add: string };
+        appeal: { add: string };
     };
 } = {
     chat: {
@@ -32,6 +37,7 @@ export const API: {
         readAll: `${process.env.NEXT_PUBLIC_DOMAIN}/service-notification/update-all-service-notifications`
     },
     subscriber: {
+        voting: { update: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/update-voting` },
         meter: {
             index: `${process.env.NEXT_PUBLIC_DOMAIN}/meter/get-meters-all-info-by-sid`
         },
@@ -90,17 +96,18 @@ export const API: {
             get: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-documents-by-mcid`,
             calculate: `${process.env.NEXT_PUBLIC_DOMAIN}/single-payment-document/get-single-payment-document`,
         },
+
         voting: {
-            get: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/get-votings-by-mcid`,
             add: `${process.env.NEXT_PUBLIC_DOMAIN}/voting/add-voting`
         },
         houseNotification: {
-            get: `${process.env.NEXT_PUBLIC_DOMAIN}/house-notification/get-house-notifications-by-mcid`,
             add: `${process.env.NEXT_PUBLIC_DOMAIN}/house-notification/add-house-notification`
         },
         appeal: {
-            get: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/get-appeals-by-mcid`,
+            add: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/add-appeal`,
         }
     },
-
+    event: {
+        get: `${process.env.NEXT_PUBLIC_DOMAIN}/event/get-events`
+    },
 };

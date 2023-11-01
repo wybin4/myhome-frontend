@@ -23,7 +23,7 @@ export const Card = ({
             {description && <Paragraph size="xs" className={styles.description}>{description}</Paragraph>}
             {input && <CardInput className={styles.input} {...input} value={inputValue} setValue={setInputValue} />}
             {voting && <Voting {...voting} />}
-            {text && <p className={cn({
+            {text && <p className={cn("my-4", {
                 "md:hidden sm:hidden": !isMobileText
             })}>{text}</p>}
             {bottom && <CardBottom {...bottom} />}
@@ -33,7 +33,7 @@ export const Card = ({
 
 export const CardTitle = ({
     text, description,
-    iconLeft, iconLeftSize = "s",
+    iconLeft, iconLeftSize = "s", iconLeftVisible = true,
     tag,
     symbolRight,
     ...props }: CardTitleProps): JSX.Element => {
@@ -41,12 +41,12 @@ export const CardTitle = ({
         <div className={styles.title} {...props}>
             <div className={styles.titleWrapper}>
                 {tag && <span className={styles.tagIcon}>{tag.tagIcon}</span>}
-                <span className={cn(styles.iconLeft, {
-                    [styles.iconLeftL]: iconLeftSize === "l",
-                    [styles.iconLeftS]: iconLeftSize === "s",
-                })}>{iconLeft}</span>
+                <Icon className={cn(styles.iconLeft, {
+                    [styles.iconLeftInvisible]: !iconLeftVisible,
+                })} size={iconLeftSize} type="icon" appearance="primary">{iconLeft}</Icon>
                 <div className={cn({
-                    [styles.titleWithLeftLIcon]: iconLeftSize === "l"
+                    [styles.titleWithIcon]: iconLeftVisible,
+                    [styles.titleWithoutIcon]: !iconLeftVisible
                 })}>
                     <Paragraph size="m" className="font-medium">{text}</Paragraph>
                     {description && <Paragraph size="xs" className={styles.titleDesc}>{description}</Paragraph>}

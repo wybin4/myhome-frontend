@@ -11,3 +11,10 @@ export enum VotingStatus {
     Open = 'Открыт',
     Close = 'Закрыт'
 }
+
+export interface IOption {
+    id: number;
+    votingId: number;
+    text: string;
+    numberOfVotes: number;
+}

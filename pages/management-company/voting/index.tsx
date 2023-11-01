@@ -1,6 +1,6 @@
 import { Form, Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
 import { IVoting, VotingStatus } from "@/interfaces/event/voting.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
@@ -10,6 +10,7 @@ import OpenIcon from "./open.svg";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
+import { EventType, IGetEvents, IGetVoting } from "@/interfaces/event.interface";
 
 function Voting({ data }: IVotingProps): JSX.Element {
     const useFormData = useForm<IVoting>();
@@ -46,8 +47,8 @@ function Voting({ data }: IVotingProps): JSX.Element {
                 status = "";
             }
             accumulator.status.push(status);
-            accumulator.houseName.push(voting.houseName);
-            accumulator.result.push(voting.result);
+            accumulator.houseName.push(voting.name);
+            accumulator.result.push(voting.result ? voting.result : "—");
             accumulator.createdAt.push(format(new Date(voting.createdAt), "dd.mm.yyyy"));
             accumulator.expiredAt.push(format(new Date(voting.expiredAt), "dd.mm.yyyy"));
             return accumulator;
@@ -182,13 +183,18 @@ function Voting({ data }: IVotingProps): JSX.Element {
 export default withLayout(Voting);
 
 export async function getServerSideProps() {
-    const postData = {
-        managementCompanyId: 1 // ИСПРАВИТЬ!!!!
+    // ИСПРАВИТЬ!!!!
+    const postDataHouses = {
+        managementCompanyId: 1
     };
-
+    const postDataVotings = {
+        userId: 1,
+        userRole: UserRole.ManagementCompany,
+        events: [EventType.Voting]
+    };
     try {
-        const votings = await axios.post<{ votings: IVotingData[] }>(API.managementCompany.voting.get, postData);
-        const houses = await axios.post<{ houses: IVotingData[] }>(API.managementCompany.reference.house.get, postData);
+        const votings = await axios.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
+        const houses = await axios.post<{ houses: IHouse[] }>(API.managementCompany.reference.house.get, postDataHouses);
         if (!votings.data || !houses.data) {
             return {
                 notFound: true
@@ -197,7 +203,7 @@ export async function getServerSideProps() {
         return {
             props: {
                 data: {
-                    votings: votings.data.votings,
+                    votings: votings.data.events.votings,
                     houses: houses.data.houses
                 }
             }
@@ -210,12 +216,6 @@ export async function getServerSideProps() {
 }
 
 interface IVotingProps extends Record<string, unknown> {
-    data: { votings: IVotingData[]; houses: IHouse[] };
+    data: { votings: IGetVoting[]; houses: IHouse[] };
     role: UserRoleType;
-}
-
-interface IVotingData extends IVoting {
-    id: number;
-    houseName: string;
-    result: string;
 }

@@ -1,3 +1,6 @@
+import { isToday, isYesterday, format } from "date-fns";
+import { ru } from "date-fns/locale";
+
 export const monthNamesInNominativeCase = [
     'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
     'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
@@ -52,4 +55,16 @@ export const formatFullName = (fullName: string) => {
     const words = fullName.split(' ');
     const initials = words.map(word => `${word[0]}.`).slice(1);
     return [words[0], ...initials].join(' ');
+};
+
+export const getHumanDate = (date: Date): string => {
+    if (isToday(date)) {
+        return 'Сегодня';
+    } else if (isYesterday(date)) {
+        return 'Вчера';
+    } else if (date.getFullYear() === new Date().getFullYear()) {
+        return format(date, "dd MMMM", { locale: ru });
+    } else {
+        return format(date, "dd MMMM yyyy", { locale: ru });
+    }
 };

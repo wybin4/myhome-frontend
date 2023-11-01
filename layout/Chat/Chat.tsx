@@ -10,12 +10,13 @@ import EmojiIcon from "./emoji.svg";
 import CloseIcon from "../close.svg";
 import TailIcon from "./tail.svg";
 import { IChat, IChatUser, IMessage, MessageStatus } from "@/interfaces/chat.interface";
-import { format, isToday, isYesterday } from "date-fns";
+import { format } from "date-fns";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { ru } from "date-fns/locale";
 import cn from "classnames";
 import axios from "axios";
 import { API } from "@/helpers/api";
+import { getHumanDate } from "@/helpers/constants";
 
 export const Chat = ({
     user,
@@ -294,6 +295,7 @@ const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatI
             messages: groupedMessages[dateKey],
         }));
 
+        result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         return result;
     };
 
@@ -340,7 +342,7 @@ const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatI
                                 return (
                                     <div className="flex flex-col" key={key}>
                                         <div className={styles.dateMark}>
-                                            {getDate(messages.createdAt)}
+                                            {getHumanDate(messages.createdAt)}
                                         </div>
                                         {messages.messages.map(message => {
                                             const my = message.sender.userId === user.userId &&
@@ -501,16 +503,4 @@ const getName = (chat: IChat, user: {
         name: "",
         cap: ""
     };
-};
-
-const getDate = (date: Date): string => {
-    if (isToday(date)) {
-        return 'Сегодня';
-    } else if (isYesterday(date)) {
-        return 'Вчера';
-    } else if (date.getFullYear() === new Date().getFullYear()) {
-        return format(date, "dd MMMM", { locale: ru });
-    } else {
-        return format(date, "dd MMMM yyyy", { locale: ru });
-    }
 };

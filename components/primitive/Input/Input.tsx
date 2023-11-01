@@ -13,7 +13,7 @@ export const Input = forwardRef(({
     inputError,
     ...props
 }: InputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
-    
+
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (inputType === "number") {
             const inputValue = event.target.value;
@@ -58,7 +58,8 @@ export const Input = forwardRef(({
                                 [styles.normalInput]: sizeOfIcon === "normal",
                                 "focus:ring-4 focus:ring-violet-200": !readOnly && !inputError,
                                 "focus:ring-4 focus:ring-red-200": !readOnly && inputError,
-                                [styles.readonly]: readOnly
+                                [styles.readonly]: readOnly,
+                                [styles.svgM]: icon && size === "m"
                             },
                         )} value={value ? value : ""} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
                     {icon &&

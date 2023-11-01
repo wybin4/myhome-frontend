@@ -1,21 +1,22 @@
 import { Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import { format } from "date-fns";
-import { AppealStatus, IAppeal } from "@/interfaces/event/appeal.interface";
+import { AppealStatus, AppealType } from "@/interfaces/event/appeal.interface";
 import ProcessingIcon from "./processing.svg";
 import ClosedIcon from "./closed.svg";
 import RejectedIcon from "./rejected.svg";
 import { formatFullName, formatNumber } from "@/helpers/constants";
+import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
 
 function Appeal({ data }: AppealProps): JSX.Element {
     type AppealData = {
         id: number[];
         personalAccount: string[];
         modifiedPersonalAccount: string[];
-        apartmentName: string[];
+        address: string[];
         type: string[];
         status: string[];
         createdAt: string[];
@@ -25,7 +26,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
         id: [],
         personalAccount: [],
         modifiedPersonalAccount: [],
-        apartmentName: [],
+        address: [],
         type: [],
         status: [],
         createdAt: []
@@ -34,8 +35,12 @@ function Appeal({ data }: AppealProps): JSX.Element {
     const appeals: AppealData = data.appeals.reduce(
         (accumulator, appeal) => {
             accumulator.id.push(appeal.id);
-            accumulator.personalAccount.push(`${appeal.personalAccount} ${appeal.ownerName}`);
-            accumulator.modifiedPersonalAccount.push(`${formatNumber(appeal.personalAccount)} ${formatFullName(appeal.ownerName)}`);
+            accumulator.personalAccount.push(`${appeal.personalAccount} ${appeal.name}`);
+            accumulator.modifiedPersonalAccount.push(`${formatNumber(
+                appeal.personalAccount ?
+                    appeal.personalAccount
+                    : ""
+            )} ${formatFullName(appeal.name)}`);
             const statusArr = Object.entries(AppealStatus).find(([key]) => key === appeal.status);
             let status: string;
             if (statusArr) {
@@ -44,8 +49,15 @@ function Appeal({ data }: AppealProps): JSX.Element {
                 status = "";
             }
             accumulator.status.push(status);
-            accumulator.type.push(appeal.typeOfAppealName);
-            accumulator.apartmentName.push(appeal.apartmentName);
+            const typeArr = Object.entries(AppealType).find(([key]) => key === appeal.typeOfAppeal);
+            let type: string;
+            if (typeArr) {
+                type = typeArr[1];
+            } else {
+                type = "";
+            }
+            accumulator.type.push(type);
+            accumulator.address.push(appeal.address ? appeal.address : "");
             accumulator.createdAt.push(format(new Date(appeal.createdAt), "dd.MM.yyyy"));
             return accumulator;
         },
@@ -53,7 +65,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
     );
 
     const {
-        id, personalAccount, modifiedPersonalAccount, type, status, apartmentName, createdAt
+        id, personalAccount, modifiedPersonalAccount, type, status, address, createdAt
     } = appeals;
 
     return (
@@ -94,7 +106,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                         {
                             title: "Объект учёта",
                             type: "text",
-                            items: apartmentName
+                            items: address
                         },
                         {
                             title: "Тип обращения",
@@ -146,12 +158,15 @@ function Appeal({ data }: AppealProps): JSX.Element {
 export default withLayout(Appeal);
 
 export async function getServerSideProps() {
+    // ИСПРАВИТЬ!!!!
     const postData = {
-        managementCompanyId: 1 // ИСПРАВИТЬ!!!!
+        userId: 1,
+        userRole: UserRole.ManagementCompany,
+        events: [EventType.Appeal]
     };
 
     try {
-        const { data } = await axios.post<{ appeals: AppealData[] }>(API.managementCompany.appeal.get, postData);
+        const { data } = await axios.post<{ events: IGetEvents }>(API.event.get, postData);
         if (!data) {
             return {
                 notFound: true
@@ -159,7 +174,7 @@ export async function getServerSideProps() {
         }
         return {
             props: {
-                data
+                data: { appeals: data.events.appeals }
             }
         };
     } catch {
@@ -170,13 +185,6 @@ export async function getServerSideProps() {
 }
 
 interface AppealProps extends Record<string, unknown> {
-    data: { appeals: AppealData[] };
+    data: { appeals: IGetAppeal[] };
     role: UserRoleType;
-}
-
-interface AppealData extends IAppeal {
-    typeOfAppealName: string;
-    apartmentName: string;
-    personalAccount: string;
-    ownerName: string;
 }

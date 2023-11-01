@@ -15,6 +15,7 @@ export interface BaseCardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTM
 export interface CardTitleProps extends BaseCardTitleProps {
     iconLeft?: any;
     iconLeftSize?: "s" | "l";
+    iconLeftVisible?: boolean;
     symbolRight?: {
         symbol: any;
         size: "s" | "l";
