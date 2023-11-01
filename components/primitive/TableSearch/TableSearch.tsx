@@ -2,10 +2,20 @@ import { TableSearchProps } from "./TableSearch.props";
 import SearchIcon from './search.svg';
 import { Input } from "../Input/Input";
 
-export const TableSearch = ({ placeholder = "Поиск", className, size, ...props }: TableSearchProps): JSX.Element => {
+export const TableSearch = ({
+    value, setValue,
+    placeholder = "Поиск", size,
+    className, ...props
+}: TableSearchProps): JSX.Element => {
+
     return (
-        <>
-            <Input placeholder={placeholder} inputType="string" size={size} className={className} icon={<SearchIcon />} />
-        </>
+        <div {...props}>
+            <Input
+                value={value}
+                setValue={setValue}
+                placeholder={placeholder} inputType="string"
+                size={size}
+                className={className} icon={<SearchIcon />} />
+        </div>
     );
 };

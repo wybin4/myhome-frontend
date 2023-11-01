@@ -78,6 +78,7 @@ export const TableFilterItem = ({
 }: TableFilterItemProps): JSX.Element => {
     const [hidden, setHidden] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number>(0);
+    const [searchValue, setSearchValue] = useState<string | number | undefined>();
 
     const handleItemClick = (index: number) => {
         if (!isRadio) {
@@ -112,43 +113,53 @@ export const TableFilterItem = ({
                     }
                     {type !== "checkboxWithoutSearch" && type !== "date" && type !== "number" &&
                         <div className="mb-3">
-                            <TableSearch size="s" />
+                            <TableSearch
+                                size="s"
+                                value={searchValue} setValue={setSearchValue}
+                            />
                         </div>
                     }
                     {items && <div className="flex flex-col gap-1">{
-                        items.map((item, index) => {
-                            if (isRadio) {
-                                return (
-                                    <Radio
-                                        checked={selectedItem === index}
-                                        onClick={() => {
-                                            if (onClick) {
-                                                onClick();
-                                            }
-                                            handleItemClick(index);
-                                        }}
-                                        forString={`${titleEng}_${index}`}
-                                        key={index}
-                                    >
-                                        {item}
-                                    </Radio>
-                                );
-                            } else {
-                                return (
-                                    <Checkbox
-                                        onClick={() => {
-                                            if (onClick) {
-                                                onClick();
-                                            }
-                                        }}
-                                        forString={`${titleEng}_${index}`}
-                                        key={index}
-                                    >
-                                        {item}
-                                    </Checkbox>
-                                );
-                            }
-                        })
+                        items
+                            .filter(item => {
+                                if (searchValue) {
+                                    return item.toLowerCase().includes(String(searchValue).toLowerCase());
+                                }
+                                return true;
+                            })
+                            .map((item, index) => {
+                                if (isRadio) {
+                                    return (
+                                        <Radio
+                                            checked={selectedItem === index}
+                                            onClick={() => {
+                                                if (onClick) {
+                                                    onClick();
+                                                }
+                                                handleItemClick(index);
+                                            }}
+                                            forString={`${titleEng}_${index}`}
+                                            key={index}
+                                        >
+                                            {item}
+                                        </Radio>
+                                    );
+                                } else {
+                                    return (
+                                        <Checkbox
+                                            onClick={() => {
+                                                if (onClick) {
+                                                    onClick();
+                                                }
+                                            }}
+                                            forString={`${titleEng}_${index}`}
+                                            key={index}
+                                        >
+                                            {item}
+                                        </Checkbox>
+                                    );
+                                }
+                            })
                     }</div>}
                     {type === "date" && <DatePickerInput />}
                 </div>

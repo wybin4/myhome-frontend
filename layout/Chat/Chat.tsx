@@ -120,7 +120,7 @@ export const Chat = ({
     }, []);
 
     useEffect(() => {
-        if (isChat || isChatItemRef) {
+        if (isChat || isChatItemRef.current) {
             document.body.style.overflowY = "hidden";
         } else document.body.style.overflowY = "";
     }, [isChat, isChatItemRef]);
@@ -408,6 +408,8 @@ const ReceiversItem = ({
     isChatItemRef, setIsReceiverItem,
     ...props
 }: ReceiversItemProps): JSX.Element => {
+    const [searchValue, setSearchValue] = useState<string | number | undefined>();
+
     return (
         <>
             <div className={cn(styles.chatsWrapper, "flex flex-col gap-6 viewRecievers")}  {...props}>
@@ -419,33 +421,44 @@ const ReceiversItem = ({
                 >
                     <CloseIcon />
                 </span>
-                <TableSearch size="m" placeholder="Поиск по пользователям" className="viewRecievers" />
-                {receivers.map((receiver, key) => {
-                    const cap = getCap(receiver.name);
-                    return (
-                        <div
-                            className="flex gap-4 items-center viewRecievers cursor-pointer" key={key}
-                            onClick={async () => {
-                                const { data } = await axios.post(API.chat.addChat, {
-                                    users: [user, receiver]
-                                });
-                                if (data.chat) {
-                                    setIsReceiverItem(false);
-                                    isChatItemRef.current = data.chat._id;
-                                }
-                            }}
-                        >
-                            <div className={cn(styles.photoIcon, "viewRecievers")}>{cap}</div>
-                            <div>
-                                <div className={cn(styles.name, "viewRecievers")}>{receiver.name}</div>
-                                <div className={cn(styles.description, "viewRecievers")}>{
-                                    receiver.userRole === UserRole.ManagementCompany ?
-                                        "Управляющая компания" : "Владелец"
-                                }</div>
+                <TableSearch
+                    value={searchValue} setValue={setSearchValue}
+                    size="m" placeholder="Поиск по пользователям"
+                    className="viewRecievers"
+                />
+                {receivers
+                    .filter(receiver => {
+                        if (searchValue) {
+                            return receiver.name.toLowerCase().includes(String(searchValue).toLowerCase());
+                        }
+                        return true;
+                    })
+                    .map((receiver, key) => {
+                        const cap = getCap(receiver.name);
+                        return (
+                            <div
+                                className="flex gap-4 items-center viewRecievers cursor-pointer" key={key}
+                                onClick={async () => {
+                                    const { data } = await axios.post(API.chat.addChat, {
+                                        users: [user, receiver]
+                                    });
+                                    if (data.chat) {
+                                        setIsReceiverItem(false);
+                                        isChatItemRef.current = data.chat._id;
+                                    }
+                                }}
+                            >
+                                <div className={cn(styles.photoIcon, "viewRecievers")}>{cap}</div>
+                                <div>
+                                    <div className={cn(styles.name, "viewRecievers")}>{receiver.name}</div>
+                                    <div className={cn(styles.description, "viewRecievers")}>{
+                                        receiver.userRole === UserRole.ManagementCompany ?
+                                            "Управляющая компания" : "Владелец"
+                                    }</div>
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
             </div>
         </>
     );
