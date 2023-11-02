@@ -1,17 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { VotingProps } from "./Voting.props";
 import styles from "./Voting.module.css";
 import CheckIcon from "./check.svg";
 
-export const Voting = ({ options, answers, onAnswer }: VotingProps): JSX.Element => {
+export const Voting = ({ activeId, options, onAnswer }: VotingProps): JSX.Element => {
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
+    useEffect(() => {
+        if (activeId !== 0) {
+            setSelectedAnswer(activeId);
+        }
+    }, [activeId]);
+
     const getTotalVotesCount = () => {
-        return Object.values(answers).reduce((sum, count) => sum + count, 0);
+        return Object.values(options.map(o => o.numberOfVotes)).reduce((sum, count) => sum + count, 0);
     };
 
     const getPercent = (answerId: number) => {
-        return Math.round((answers[answerId - 1] / getTotalVotesCount()) * 100);
+        const option = getAnswer(answerId);
+        if (option) {
+            return Math.round((option.numberOfVotes / getTotalVotesCount()) * 100);
+        }
+    };
+
+    const getAnswer = (answerId: number) => {
+        return options.find(o => o.id === answerId);
+    };
+
+    const setAnswer = (answerId: number) => {
+        const option = options.find(o => o.id === answerId);
+        if (option) {
+            option.numberOfVotes += 1;
+        }
+        return option;
     };
 
     const getBackground = (answerId: number) => {
@@ -29,7 +50,7 @@ export const Voting = ({ options, answers, onAnswer }: VotingProps): JSX.Element
         }
 
         setSelectedAnswer(answerId);
-        answers[answerId - 1] += 1;
+        setAnswer(answerId);
         onAnswer(answerId);
     };
 
@@ -49,7 +70,7 @@ export const Voting = ({ options, answers, onAnswer }: VotingProps): JSX.Element
                             <div>{option.text}</div>
                             {selectedAnswer &&
                                 <>
-                                    <div className="text-center">{answers[option.id - 1]}</div>
+                                    <div className="text-center">{getAnswer(option.id)?.numberOfVotes}</div>
                                     <div className="text-right flex items-center justify-end">
                                         {selectedAnswer === option.id && <span className="mr-3"><CheckIcon /></span>}
                                         {getPercent(option.id)}%

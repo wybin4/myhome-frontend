@@ -21,6 +21,7 @@ interface IEvent {
 function Event({ data }: EventProps): JSX.Element {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
     const filterButtonRef = useRef(null);
+    const userId = 1; // ИСПРАВИТЬ
 
     const groupEventsByDate = () => {
         if (data.notifications || data.votings) {
@@ -83,13 +84,14 @@ function Event({ data }: EventProps): JSX.Element {
                             <Htag size="h3" className="mb-4">{getHumanDate(events.createdAt)}</Htag>
                             <div className="my-6">
                                 {events.events.map((e, key2) => {
-                                    let date1: string, options: IOption[] | undefined;
+                                    let date1: string, options: IOption[] | undefined, active: IOption | undefined;
                                     const date2 = format(new Date(e.event.createdAt), "hh:mm d MMMM yyyy", { locale: ru });
 
                                     switch (e.type) {
                                         case EventType.Voting:
                                             date1 = format(new Date((e.event as IGetVoting).expiredAt), "dd.MM.yyyy");
                                             options = (e.event as IGetVoting).options ? (e.event as IGetVoting).options : [];
+                                            active = (e.event as IGetVoting).options?.find(o => o.votes.find(v => v.userId === userId));
                                             return (
                                                 <Card
                                                     key={key2}
@@ -102,16 +104,12 @@ function Event({ data }: EventProps): JSX.Element {
                                                         description: `${e.event.name} · Анонимный опрос до ${date1}`
                                                     }}
                                                     voting={{
-                                                        options: options ? options.map(o => {
-                                                            return {
-                                                                text: o.text,
-                                                                id: o.id
-                                                            };
-                                                        }) : [],
-                                                        answers: options ? options.map(o => o.numberOfVotes) : [],
+                                                        activeId: active ? active.id : 0,
+                                                        options: options ? options : [],
                                                         onAnswer: async (answerId: number) => {
                                                             await axios.post(API.subscriber.voting.update, {
-                                                                "optionId": answerId
+                                                                "optionId": answerId,
+                                                                "userId": userId
                                                             });
                                                         }
                                                     }}
