@@ -1,4 +1,4 @@
-import { Checkbox, DatePickerInput, Radio, TableSearch } from "@/components";
+import { Checkbox, DatePickerRange, Radio, TableSearch } from "@/components";
 import { TableFilterItemProps, TableFilterProps } from "./TableFilter.props";
 import ArrowIcon from './arrow.svg';
 import { useEffect, useRef, useState } from "react";
@@ -161,7 +161,7 @@ export const TableFilterItem = ({
                                 }
                             })
                     }</div>}
-                    {type === "date" && <DatePickerInput />}
+                    {type === "date" && <DatePickerRange />}
                 </div>
             </div>
         </>

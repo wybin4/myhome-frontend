@@ -11,7 +11,7 @@ export interface IApartmentReferenceDataItem extends IReferenceDataItem {
     livingArea: number;
     noLivingArea: number;
     commonArea: number;
-    houseName: string;
+    name: string;
 }
 
 export interface IApartment {
@@ -21,6 +21,11 @@ export interface IApartment {
     totalArea: number;
     livingArea: number;
     numberOfRegistered: number;
+}
+
+export interface IApartmentAllInfo extends IApartment {
+    address: string;
+    subscriberId: number;
 }
 
 export const apartmentPageComponent: IReferencePageComponent<IApartmentReferenceDataItem> = {
@@ -35,7 +40,7 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
                 { value: 2, text: "д. 99" },
                 { value: 3, text: "д. 100" },
             ],
-            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "houseName", gender: "мужской", isFilter: true,
+            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", gender: "мужской", isFilter: true,
             filterItems: [{ items: [] }],
             rows: []
         },

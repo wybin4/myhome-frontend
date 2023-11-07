@@ -6,6 +6,8 @@ export interface SelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLSelect
     selected: SelectorOption | undefined;
     setSelected: React.Dispatch<React.SetStateAction<SelectorOption | undefined>>;
 
+    handleSelect?: (option: string | number) => void;
+
     inputTitle?: string;
 
     options: SelectorOption[];

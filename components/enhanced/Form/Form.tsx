@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps, InfoFormProps } from "./Form.props";
+import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps, InfoFormProps, CardFormProps } from "./Form.props";
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
@@ -64,7 +64,7 @@ export const Form = <T extends FieldValues>({
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
     successCode, successMessage,
-    oneRow = false,
+    oneRow = false, dataList,
     ...props
 }: FormProps<T>): JSX.Element => {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -94,8 +94,8 @@ export const Form = <T extends FieldValues>({
         setSubmitCount(submitCount + 1);
 
         try {
-
             let flatObject: { [key: string]: string | number | SelectorValue };
+
             if (additionalFormData) {
                 flatObject = {
                     ...formData,
@@ -109,6 +109,19 @@ export const Form = <T extends FieldValues>({
                 if (typeof flatObject[key] === 'object' && 'value' in (flatObject as { [key: string]: SelectorValue })[key]) {
                     flatObject[key] = (flatObject as { [key: string]: SelectorValue })[key].value;
                 }
+            }
+
+            const flatObjectWithData: { [key: string]: string | number | SelectorValue | { [key: string]: string | number | SelectorValue } } = flatObject;
+
+            if (dataList) {
+                const dataArr: { [key: string]: string | number | SelectorValue } = {};
+                for (const key in flatObject) {
+                    if (dataList.includes(key)) {
+                        dataArr[key] = flatObject[key];
+                        delete flatObjectWithData[key];
+                    }
+                }
+                flatObjectWithData.data = dataArr;
             }
 
             const response = await axios.post(urlToPost, flatObject);
@@ -201,6 +214,7 @@ export const Form = <T extends FieldValues>({
                                                         ref={field.ref}
                                                         className="mb-4"
                                                         placeholder=""
+                                                        size="m"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         {...component}
                                                     />
@@ -223,9 +237,10 @@ export const Form = <T extends FieldValues>({
                                                 }
                                                 render={({ field }) => (
                                                     <DatePickerInput
-                                                        choosedDates={field.value}
-                                                        setChoosedDates={field.onChange}
+                                                        choosedDate={field.value}
+                                                        setChoosedDate={field.onChange}
                                                         ref={field.ref}
+                                                        inputSize="m"
                                                         className="mb-4"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         {...component} />
@@ -253,6 +268,7 @@ export const Form = <T extends FieldValues>({
                                                         ref={field.ref}
                                                         className="mb-4"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                        handleSelect={component.handleSelect}
                                                         {...component} />
                                                 )}
                                             />
@@ -294,6 +310,61 @@ export const Form = <T extends FieldValues>({
                         </div>
                     </div>
                 </form>
+            </BaseForm>
+        </>
+    );
+};
+
+export const CardForm = ({
+    title, items,
+    isOpened, setIsOpened,
+    selected, setSelected,
+    next,
+    ...props
+}: CardFormProps) => {
+    const formRef = useRef<HTMLDivElement | null>(null);
+
+    return (
+        <>
+            <BaseForm
+                isOpened={isOpened}
+                setIsOpened={setIsOpened}
+                formRef={formRef}
+            >
+                <div ref={formRef} className={cn(styles.wrapper, styles.cardWrapper, {
+                    "hidden": !isOpened
+                })} {...props}>
+                    <div className={styles.cardTopWrapper}>
+                        <Paragraph size="l" className={styles.title}>{title}</Paragraph>
+                        <div className={styles.littleCardWrapper}>
+                            {items.map((item, key) => (
+                                <div
+                                    onClick={() => setSelected(item.key)}
+                                    key={key}
+                                    className={cn(styles.littleCard, {
+                                        [styles.littleCardSelected]: selected === item.key
+                                    })}
+                                >
+                                    <Icon appearance="primary" size="m" type="icon">{item.icon}</Icon>
+                                    <p>{item.value}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className={styles.buttonWrapper}>
+                        <Button appearance="ghost" size="m" type="button"
+                            onClick={() => {
+                                setSelected("");
+                                setIsOpened && setIsOpened(!isOpened);
+                            }}
+                        >Отмена</Button>
+                        <Button appearance="primary" size="m" onClick={() => {
+                            if (selected != "") {
+                                next();
+                            }
+                        }}>Выбрать</Button>
+                    </div>
+                </div>
             </BaseForm>
         </>
     );

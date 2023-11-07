@@ -8,7 +8,7 @@ import { AppealStatus, AppealType } from "@/interfaces/event/appeal.interface";
 import ProcessingIcon from "./processing.svg";
 import ClosedIcon from "./closed.svg";
 import RejectedIcon from "./rejected.svg";
-import { formatFullName, formatNumber } from "@/helpers/constants";
+import { formatFullName, formatNumber, getEnumValueByKey } from "@/helpers/constants";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
 
 function Appeal({ data }: AppealProps): JSX.Element {
@@ -41,21 +41,9 @@ function Appeal({ data }: AppealProps): JSX.Element {
                     appeal.personalAccount
                     : ""
             )} ${formatFullName(appeal.name)}`);
-            const statusArr = Object.entries(AppealStatus).find(([key]) => key === appeal.status);
-            let status: string;
-            if (statusArr) {
-                status = statusArr[1];
-            } else {
-                status = "";
-            }
+            const status = getEnumValueByKey(AppealStatus, appeal.status);
             accumulator.status.push(status);
-            const typeArr = Object.entries(AppealType).find(([key]) => key === appeal.typeOfAppeal);
-            let type: string;
-            if (typeArr) {
-                type = typeArr[1];
-            } else {
-                type = "";
-            }
+            const type = getEnumValueByKey(AppealType, appeal.typeOfAppeal);
             accumulator.type.push(type);
             accumulator.address.push(appeal.address ? appeal.address : "");
             accumulator.createdAt.push(format(new Date(appeal.createdAt), "dd.MM.yyyy"));
@@ -82,13 +70,13 @@ function Appeal({ data }: AppealProps): JSX.Element {
                         title: "Тип обращения",
                         titleEng: "type",
                         type: "checkbox",
-                        items: type
+                        items: Array.from(new Set(type))
                     },
                     {
                         title: "Статус",
                         titleEng: "status",
                         type: "checkbox",
-                        items: status
+                        items: Array.from(new Set(status))
                     }
                 ]}
                 rows={{

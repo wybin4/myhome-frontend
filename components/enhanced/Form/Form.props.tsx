@@ -18,6 +18,24 @@ export interface BaseFormProps<T extends FieldValues> extends DetailedHTMLProps<
     additionalRef?: MutableRefObject<null>;
 }
 
+export interface CardFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    title: string;
+
+    items: {
+        value: string;
+        key: string;
+        icon: any;
+    }[];
+
+    isOpened: boolean;
+    setIsOpened?: (newFormOpened: boolean) => void;
+
+    selected: string;
+    setSelected: (selected: string) => void;
+
+    next: () => void;
+}
+
 export interface SelectionFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     title: string;
 
@@ -126,6 +144,8 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     successMessage: string;
 
     oneRow?: boolean;
+    
+    dataList?: string[];
 }
 
 export type FormSuccess = 200 | 201;
@@ -138,7 +158,6 @@ export interface FormError {
 }
 
 export interface SelectorFormProps<T extends FieldValues> {
-    size: "m" | "s";
     inputTitle: string;
     options: SelectorOption[];
 
@@ -146,11 +165,12 @@ export interface SelectorFormProps<T extends FieldValues> {
     type: "select";
     numberInOrder: number;
     error: FormError;
+
+    handleSelect?: (option: string | number) => void;
 }
 
 export interface DatePickerFormProps<T extends FieldValues> {
     inputTitle: string;
-    inputSize: "l" | "m" | "s";
 
     id: Path<T>;
     type: "datepicker";
@@ -160,7 +180,6 @@ export interface DatePickerFormProps<T extends FieldValues> {
 
 export interface InputFormProps<T extends FieldValues> {
     title: string;
-    size: "l" | "m" | "s";
     inputType?: "number" | "string";
 
     id: Path<T>;

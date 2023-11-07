@@ -2,6 +2,16 @@ import { FirstDayOfWeek, FocusedInput } from "@datepicker-react/hooks";
 import { ButtonHTMLAttributes, DetailedHTMLProps, Dispatch, HTMLAttributes, LegacyRef, ReactNode, SetStateAction } from "react";
 
 export interface DatePickerInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    choosedDate: Date | undefined;
+    setChoosedDate: Dispatch<SetStateAction<Date | undefined>>;
+
+    inputTitle?: string;
+    inputSize?: "l" | "m" | "s";
+
+    inputError?: string;
+}
+
+export interface DatePickerRangeProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     choosedDates: Omit<IDateRange, "focusedInput"> | undefined;
     setChoosedDates: Dispatch<SetStateAction<Omit<IDateRange, "focusedInput"> | undefined>>;
 
@@ -11,11 +21,19 @@ export interface DatePickerInputProps extends DetailedHTMLProps<HTMLAttributes<H
     inputError?: string;
 }
 
-export interface DatePickerProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface DatePickerRProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     setToday: () => void
     clear: () => void;
     dateRange: IDateRange;
     setDateRange: Dispatch<SetStateAction<IDateRange>>;
+    innerRef?: LegacyRef<HTMLDivElement>;
+}
+
+export interface DatePickerIProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    setToday: () => void
+    clear: () => void;
+    date: IDateInput;
+    setDate: Dispatch<SetStateAction<IDateInput>>;
     innerRef?: LegacyRef<HTMLDivElement>;
 }
 
@@ -38,5 +56,10 @@ export interface NavButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<H
 export interface IDateRange {
     startDate: Date;
     endDate: Date;
+    focusedInput: FocusedInput;
+}
+
+export interface IDateInput {
+    date: Date;
     focusedInput: FocusedInput;
 }

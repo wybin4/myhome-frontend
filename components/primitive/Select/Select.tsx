@@ -6,7 +6,7 @@ import ArrowIcon from "./arrow.svg";
 
 export const Select = forwardRef(({
     id,
-    selected, setSelected,
+    selected, setSelected, handleSelect,
     inputTitle, inputError,
     options,
     size = "s",
@@ -29,6 +29,9 @@ export const Select = forwardRef(({
     };
 
     const handleOptionClick = (option: SelectorOption) => {
+        if (handleSelect) {
+            handleSelect(option.value);
+        }
         setSelected(option);
         setIsOpen(false);
     };

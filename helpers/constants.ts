@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isToday, isYesterday, format } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -67,4 +68,19 @@ export const getHumanDate = (date: Date): string => {
     } else {
         return format(date, "dd MMMM yyyy", { locale: ru });
     }
+};
+
+export const getEnumKeyByValue = (enumConst: any, value: string) => {
+    return Object.keys(enumConst)[Object.values(enumConst).indexOf(value)];
+};
+
+export const getEnumValueByKey = (enumConst: any, value: string) => {
+    const typeArr = Object.entries(enumConst).find(([key]) => key === value);
+    let type: any;
+    if (typeArr) {
+        type = typeArr[1];
+    } else {
+        type = "";
+    }
+    return type;
 };

@@ -3,7 +3,7 @@ import { VotingProps } from "./Voting.props";
 import styles from "./Voting.module.css";
 import CheckIcon from "./check.svg";
 
-export const Voting = ({ activeId, options, onAnswer }: VotingProps): JSX.Element => {
+export const Voting = ({ isClose, activeId, options, onAnswer }: VotingProps): JSX.Element => {
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ export const Voting = ({ activeId, options, onAnswer }: VotingProps): JSX.Elemen
 
     const handleAnswer = (answerId: number) => {
         // Проверка, был ли выбран этот ответ ранее
-        if (selectedAnswer === answerId) {
+        if (selectedAnswer === answerId || isClose) {
             return;
         }
 
@@ -61,7 +61,7 @@ export const Voting = ({ activeId, options, onAnswer }: VotingProps): JSX.Elemen
                     <li key={index}>
                         <button
                             onClick={() => handleAnswer(option.id)}
-                            disabled={selectedAnswer !== null} // Блокировка после выбора
+                            disabled={selectedAnswer !== null || isClose} // Блокировка после выбора
                             className={styles.option}
                             style={{
                                 background: getBackground(option.id)

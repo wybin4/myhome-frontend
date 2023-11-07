@@ -1,6 +1,7 @@
 import { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react';
 import CalendarIcon from '../calendar.svg';
 import { START_DATE } from '@datepicker-react/hooks';
+import { DatePickerRProps, DatePickerRangeProps, IDateRange } from '../DatePicker.props';
 import { Input } from '../../Input/Input';
 import styles from '../DatePicker.module.css';
 import { NavButton } from "./NavButton";
@@ -8,18 +9,18 @@ import { FocusedInput, useDatepicker } from "@datepicker-react/hooks";
 import { Month } from "./Month";
 import DatepickerContext from "../helpers/datepickerContext";
 import ArrowIcon from '../arrow.svg';
-import { DatePickerIProps, DatePickerInputProps, IDateInput } from "../DatePicker.props";
 import { Button } from '../../Button/Button';
 import cn from "classnames";
 
-export const DatePickerInput = forwardRef(({
-    choosedDate, setChoosedDate,
+export const DatePickerRange = forwardRef(({
+    choosedDates, setChoosedDates,
     inputTitle, inputSize = "s", inputError,
     ...props
-}: DatePickerInputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
+}: DatePickerRangeProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
     const [isPickerOpened, setIsPickerOpened] = useState<boolean>(false);
-    const [date, setDate] = useState<IDateInput>({
-        date: new Date(),
+    const [dateRange, setDateRange] = useState<IDateRange>({
+        startDate: new Date(),
+        endDate: new Date(),
         focusedInput: START_DATE
     });
 
@@ -48,23 +49,58 @@ export const DatePickerInput = forwardRef(({
         } else return "";
     };
 
+    const getDateString = (dates: {
+        startDate: Date,
+        endDate: Date,
+    }): string => {
+        if (!dateRange.startDate || !dates) {
+            if (!dateRange.endDate) {
+                return "";
+            } else return formatDate(dateRange.endDate);
+        }
+
+        if (!dateRange.endDate || !dates) {
+            if (!dateRange.startDate) {
+                return "";
+            } else return formatDate(dateRange.startDate);
+        }
+
+        const startDate = formatDate(dateRange.startDate);
+        const endDate = formatDate(dateRange.endDate);
+        if (!dates.startDate || !dates.endDate) {
+            return "";
+        }
+        if (dates.startDate.getTime() > dates.endDate.getTime()) {
+            return `${startDate} - ${endDate}`;
+        } else if (dates.startDate.getTime() < dates.endDate.getTime()) {
+            return `${startDate} - ${endDate}`;
+        } else return `${startDate}`;
+    };
+
     const setToday = () => {
-        setChoosedDate(new Date());
-        setDate({
-            date: new Date(),
+        setChoosedDates({
+            startDate: new Date(),
+            endDate: new Date()
+        });
+        setDateRange({
+            startDate: new Date(),
+            endDate: new Date(),
             focusedInput: START_DATE
         });
     };
 
     const clear = () => {
-        setChoosedDate(undefined);
+        setChoosedDates(undefined);
     };
 
     useEffect(() => {
-        if (setChoosedDate) {
-            setChoosedDate(date.date);
+        if (setChoosedDates) {
+            setChoosedDates({
+                startDate: dateRange.startDate,
+                endDate: dateRange.endDate
+            });
         }
-    }, [date]);
+    }, [dateRange]);
 
     return (
         <div {...props} ref={pickerRef}>
@@ -76,15 +112,15 @@ export const DatePickerInput = forwardRef(({
                 sizeOfIcon="big"
                 icon={<CalendarIcon />}
                 alignOfIcon="right"
-                value={choosedDate ? formatDate(choosedDate) : ""}
+                value={choosedDates ? getDateString(choosedDates) : ""}
                 readOnly={true}
                 inputError={inputError}
                 ref={ref}
             />
             {isPickerOpened &&
-                <DatePickerI
-                    date={date}
-                    setDate={setDate}
+                <DatePickerR
+                    dateRange={dateRange}
+                    setDateRange={setDateRange}
                     setToday={setToday}
                     clear={clear}
                     className="mt-3"
@@ -94,13 +130,14 @@ export const DatePickerInput = forwardRef(({
     );
 });
 
-const DatePickerI = ({
+const DatePickerR = ({
     innerRef,
-    date, setDate,
+    dateRange, setDateRange,
     className,
     setToday, clear,
     ...props
-}: DatePickerIProps): JSX.Element => {
+}: DatePickerRProps): JSX.Element => {
+
     const {
         firstDayOfWeek,
         activeMonths,
@@ -116,20 +153,23 @@ const DatePickerI = ({
         goToPreviousMonths,
         goToNextMonths,
     } = useDatepicker({
-        startDate: date.date,
-        endDate: date.date,
-        focusedInput: date.focusedInput,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        focusedInput: dateRange.focusedInput,
         onDatesChange: handleDateChange,
         numberOfMonths: 1,
     });
-
 
     function handleDateChange(data: {
         startDate: Date,
         endDate: Date,
         focusedInput: FocusedInput
     }) {
-        setDate({ date: data.startDate, focusedInput: START_DATE });
+        if (!data.focusedInput) {
+            setDateRange({ ...data, focusedInput: START_DATE });
+        } else {
+            setDateRange(data);
+        }
     }
 
     return (
@@ -187,6 +227,5 @@ const DatePickerI = ({
         </div>
     );
 };
-
 
 

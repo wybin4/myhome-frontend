@@ -4,4 +4,5 @@ export interface VotingProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEle
     options: { text: string; id: number; numberOfVotes: number; }[];
     onAnswer: (answerId: number) => void;
     activeId: number;
+    isClose: boolean;
 }

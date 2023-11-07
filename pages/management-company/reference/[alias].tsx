@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/helpers/api";
-import { IUserReferenceData, IUserReferenceDataItem, UserRoleType, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IUserReferenceData, IUserReferenceDataItem, UserRole, UserRoleType, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
 import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData } from "@/interfaces/reference/meter.interface";
 import { IReferencePageComponent, IReferencePageItem, IReferenceData } from "@/interfaces/reference/page.interface";
@@ -165,34 +165,46 @@ export async function getServerSideProps({ resolvedUrl }: any) {
     const url = resolvedUrl || "";
     const engName = url.split("/")[3];
 
+    let postData: {
+        [key: string]: number | string | Date | undefined
+    } = {
+        "userId": 1, // ИСПРАВИТЬ
+        "userRole": UserRole.ManagementCompany
+    };
+
     let apiUrl: string = '';
     switch (engName) {
         case "owner":
+            postData = {
+                "managementCompanyId": 1, // ИСПРАВИТЬ
+            };
             apiUrl = API.managementCompany.common.owner.get;
             break;
         case "individual-meter":
         case "general-meter":
-            apiUrl = API.managementCompany.reference["meter"].get;
+            apiUrl = API.reference["meter"].get;
             break;
         case "norm":
         case "social-norm":
         case "seasonality-factor":
         case "common-house-need-tariff":
-        case "municipal-tariff":
-            apiUrl = API.managementCompany.reference["tariffAndNorm"].get;
+        case "municipal-tariff": {
+            postData = {
+                "managementCompanyId": 1, // ИСПРАВИТЬ
+            };
+            apiUrl = API.reference["tariffAndNorm"].get;
             break;
-        case "penalty-rule":
+        }
+        case "penalty-rule": {
+            postData = {
+                "managementCompanyId": 1, // ИСПРАВИТЬ
+            };
             apiUrl = API.managementCompany.correction["penaltyRule"].get;
             break;
+        }
         default:
-            apiUrl = API.managementCompany.reference[engName].get;
+            apiUrl = API.reference[engName].get;
     }
-
-    const postData: {
-        [key: string]: number | string | Date | undefined
-    } = {
-        "managementCompanyId": 1, // ИСПРАВИТЬ
-    };
 
     try {
         switch (engName) {

@@ -8,10 +8,10 @@ import { EventType, IGetEvents, IGetHouseNotification, IGetVoting } from "@/inte
 import { API } from "@/helpers/api";
 import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
 import axios from "axios";
-import { getHumanDate } from "@/helpers/constants";
+import { getEnumKeyByValue, getHumanDate } from "@/helpers/constants";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { IOption } from "@/interfaces/event/voting.interface";
+import { IOption, VotingStatus } from "@/interfaces/event/voting.interface";
 
 interface IEvent {
     event: IGetVoting | IGetHouseNotification;
@@ -22,6 +22,7 @@ function Event({ data }: EventProps): JSX.Element {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
     const filterButtonRef = useRef(null);
     const userId = 1; // ИСПРАВИТЬ
+    const closeStatus = getEnumKeyByValue(VotingStatus, VotingStatus.Close);
 
     const groupEventsByDate = () => {
         if (data.notifications || data.votings) {
@@ -111,7 +112,8 @@ function Event({ data }: EventProps): JSX.Element {
                                                                 "optionId": answerId,
                                                                 "userId": userId
                                                             });
-                                                        }
+                                                        },
+                                                        isClose: (e.event as IGetVoting).status === closeStatus
                                                     }}
                                                     bottom={{ text: date2 }}
                                                 />

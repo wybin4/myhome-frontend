@@ -12,8 +12,10 @@
     background: var(--white);
 
     width: 33.3125rem;
-    height: 6.6875rem;
+    min-height: 6.6875rem;
 
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     padding-left: 14px;
 
     z-index: 5;
@@ -121,12 +123,9 @@
     }
 
     .popup {
-        width: 100%;
-
         left: 0;
         right: 0;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
     }
 }

@@ -20,7 +20,7 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
         text: string[];
         type: string[];
         createdAt: string[];
-        houseName: string[];
+        name: string[];
     };
 
     const initialData: HouseNotificationData = {
@@ -29,7 +29,7 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
         text: [],
         type: [],
         createdAt: [],
-        houseName: []
+        name: []
     };
 
     const notifications: HouseNotificationData = data.notifications.reduce(
@@ -45,7 +45,7 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                 type = "";
             }
             accumulator.type.push(type);
-            accumulator.houseName.push(notification.houseName);
+            accumulator.name.push(notification.name);
             accumulator.createdAt.push(format(new Date(notification.createdAt), "dd.MM.yyyy"));
             return accumulator;
         },
@@ -65,7 +65,7 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
     }));
 
     const {
-        id, title, type, text, houseName, createdAt
+        id, title, type, text, name, createdAt
     } = notifications;
 
     return (
@@ -84,7 +84,6 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                 inputs={[
                     {
                         title: "Тема уведомления",
-                        size: "m",
                         inputType: "string",
                         id: "title",
                         type: "input",
@@ -95,7 +94,6 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                     },
                 ]}
                 selectors={[{
-                    size: "m",
                     inputTitle: "Дом",
                     options: houses,
                     id: "houseId",
@@ -106,7 +104,6 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                     }
                 },
                 {
-                    size: "m",
                     inputTitle: "Тип уведомления",
                     options: types,
                     id: "type",
@@ -166,7 +163,7 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                         {
                             title: "Дом",
                             type: "text",
-                            items: houseName
+                            items: name
                         },
                         {
                             title: "Дата создания",
@@ -193,7 +190,8 @@ export default withLayout(HouseNotification);
 export async function getServerSideProps() {
     // ИСПРАВИТЬ!!!!
     const postDataHouses = {
-        managementCompanyId: 1
+        userId: 1,
+        userRole: UserRole.ManagementCompany
     };
     const postDataVotings = {
         userId: 1,

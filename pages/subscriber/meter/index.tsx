@@ -70,6 +70,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 tabs={tabs}
                 tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
                 descriptionText="Срок передачи показаний — с 20 по 25 число"
+                addButtonText="счётчик"
                 onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
                 activeTab={apartmentId} setActiveTab={setApartmentId}
                 className={cn(

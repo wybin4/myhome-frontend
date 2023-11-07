@@ -5,8 +5,12 @@ export interface TabsProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEleme
     tabs: { name: string; id: number; }[];
     tagTexts?: string[];
     descriptionText?: string;
+
+    addButtonText?: string;
     onAddButtonClick?: () => void;
+
     activeTab: number;
     setActiveTab: Dispatch<SetStateAction<number>>;
+    
     children: ReactNode;
 }

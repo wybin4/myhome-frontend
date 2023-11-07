@@ -139,7 +139,8 @@
     }
 
     .rounded {
-        width: 26rem;
+        width: 100%;
+        max-width: 38.375rem;
         height: 2.77rem;
 
         border-radius: 1rem;

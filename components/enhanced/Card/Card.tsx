@@ -37,13 +37,14 @@ export const CardTitle = ({
     tag,
     symbolRight,
     ...props }: CardTitleProps): JSX.Element => {
+
     return (
         <div className={styles.title} {...props}>
             <div className={styles.titleWrapper}>
-                {tag && <span className={styles.tagIcon}>{tag.tagIcon}</span>}
-                <Icon className={cn(styles.iconLeft, {
+                {tag && <Icon fillType="stroke" type="icon" appearance="primary" className={styles.tagIcon} size="s">{tag.tagIcon}</Icon>}
+                {iconLeft && <Icon className={cn(styles.iconLeft, {
                     [styles.iconLeftInvisible]: !iconLeftVisible,
-                })} size={iconLeftSize} type="icon" appearance="primary">{iconLeft}</Icon>
+                })} size={iconLeftSize} type="icon" appearance="primary">{iconLeft}</Icon>}
                 <div className={cn({
                     [styles.titleWithIcon]: iconLeftVisible,
                     [styles.titleWithoutIcon]: !iconLeftVisible

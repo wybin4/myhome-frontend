@@ -7,7 +7,7 @@ export const Tabs = ({
     title,
     tabs,
     tagTexts, descriptionText,
-    onAddButtonClick,
+    addButtonText, onAddButtonClick,
     activeTab, setActiveTab,
     className, children, ...props
 }: TabsProps): JSX.Element => {
@@ -46,7 +46,7 @@ export const Tabs = ({
                                 typeOfButton="rounded"
                                 size="s"
                                 onClick={onAddButtonClick}
-                            >Добавить счётчик</Button>
+                            >Добавить {addButtonText}</Button>
                         </div>
                     }
                 </div>

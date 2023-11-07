@@ -82,7 +82,6 @@ function Voting({ data }: IVotingProps): JSX.Element {
                 inputs={[
                     {
                         title: "Тема опроса",
-                        size: "m",
                         inputType: "string",
                         id: "title",
                         type: "input",
@@ -93,7 +92,6 @@ function Voting({ data }: IVotingProps): JSX.Element {
                     }
                 ]}
                 selectors={[{
-                    size: "m",
                     inputTitle: "Дом",
                     options: houses,
                     id: "houseId",
@@ -105,7 +103,6 @@ function Voting({ data }: IVotingProps): JSX.Element {
                 }]}
                 datePickers={[{
                     inputTitle: "Дата окончания",
-                    inputSize: "m",
                     id: "expiredAt",
                     type: "datepicker",
                     numberInOrder: 4,
@@ -131,7 +128,7 @@ function Voting({ data }: IVotingProps): JSX.Element {
                 }]}
                 rows={{
                     actions: {
-                        actions: [{ type: "view", onClick: () => { } }]
+                        actions: [{ id: 0, type: "view", onClick: () => { } }]
                     },
                     ids: id,
                     items: [
@@ -185,7 +182,8 @@ export default withLayout(Voting);
 export async function getServerSideProps() {
     // ИСПРАВИТЬ!!!!
     const postDataHouses = {
-        managementCompanyId: 1
+        userId: 1,
+        userRole: UserRole.ManagementCompany,
     };
     const postDataVotings = {
         userId: 1,
