@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { FileType } from "@/components/primitive/Attachment/Attachment.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, MutableRefObject, ReactNode, SetStateAction } from "react";
 import { FieldValues, Path, UseFormReset, UseFormReturn } from "react-hook-form";
@@ -133,6 +134,7 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     datePickers?: DatePickerFormProps<T>[];
     inputs?: InputFormProps<T>[];
     textAreas?: TextAreaFormProps<T>[];
+    attachments?: AttachmentFormProps<T>[];
 
     isOpened: boolean;
     setIsOpened?: (newFormOpened: boolean) => void;
@@ -144,14 +146,14 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     successMessage: string;
 
     oneRow?: boolean;
-    
+
     dataList?: string[];
 }
 
 export type FormSuccess = 200 | 201;
 export type FormErrors = 400 | 404 | 409 | 422 | 500 | 504;
 
-export type FormElementProps<T extends FieldValues> = SelectorFormProps<T> | DatePickerFormProps<T> | InputFormProps<T> | TextAreaFormProps<T>;
+export type FormElementProps<T extends FieldValues> = SelectorFormProps<T> | DatePickerFormProps<T> | InputFormProps<T> | TextAreaFormProps<T> | AttachmentFormProps<T>;
 
 export interface FormError {
     value: boolean; message?: string;
@@ -193,6 +195,16 @@ export interface TextAreaFormProps<T extends FieldValues> {
 
     id: Path<T>;
     type: "textarea";
+    numberInOrder: number;
+    error: FormError;
+}
+
+export interface AttachmentFormProps<T extends FieldValues> {
+    text: string;
+    fileFormat: FileType[];
+
+    id: Path<T>;
+    type: "attachment";
     numberInOrder: number;
     error: FormError;
 }

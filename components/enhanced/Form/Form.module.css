@@ -12,11 +12,14 @@
 
     width: fit-content;
     height: fit-content;
-
     border: solid 1px var(--grey-light);
     border-radius: 0.9375rem;
 
     z-index: 3;
+}
+
+.oneRow {
+    max-width: 30rem;
 }
 
 .infoWrapper .topPartWrapper {

@@ -1,0 +1,96 @@
+.attachmentWrapper,
+.fileWrapper {
+    width: 100%;
+    position: relative;
+
+    border-radius: 16px;
+    border: 2px dashed var(--input-border, var(--grey-light));
+
+    padding: 0.8125rem;
+
+    background-color: var(--white);
+}
+
+.attachmentWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text {
+    font-weight: 500;
+}
+
+.realInput {
+    width: fit-content;
+    height: fit-content;
+
+    background-color: var(--white);
+
+    font-size: 0.93rem;
+
+    border-radius: 0.8rem;
+    border: 1px solid var(--input-border, var(--grey-light));
+
+    padding: 0.2rem 0.8rem;
+
+    cursor: pointer;
+}
+
+.fakeInput {
+    display: none;
+}
+
+.wrapperText {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.description {
+    font-size: 0.93rem;
+    color: var(--grey);
+
+    margin-top: -0.2rem;
+}
+
+.uploadIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 2.5rem;
+    height: 2.5rem;
+
+    background-color: var(--primary);
+
+    border-radius: 0.7rem;
+}
+
+.uploadIcon svg {
+    width: 2rem;
+
+    stroke: var(--white);
+    stroke-width: 1.3px;
+}
+
+.pictureIcon svg {
+    width: 2rem;
+
+    fill: var(--primary);
+}
+
+.deleteIcon {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+
+    cursor: pointer;
+}
+
+.deleteIcon svg {
+    width: 0.7rem;
+    height: 0.7rem;
+
+    fill: var(--grey);
+}

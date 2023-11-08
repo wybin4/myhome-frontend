@@ -7,6 +7,19 @@ export interface ISubscriberAddMeterForm {
     previousReading: number;
 }
 
+export interface IGetIndividualMeter {
+    id: number;
+    typeOfServiceId: number;
+    typeOfServiceName: string;
+    factoryNumber: string;
+    verifiedAt: Date;
+    issuedAt: Date;
+    status: MeterStatus;
+    apartmentId: number;
+    subscriberId: number;
+    address: string;
+}
+
 export interface IMeterReferenceData extends IReferenceData {
     meters: IMeterReferenceDataItem[];
 }
@@ -63,6 +76,11 @@ export enum MeterStatus {
     Archieve = 'Archieve',
     NoPossibility = 'NoPossibility',
     NotInstall = 'NotInstall',
+}
+
+export enum MeterType {
+    General = 'General',
+    Individual = 'Individual',
 }
 
 const meterPageComponents: IReferencePageItem<

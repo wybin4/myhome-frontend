@@ -5,7 +5,18 @@ export interface IAppeal {
     subscriberId: number;
     createdAt: Date;
     status: AppealStatus;
-    data: unknown;
+    data: string;
+
+    text?: string;
+
+    meterId?: number;
+    verifiedAt?: Date;
+    attachment?: unknown;
+
+    typeOfServiceId?: number;
+    apartmentId?: number;
+    factoryNumber?: string;
+    issuedAt?: Date;
 }
 
 export enum AppealType {

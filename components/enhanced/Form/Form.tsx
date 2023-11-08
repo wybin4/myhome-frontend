@@ -10,6 +10,7 @@ import ArrowIcon from "./arrow.svg";
 import SuccessIcon from "./success.svg";
 import FailureIcon from "./failure.svg";
 import CloseIcon from "./close.svg";
+import { Attachment } from "@/components/primitive/Attachment/Attachment";
 
 export const BaseForm = <T extends FieldValues>({
     isOpened, setIsOpened,
@@ -44,13 +45,13 @@ export const BaseForm = <T extends FieldValues>({
         };
 
         if (isFormVisible) {
-            document.addEventListener('click', handleClickOutside);
+            document.addEventListener("click", handleClickOutside);
         } else {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
         }
 
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
         };
     }, [isFormVisible]);
 
@@ -59,7 +60,7 @@ export const BaseForm = <T extends FieldValues>({
 
 export const Form = <T extends FieldValues>({
     title,
-    inputs, selectors, datePickers, textAreas,
+    inputs, selectors, datePickers, textAreas, attachments,
     className, useFormData,
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
@@ -80,6 +81,7 @@ export const Form = <T extends FieldValues>({
         ...selectors || [],
         ...datePickers || [],
         ...textAreas || [],
+        ...attachments || [],
     ];
     formComponents.sort((a, b) => a.numberInOrder - b.numberInOrder);
     const elementCount = Math.max(...formComponents.map(component => component.numberInOrder));
@@ -106,7 +108,7 @@ export const Form = <T extends FieldValues>({
             }
 
             for (const key in flatObject) {
-                if (typeof flatObject[key] === 'object' && 'value' in (flatObject as { [key: string]: SelectorValue })[key]) {
+                if (typeof flatObject[key] === "object" && "value" in (flatObject as { [key: string]: SelectorValue })[key]) {
                     flatObject[key] = (flatObject as { [key: string]: SelectorValue })[key].value;
                 }
             }
@@ -117,14 +119,29 @@ export const Form = <T extends FieldValues>({
                 const dataArr: { [key: string]: string | number | SelectorValue } = {};
                 for (const key in flatObject) {
                     if (dataList.includes(key)) {
-                        dataArr[key] = flatObject[key];
-                        delete flatObjectWithData[key];
+                        if (key !== "attachment") {
+                            dataArr[key] = flatObject[key];
+                            delete flatObjectWithData[key];
+                        } else {
+                            flatObjectWithData["file"] = flatObject[key];
+                            delete flatObjectWithData[key];
+                        }
                     }
                 }
                 flatObjectWithData.data = dataArr;
             }
 
-            const response = await axios.post(urlToPost, flatObject);
+            const response =
+                dataList
+                    ?
+                    await axios.post(urlToPost, flatObjectWithData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        }
+                    })
+                    :
+                    await axios.post(urlToPost, flatObjectWithData);
+            
             if (response.status === successCode) {
                 setIsSuccess(true);
                 setError("");
@@ -183,6 +200,7 @@ export const Form = <T extends FieldValues>({
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={cn(className, styles.wrapper, {
                         "hidden": !isOpened,
+                        [styles.oneRow]: oneRow
                     })} {...props} ref={formRef}>
                         <Paragraph size="l" className={styles.title}>{title}</Paragraph>
                         <div className={cn(styles.content, {
@@ -269,6 +287,7 @@ export const Form = <T extends FieldValues>({
                                                         className="mb-4"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         handleSelect={component.handleSelect}
+                                                        size="m"
                                                         {...component} />
                                                 )}
                                             />
@@ -294,6 +313,30 @@ export const Form = <T extends FieldValues>({
                                                         ref={field.ref}
                                                         className="mb-4"
                                                         textareaError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                        {...component} />
+                                                )}
+                                            />
+                                        );
+                                    case "attachment":
+                                        return (
+                                            <Controller
+                                                key={key}
+                                                control={control}
+                                                name={component.id}
+                                                rules={
+                                                    {
+                                                        required: {
+                                                            value: component.error.value,
+                                                            message: component.error.message ? component.error.message : ""
+                                                        }
+                                                    }
+                                                }
+                                                render={({ field }) => (
+                                                    <Attachment
+                                                        file={field.value}
+                                                        setFile={field.onChange}
+                                                        ref={field.ref}
+                                                        className="mb-4 mt-6"
                                                         {...component} />
                                                 )}
                                             />

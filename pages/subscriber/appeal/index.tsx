@@ -1,26 +1,416 @@
-import { Card, InfoWindow, Tabs } from "@/components";
+import { Card, CardForm, Form, InfoWindow, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import { useState } from "react";
 import ProcessingIcon from "./processing.svg";
 import ClosedIcon from "./closed.svg";
 import RejectedIcon from "./rejected.svg";
+import MeterIcon from "./meter.svg";
+import QuestionIcon from "./question.svg";
+import OtherIcon from "./other.svg";
 import ArrowIcon from "./arrow.svg";
+import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
+import { API } from "@/helpers/api";
+import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
+import axios from "axios";
+import { AppealStatus, AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
+import { getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
+import { format } from "date-fns";
+import { useForm } from "react-hook-form";
+import { AttachmentFormProps, DatePickerFormProps, InputFormProps, SelectorFormProps, TextAreaFormProps } from "@/components/enhanced/Form/Form.props";
+import { ITypeOfService } from "@/interfaces/common.interface";
+import { IGetIndividualMeter, MeterType } from "@/interfaces/reference/meter.interface";
+import { IApartmentAllInfo } from "@/interfaces/reference/subscriber/apartment.interface";
+import { FileType } from "@/components/primitive/Attachment/Attachment.props";
 
-function Appeal(): JSX.Element {
+function Appeal({ data }: AppealProps): JSX.Element {
     const [activeTab, setActiveTab] = useState<number>(1);
+    const useFormData = useForm<IAppeal>();
+    const [selectedAppealType, setSelectedAppealType] = useState<string>("");
+    const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+    const [isCardFormOpened, setIsCardFormOpened] = useState<boolean>(false);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
+    const [selectedId, setSelectedId] = useState<number>(0);
+    const [selectedSubscriberId, setSelectedSubscriberId] = useState<number>(0);
+    const [typesOfService, setTypesOfService] = useState<ITypeOfService[]>();
+    const [apartments, setApartments] = useState<IApartmentAllInfo[]>();
+    const [meters, setMeters] = useState<IGetIndividualMeter[]>();
+
+    const user = { // ИСПРАВИТЬ
+        userId: 1,
+        userRole: UserRole.Owner
+    };
+
+    const getAppeals = (appealStatus: AppealStatus | "all"): JSX.Element => {
+        let appeals: IGetAppeal[] = [];
+        if (appealStatus !== "all") {
+            const status = getEnumKeyByValue(AppealStatus, appealStatus);
+            appeals = data.appeals.filter(a => a.status === status);
+
+        } else {
+            appeals = data.appeals;
+        }
+        appeals.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return (
+            <div className="flex flex-col gap-6">
+                {appeals.map((appeal, key) => {
+                    const { status, type, createdAt } = getDate(appeal);
+                    return (
+                        <Card
+                            key={key}
+                            maxWidth="38.375rem"
+                            titlePart={{
+                                text: `№${appeal.id}`,
+                                tag: {
+                                    tag: status,
+                                    tagIcon: getStatusIcon(status)
+                                },
+                                description: `${appeal.name} · ${createdAt}`,
+                                symbolRight: {
+                                    symbol: <span className="viewAction"><ArrowIcon /></span>,
+                                    size: "l",
+                                    onClick: () => {
+                                        setSelectedId(appeal.id);
+                                        setIsInfoWindowOpen(!isInfoWindowOpen);
+                                    }
+                                },
+                            }}
+                            text={appeal.text}
+                            isMobileText={false}
+                            bottom={{ tag: type, attachment: "Вложение" }}
+                        />
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const getStatusIcon = (status: AppealStatus) => {
+        switch (status) {
+            case AppealStatus.Closed:
+                return <ClosedIcon />;
+            case AppealStatus.Processing:
+                return <ProcessingIcon />;
+            case AppealStatus.Rejected:
+                return <RejectedIcon />;
+            default: return (<></>);
+        }
+    };
+
+    const getTypeIcon = (type: string) => {
+        switch (type) {
+            case AppealType.AddIndividualMeter:
+                return <MeterIcon />;
+            case AppealType.VerifyIndividualMeter:
+                return <MeterIcon />;
+            case AppealType.ProblemOrQuestion:
+                return <QuestionIcon />;
+            case AppealType.Claim:
+                return <OtherIcon className="!w-4" />;
+            default: return (<></>);
+        }
+    };
+
+    const getInfoWindow = () => {
+        const appeal = data.appeals.find(a => a.id === selectedId);
+        if (appeal) {
+            const { status, type, createdAt } = getDate(appeal);
+
+            return (
+                <InfoWindow
+                    title={`Обращение №${appeal.id}`}
+                    description={`${appeal.name} | ${createdAt}`}
+                    text={appeal.text}
+                    tags={[status, type]}
+                    isOpen={isInfoWindowOpen}
+                    setIsOpen={setIsInfoWindowOpen}
+                    buttons={[{ name: "Скачать вложение", onClick: () => { } }]}
+                />
+            );
+        } else return <></>;
+    };
+
+    const getDate = (appeal: IAppeal) => {
+        const status = getEnumValueByKey(AppealStatus, appeal.status);
+        const type = getEnumValueByKey(AppealType, appeal.typeOfAppeal);
+        const createdAt = format(new Date(appeal.createdAt), "dd.MM.yy");
+        return { status, type, createdAt };
+    };
+
+    const getData = async (type: AppealType) => {
+        switch (type) {
+            case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
+                try {
+                    if (!meters) {
+                        const { data } = await axios.post<{ meters: IGetIndividualMeter[] }>(
+                            API.subscriber.meter.get, {
+                            userId: user.userId,
+                            userRole: user.userRole,
+                            meterType: MeterType.Individual,
+                            isNotAllInfo: true
+                        });
+                        if (!data) {
+                            console.log("Что-то пошло не так");
+                        } else {
+                            setMeters(data.meters);
+                        }
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+                break;
+            }
+            case getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter): {
+                try {
+                    if (!typesOfService) {
+                        const { data } = await axios.post<{ typesOfService: ITypeOfService[] }>(
+                            API.reference.typeOfService.get);
+                        if (!data) {
+                            console.log("Что-то пошло не так");
+                        } else {
+                            setTypesOfService(data.typesOfService);
+                        }
+                    }
+                    if (!apartments) {
+                        const { data } = await axios.post<{ apartments: IApartmentAllInfo[] }>(
+                            API.subscriber.apartment.get, {
+                            userId: user.userId,
+                            userRole: user.userRole,
+                            isAllInfo: true
+                        });
+                        if (!data) {
+                            console.log("Что-то пошло не так");
+                        } else {
+                            setApartments(data.apartments);
+                        }
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+                break;
+            }
+        }
+    };
+
+    const getForm = (type: AppealType): {
+        attachments?: AttachmentFormProps<IAppeal>[];
+        textAreas?: TextAreaFormProps<IAppeal>[];
+        inputs?: InputFormProps<IAppeal>[];
+        selectors?: SelectorFormProps<IAppeal>[];
+        datePickers?: DatePickerFormProps<IAppeal>[];
+    } | undefined => {
+        const textareas: { textAreas?: TextAreaFormProps<IAppeal>[] } = {
+            textAreas:
+                [{
+                    title: "Подробности",
+                    id: "text",
+                    type: "textarea",
+                    numberInOrder: 1,
+                    error: {
+                        value: true, message: "Введите текст обращения"
+                    }
+                }]
+        };
+        switch (type) {
+            case getEnumKeyByValue(AppealType, AppealType.ProblemOrQuestion): {
+                return textareas;
+            }
+            case getEnumKeyByValue(AppealType, AppealType.Claim): {
+                return textareas;
+            }
+            case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
+                return {
+                    selectors:
+                        [{
+                            inputTitle: "Счётчик",
+                            options: meters ? meters.map(m => {
+                                return {
+                                    value: m.id,
+                                    text: `${m.address} ИПУ ${m.typeOfServiceName}`
+                                };
+                            }) : [],
+                            id: "meterId",
+                            type: "select",
+                            numberInOrder: 1,
+                            error: {
+                                value: true, message: "Выберите счётчик"
+                            },
+                            handleSelect: (option: string | number) => {
+                                const subscriberId = meters?.find(a => a.id === option)?.subscriberId;
+                                if (subscriberId) {
+                                    setSelectedSubscriberId(subscriberId);
+                                }
+                            }
+                        }],
+                    datePickers: [{
+                        inputTitle: "Дата поверки",
+                        id: "verifiedAt",
+                        type: "datepicker",
+                        numberInOrder: 2,
+                        error: {
+                            value: true, message: "Выберите дату поверки"
+                        },
+                    }],
+                    attachments: [{
+                        text: "Акт поверки",
+                        fileFormat: [FileType.JPEG, FileType.PNG],
+                        id: "attachment",
+                        type: "attachment",
+                        numberInOrder: 3,
+                        error: {
+                            value: true, message: "Добавьте вложение"
+                        },
+                    }]
+                };
+            }
+            case getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter):
+                return {
+                    selectors:
+                        [{
+                            inputTitle: "Тип услуги",
+                            options: typesOfService ? typesOfService.map(tos => {
+                                return {
+                                    value: tos.id,
+                                    text: tos.name
+                                };
+                            }) : [],
+                            id: "typeOfServiceId",
+                            type: "select",
+                            numberInOrder: 1,
+                            error: {
+                                value: true, message: "Выберите тип услуги"
+                            },
+                        },
+                        {
+                            inputTitle: "Квартира",
+                            options: apartments ? apartments.map(a => {
+                                return {
+                                    value: a.id,
+                                    text: a.address
+                                };
+                            }) : [],
+                            id: "apartmentId",
+                            type: "select",
+                            numberInOrder: 2,
+                            error: {
+                                value: true, message: "Выберите квартиру"
+                            },
+                            handleSelect: (option: string | number) => {
+                                const subscriberId = apartments?.find(a => a.id === option)?.subscriberId;
+                                if (subscriberId) {
+                                    setSelectedSubscriberId(subscriberId);
+                                }
+                            }
+                        }],
+                    datePickers: [{
+                        inputTitle: "Дата поверки",
+                        id: "verifiedAt",
+                        type: "datepicker",
+                        numberInOrder: 4,
+                        error: {
+                            value: true, message: "Выберите дату поверки"
+                        },
+                    },
+                    {
+                        inputTitle: "Дата истечения поверки",
+                        id: "issuedAt",
+                        type: "datepicker",
+                        numberInOrder: 5,
+                        error: {
+                            value: true, message: "Выберите дату истечения поверки"
+                        },
+                    }],
+                    inputs: [{
+                        title: "Заводской номер",
+                        inputType: "string",
+                        id: "factoryNumber",
+                        type: "input",
+                        numberInOrder: 3,
+                        error: {
+                            value: true, message: "Введите заводской номер"
+                        }
+                    }],
+                    attachments: [{
+                        text: "Паспорт счётчика",
+                        fileFormat: [FileType.JPEG, FileType.PNG],
+                        id: "attachment",
+                        type: "attachment",
+                        numberInOrder: 6,
+                        error: {
+                            value: true, message: "Добавьте вложение"
+                        },
+                    }]
+                };
+            default:
+                return undefined;
+        }
+    };
+
+    const getDataList = (type: AppealType): string[] | undefined => {
+        switch (type) {
+            case getEnumKeyByValue(AppealType, AppealType.ProblemOrQuestion): {
+                return ["text"];
+            }
+            case getEnumKeyByValue(AppealType, AppealType.Claim): {
+                return ["text"];
+            }
+            case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
+                return ["meterId", "verifiedAt", "attachment"];
+            }
+            case getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter):
+                return ["typeOfServiceId", "apartmentId", "verifiedAt", "issuedAt", "factoryNumber"];
+            default:
+                return undefined;
+        }
+    };
 
     return (
         <>
-            <InfoWindow
-                title="Претензия №318"
-                description="ТСЖ Прогресс | 23.03.2023"
-                text="Соседи сверху уже который день слушают громкую музыку по ночам. Сверху - это 13 квартира. Разберитесь, пожалуйста."
-                tags={["В обработке", "Претензия"]}
-                isOpen={isInfoWindowOpen}
-                setIsOpen={setIsInfoWindowOpen}
-                buttons={[{ name: "Скачать вложение", onClick: () => { } }]}
+            {selectedId !== 0 && getInfoWindow()}
+            <CardForm
+                title="Выбор типа обращения"
+                items={Object.keys(AppealType).map(key => {
+                    const value = String(getEnumValueByKey(AppealType, key));
+                    return {
+                        key,
+                        value,
+                        icon: getTypeIcon(value)
+                    };
+                })}
+                isOpened={isCardFormOpened}
+                setIsOpened={setIsCardFormOpened}
+                next={() => {
+                    setIsCardFormOpened(!isCardFormOpened);
+                    setIsFormOpened(!isFormOpened);
+                }}
+                selected={selectedAppealType}
+                setSelected={async (selected: string) => {
+                    setSelectedAppealType(selected);
+                    await getData(selected as AppealType);
+                }}
             />
+            {selectedAppealType !== "" &&
+                <Form<IAppeal>
+                    successMessage={"Обращение отправлено"}
+                    successCode={201}
+                    additionalFormData={
+                        [{
+                            managementCompanyId: 1,
+                            typeOfAppeal: selectedAppealType,
+                            subscriberId: selectedSubscriberId
+                        }]
+                    }
+                    urlToPost={API.subscriber.appeal.add}
+                    useFormData={useFormData}
+                    isOpened={isFormOpened} setIsOpened={setIsFormOpened}
+                    title={"Отправка обращения"}
+                    oneRow={true}
+                    dataList={getDataList(selectedAppealType as AppealType)}
+                    {...getForm(selectedAppealType as AppealType)}
+                />
+            }
             <Tabs
                 title="Обращения"
                 tabs={[
@@ -30,31 +420,52 @@ function Appeal(): JSX.Element {
                     { id: 4, name: "Отклоненные" },
                 ]}
                 activeTab={activeTab} setActiveTab={setActiveTab}
+                addButtonText="обращение"
+                onAddButtonClick={() => setIsCardFormOpened(!isCardFormOpened)}
             >
-                <Card
-                    maxWidth="38.375rem"
-                    titlePart={{
-                        text: "№318",
-                        tag: {
-                            tag: "В обработке",
-                            tagIcon: <ProcessingIcon />
-                        },
-                        description: "ТСЖ Прогресс · 23.03.2023",
-                        symbolRight: {
-                            symbol: <span className="viewAction"><ArrowIcon /></span>,
-                            size: "l",
-                            onClick: () => {
-                                setIsInfoWindowOpen(!isInfoWindowOpen);
-                            }
-                        },
-                    }}
-                    text="Соседи сверху уже который день слушают громкую музыку по ночам. Сверху - это 13 квартира. Разберитесь, пожалуйста."
-                    isMobileText={false}
-                    bottom={{ tag: "Претензия", attachment: "Вложение" }}
-                />
+                {activeTab === 1 && getAppeals("all")}
+                {activeTab === 2 && getAppeals(AppealStatus.Processing)}
+                {activeTab === 3 && getAppeals(AppealStatus.Closed)}
+                {activeTab === 4 && getAppeals(AppealStatus.Rejected)}
             </Tabs>
         </>
     );
 }
 
 export default withLayout(Appeal);
+
+export async function getServerSideProps() {
+    // ИСПРАВИТЬ!!!!
+    const postData = {
+        userId: 1,
+        userRole: UserRole.Owner,
+        events: [EventType.Appeal]
+    };
+
+    try {
+        const { data } = await axios.post<{ events: IGetEvents }>(API.event.get, postData);
+        if (!data) {
+            return {
+                notFound: true
+            };
+        }
+        return {
+            props: {
+                data: {
+                    appeals: data.events.appeals
+                }
+            }
+        };
+    } catch {
+        return {
+            notFound: true
+        };
+    }
+}
+
+interface AppealProps extends Record<string, unknown> {
+    data: {
+        appeals: IGetAppeal[];
+    };
+    role: UserRoleType;
+}

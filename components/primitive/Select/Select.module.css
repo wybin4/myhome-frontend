@@ -30,11 +30,12 @@
 
 .m .button {
     width: 100%;
-    height: 2.4rem;
+    min-height: 2.4rem;
 
     font-size: 0.875rem;
 
     padding-left: 0.6875rem;
+    padding-right: 2rem;
 }
 
 .button:active,
