@@ -16,8 +16,16 @@ export interface IUser {
     checkingAcount?: string;
 }
 
+export interface IGetUserWithSubscriber {
+    user: Omit<IUser, 'passwordHash'>;
+    subscribers: {
+        id: number;
+        address: string;
+    }[];
+}
+
 export interface IUserReferenceData extends IReferenceData {
-    subscribers: IUserReferenceDataItem[];
+    users: IUserReferenceDataItem[];
 }
 
 export interface IUserReferenceDataItem extends IReferenceDataItem {

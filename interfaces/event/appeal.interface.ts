@@ -11,7 +11,7 @@ export interface IAppeal {
 
     meterId?: number;
     verifiedAt?: Date;
-    attachment?: unknown;
+    attachment?: string;
 
     typeOfServiceId?: number;
     apartmentId?: number;

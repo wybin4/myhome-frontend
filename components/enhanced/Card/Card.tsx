@@ -81,7 +81,7 @@ export const CardInput = ({ readOnly = false, title, value = "", setValue, textA
     );
 };
 
-export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props }: CardBottomProps): JSX.Element => {
+export const CardBottom = ({ text, textAlign = "left", tag, onClick, attachment, ...props }: CardBottomProps): JSX.Element => {
     return (
         <div className={styles.bottom}>
             {text &&
@@ -97,7 +97,7 @@ export const CardBottom = ({ text, textAlign = "left", tag, attachment, ...props
                     "md:!hidden sm:!hidden"
                 )}>{tag}</Tag>}
                 {attachment &&
-                    <p className={styles.attachment}>
+                    <p className={styles.attachment} onClick={onClick}>
                         <span className="md:hidden sm:hidden"><AttachmentIcon /></span>
                         {attachment}
                     </p>

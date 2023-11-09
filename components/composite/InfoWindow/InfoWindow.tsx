@@ -74,6 +74,7 @@ export const InfoWindow = ({
                     {
                         buttons.map((button, key) =>
                             <Button
+                                onClick={button.onClick}
                                 key={key}
                                 appearance="primary"
                                 size="m"

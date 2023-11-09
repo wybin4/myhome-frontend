@@ -64,7 +64,7 @@ export const Form = <T extends FieldValues>({
     className, useFormData,
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
-    successCode, successMessage,
+    successCode, successMessage, setPostData,
     oneRow = false, dataList,
     ...props
 }: FormProps<T>): JSX.Element => {
@@ -114,7 +114,6 @@ export const Form = <T extends FieldValues>({
             }
 
             const flatObjectWithData: { [key: string]: string | number | SelectorValue | { [key: string]: string | number | SelectorValue } } = flatObject;
-
             if (dataList) {
                 const dataArr: { [key: string]: string | number | SelectorValue } = {};
                 for (const key in flatObject) {
@@ -141,12 +140,15 @@ export const Form = <T extends FieldValues>({
                     })
                     :
                     await axios.post(urlToPost, flatObjectWithData);
-            
+
             if (response.status === successCode) {
                 setIsSuccess(true);
                 setError("");
                 if (setIsOpened) {
                     setIsOpened(false);
+                }
+                if (setPostData) {
+                    setPostData(response.data);
                 }
                 reset();
             } else {

@@ -43,6 +43,23 @@ export const downloadPdf = (pdfBuffer: string, date: string) => {
     window.URL.revokeObjectURL(url);
 };
 
+export const downloadImage = (image: string, date: string) => {
+    const base64Data = image;
+    const buffer = Buffer.from(base64Data, 'base64');
+    const fileType = getFileType(buffer);
+
+    const blob = new Blob([buffer]);
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${new Date(date).getTime()}.${fileType}`;
+    document.body.appendChild(a);
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+};
+
 export const formatNumber = (number: string) => {
     const length = 7;
     if (number.length <= length) {
@@ -83,4 +100,14 @@ export const getEnumValueByKey = (enumConst: any, value: string) => {
         type = "";
     }
     return type;
+};
+
+export const getFileType = (buffer: Buffer) => {
+    if (buffer[0] === 0xFF && buffer[1] === 0xD8) {
+        return "jpeg";
+    } else if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+        return "png";
+    } else {
+        return "unknown";
+    }
 };

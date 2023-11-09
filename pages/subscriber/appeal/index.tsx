@@ -10,10 +10,10 @@ import OtherIcon from "./other.svg";
 import ArrowIcon from "./arrow.svg";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
 import { API } from "@/helpers/api";
-import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
+import { IGetUserWithSubscriber, UserRole, UserRoleType } from "@/interfaces/account/user.interface";
 import axios from "axios";
 import { AppealStatus, AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
-import { getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
+import { downloadImage, getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { AttachmentFormProps, DatePickerFormProps, InputFormProps, SelectorFormProps, TextAreaFormProps } from "@/components/enhanced/Form/Form.props";
@@ -31,13 +31,35 @@ function Appeal({ data }: AppealProps): JSX.Element {
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(0);
     const [selectedSubscriberId, setSelectedSubscriberId] = useState<number>(0);
+    const [selectedMCId, setSelectedMCId] = useState<number>(0);
     const [typesOfService, setTypesOfService] = useState<ITypeOfService[]>();
     const [apartments, setApartments] = useState<IApartmentAllInfo[]>();
+    const [subscribers, setSubscribers] = useState<{
+        id: number;
+        address: string;
+    }[]>();
     const [meters, setMeters] = useState<IGetIndividualMeter[]>();
 
     const user = { // ИСПРАВИТЬ
         userId: 1,
         userRole: UserRole.Owner
+    };
+
+    const getAttachment = (attachment: string | undefined, date: string, appealType: string, place: "info" | "card") => {
+        if (attachment !== undefined) {
+            if (place === "card") {
+                return {
+                    bottom: {
+                        tag: appealType, attachment: "Вложение",
+                        onClick: () => downloadImage(attachment, date)
+                    }
+                };
+            } else if (place === "info") {
+                return {
+                    buttons: [{ name: "Скачать вложение", onClick: () => downloadImage(attachment, date) }]
+                };
+            }
+        } else return;
     };
 
     const getAppeals = (appealStatus: AppealStatus | "all"): JSX.Element => {
@@ -55,6 +77,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
             <div className="flex flex-col gap-6">
                 {appeals.map((appeal, key) => {
                     const { status, type, createdAt } = getDate(appeal);
+
                     return (
                         <Card
                             key={key}
@@ -75,9 +98,9 @@ function Appeal({ data }: AppealProps): JSX.Element {
                                     }
                                 },
                             }}
-                            text={appeal.text}
+                            text={appeal.data}
                             isMobileText={false}
-                            bottom={{ tag: type, attachment: "Вложение" }}
+                            {...getAttachment(appeal.attachment, String(appeal.createdAt), type, "card")}
                         />
                     );
                 })}
@@ -120,11 +143,11 @@ function Appeal({ data }: AppealProps): JSX.Element {
                 <InfoWindow
                     title={`Обращение №${appeal.id}`}
                     description={`${appeal.name} | ${createdAt}`}
-                    text={appeal.text}
+                    text={appeal.data}
                     tags={[status, type]}
                     isOpen={isInfoWindowOpen}
                     setIsOpen={setIsInfoWindowOpen}
-                    buttons={[{ name: "Скачать вложение", onClick: () => { } }]}
+                    {...getAttachment(appeal.attachment, String(appeal.createdAt), type, "info")}
                 />
             );
         } else return <></>;
@@ -135,6 +158,49 @@ function Appeal({ data }: AppealProps): JSX.Element {
         const type = getEnumValueByKey(AppealType, appeal.typeOfAppeal);
         const createdAt = format(new Date(appeal.createdAt), "dd.MM.yy");
         return { status, type, createdAt };
+    };
+
+    const handleSelectClick = (option: string | number, type: AppealType) => {
+        switch (type) {
+            case AppealType.ProblemOrQuestion:
+            case AppealType.Claim: {
+                const mcId = parseInt(String(option));
+                setSelectedMCId(mcId);
+                const subscribers = data.users.filter(u => u.user.id === option).flatMap(u => u.subscribers);
+                setSubscribers(subscribers);
+                break;
+            }
+            case AppealType.VerifyIndividualMeter: {
+                const meterId = parseInt(String(option));
+                const meter = meters?.find(m => m.id === meterId);
+                if (meter) {
+                    const subscriberId = meter.subscriberId;
+                    const userWithSubscribers = data.users.find(user => user.subscribers.some(s => s.id === subscriberId));
+                    if (userWithSubscribers) {
+                        const mcId = userWithSubscribers.user.id;
+                        setSelectedMCId(mcId ? mcId : 0);
+                        setSelectedSubscriberId(subscriberId);
+                    }
+                } else {
+                    console.log("Что-то пошло не так"); // ИСПРАВИТЬ
+                }
+                break;
+            }
+            case AppealType.AddIndividualMeter: {
+                const apartmentId = parseInt(String(option));
+                const apartment = apartments?.find(a => a.id === apartmentId);
+                if (apartment) {
+                    const subscriberId = apartment.subscriberId;
+                    const userWithSubscribers = data.users.find(user => user.subscribers.some(s => s.id === subscriberId));
+                    if (userWithSubscribers) {
+                        const mcId = userWithSubscribers.user.id;
+                        setSelectedMCId(mcId ? mcId : 0);
+                        setSelectedSubscriberId(subscriberId);
+                    }
+                }
+                break;
+            }
+        }
     };
 
     const getData = async (type: AppealType) => {
@@ -157,7 +223,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                     }
                 }
                 catch (e) {
-                    console.log(e);
+                    console.log(e); // ИСПРАВИТЬ
                 }
                 break;
             }
@@ -187,7 +253,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                     }
                 }
                 catch (e) {
-                    console.log(e);
+                    console.log(e); // ИСПРАВИТЬ
                 }
                 break;
             }
@@ -201,24 +267,58 @@ function Appeal({ data }: AppealProps): JSX.Element {
         selectors?: SelectorFormProps<IAppeal>[];
         datePickers?: DatePickerFormProps<IAppeal>[];
     } | undefined => {
-        const textareas: { textAreas?: TextAreaFormProps<IAppeal>[] } = {
-            textAreas:
-                [{
-                    title: "Подробности",
-                    id: "text",
-                    type: "textarea",
-                    numberInOrder: 1,
-                    error: {
-                        value: true, message: "Введите текст обращения"
-                    }
-                }]
-        };
         switch (type) {
-            case getEnumKeyByValue(AppealType, AppealType.ProblemOrQuestion): {
-                return textareas;
-            }
+            case getEnumKeyByValue(AppealType, AppealType.ProblemOrQuestion):
             case getEnumKeyByValue(AppealType, AppealType.Claim): {
-                return textareas;
+                return {
+                    selectors:
+                        [{
+                            inputTitle: "Управляющая компания",
+                            options: data.users ? data.users.map(u => {
+                                return {
+                                    value: u.user.id ? u.user.id : 0,
+                                    text: u.user.name ? u.user.name : ""
+                                };
+                            }) : [],
+                            id: "managementCompanyId",
+                            type: "select",
+                            numberInOrder: 1,
+                            error: {
+                                value: true, message: "Выберите управляющую компанию"
+                            },
+                            handleSelect: (option: string | number) => {
+                                handleSelectClick(option, AppealType.Claim);
+                            }
+                        },
+                        {
+                            inputTitle: "Квартира",
+                            options: subscribers ? subscribers.map(s => {
+                                return {
+                                    value: s.id,
+                                    text: s.address
+                                };
+                            }) : [],
+                            id: "subscriberId",
+                            type: "select",
+                            numberInOrder: 2,
+                            error: {
+                                value: true, message: "Выберите квартиру"
+                            },
+                            handleSelect: (option: string | number) => {
+                                setSelectedSubscriberId(parseInt(String(option)));
+                            }
+                        }],
+                    textAreas:
+                        [{
+                            title: "Подробности",
+                            id: "text",
+                            type: "textarea",
+                            numberInOrder: 3,
+                            error: {
+                                value: true, message: "Введите текст обращения"
+                            }
+                        }]
+                };
             }
             case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
                 return {
@@ -238,10 +338,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                                 value: true, message: "Выберите счётчик"
                             },
                             handleSelect: (option: string | number) => {
-                                const subscriberId = meters?.find(a => a.id === option)?.subscriberId;
-                                if (subscriberId) {
-                                    setSelectedSubscriberId(subscriberId);
-                                }
+                                handleSelectClick(option, AppealType.VerifyIndividualMeter);
                             }
                         }],
                     datePickers: [{
@@ -298,10 +395,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                                 value: true, message: "Выберите квартиру"
                             },
                             handleSelect: (option: string | number) => {
-                                const subscriberId = apartments?.find(a => a.id === option)?.subscriberId;
-                                if (subscriberId) {
-                                    setSelectedSubscriberId(subscriberId);
-                                }
+                                handleSelectClick(option, AppealType.AddIndividualMeter);
                             }
                         }],
                     datePickers: [{
@@ -360,7 +454,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                 return ["meterId", "verifiedAt", "attachment"];
             }
             case getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter):
-                return ["typeOfServiceId", "apartmentId", "verifiedAt", "issuedAt", "factoryNumber"];
+                return ["typeOfServiceId", "apartmentId", "verifiedAt", "issuedAt", "factoryNumber", "attachment"];
             default:
                 return undefined;
         }
@@ -397,7 +491,7 @@ function Appeal({ data }: AppealProps): JSX.Element {
                     successCode={201}
                     additionalFormData={
                         [{
-                            managementCompanyId: 1,
+                            managementCompanyId: selectedMCId,
                             typeOfAppeal: selectedAppealType,
                             subscriberId: selectedSubscriberId
                         }]
@@ -408,6 +502,9 @@ function Appeal({ data }: AppealProps): JSX.Element {
                     title={"Отправка обращения"}
                     oneRow={true}
                     dataList={getDataList(selectedAppealType as AppealType)}
+                    setPostData={(newData: { appeal: IGetAppeal }) => {
+                        data.appeals.push(newData.appeal);
+                    }}
                     {...getForm(selectedAppealType as AppealType)}
                 />
             }
@@ -436,15 +533,22 @@ export default withLayout(Appeal);
 
 export async function getServerSideProps() {
     // ИСПРАВИТЬ!!!!
-    const postData = {
+    const postDataEvents = {
         userId: 1,
         userRole: UserRole.Owner,
         events: [EventType.Appeal]
     };
+    const postDataUsers = {
+        userId: 1,
+        userRole: UserRole.Owner,
+    };
+
 
     try {
-        const { data } = await axios.post<{ events: IGetEvents }>(API.event.get, postData);
-        if (!data) {
+        const events = await axios.post<{ events: IGetEvents }>(API.event.get, postDataEvents);
+        const users = await axios.post<{ users: IGetUserWithSubscriber[] }>(API.common.owner.get, postDataUsers);
+
+        if (!events || !users) {
             return {
                 notFound: true
             };
@@ -452,7 +556,8 @@ export async function getServerSideProps() {
         return {
             props: {
                 data: {
-                    appeals: data.events.appeals
+                    appeals: events.data.events.appeals,
+                    users: users.data.users
                 }
             }
         };
@@ -466,6 +571,7 @@ export async function getServerSideProps() {
 interface AppealProps extends Record<string, unknown> {
     data: {
         appeals: IGetAppeal[];
+        users: IGetUserWithSubscriber[];
     };
     role: UserRoleType;
 }

@@ -33,14 +33,15 @@ export const API: {
     },
     managementCompany: {
         reference: IDataWithoutGet;
-        common: IData;
+        common: IDataWithoutGet;
         correction: IData;
         singlePaymentDocument: { get: string; calculate: string };
         voting: { add: string };
         houseNotification: { add: string };
         appeal: { add: string };
     };
-    reference: IDataGet
+    reference: IDataGet;
+    common: IDataGet;
 } = {
     chat: {
         addChat: `${process.env.NEXT_PUBLIC_DOMAIN}/chat/add-chat`,
@@ -93,7 +94,6 @@ export const API: {
             owner: {
                 add: ``,
                 addMany: ``,
-                get: `${process.env.NEXT_PUBLIC_DOMAIN}/user/get-owners-by-mcid`
             }
         },
         correction: {
@@ -145,5 +145,9 @@ export const API: {
     event: {
         get: `${process.env.NEXT_PUBLIC_DOMAIN}/event/get-events`
     },
-
+    common: {
+        owner: {
+            get: `${process.env.NEXT_PUBLIC_DOMAIN}/user/get-users-by-another-role`
+        }
+    },
 };

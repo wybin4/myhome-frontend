@@ -148,6 +148,8 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     oneRow?: boolean;
 
     dataList?: string[];
+
+    setPostData?: (newData: any) => void;
 }
 
 export type FormSuccess = 200 | 201;

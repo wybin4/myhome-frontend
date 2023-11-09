@@ -150,7 +150,7 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
             {engName === "owner" &&
                 <ReferencePageComponent<IUserReferenceDataItem>
                     key={ownerPageComponent.engName}
-                    item={enrich(ownerPageComponent, engName)}
+                    item={enrich(ownerPageComponent, "user")}
                     uriToAdd={API.managementCompany.common.owner.add}
                     uriToAddMany={API.managementCompany.common.owner.addMany}
                 />
@@ -175,10 +175,7 @@ export async function getServerSideProps({ resolvedUrl }: any) {
     let apiUrl: string = '';
     switch (engName) {
         case "owner":
-            postData = {
-                "managementCompanyId": 1, // ИСПРАВИТЬ
-            };
-            apiUrl = API.managementCompany.common.owner.get;
+            apiUrl = API.common.owner.get;
             break;
         case "individual-meter":
         case "general-meter":
