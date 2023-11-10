@@ -1,144 +1,19 @@
-import { Table } from "@/components";
 import { API } from "@/helpers/api";
 import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
-import { format } from "date-fns";
-import { AppealStatus, AppealType } from "@/interfaces/event/appeal.interface";
-import ProcessingIcon from "./processing.svg";
-import ClosedIcon from "./closed.svg";
-import RejectedIcon from "./rejected.svg";
-import { formatFullName, formatNumber, getEnumValueByKey } from "@/helpers/constants";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
+import { AppealPageComponent } from "@/page-components";
 
 function Appeal({ data }: AppealProps): JSX.Element {
-    type AppealData = {
-        id: number[];
-        personalAccount: string[];
-        modifiedPersonalAccount: string[];
-        address: string[];
-        type: string[];
-        status: string[];
-        createdAt: string[];
+    const user = { // ИСПРАВИТЬ
+        userId: 1,
+        userRole: UserRole.ManagementCompany
     };
-
-    const initialData: AppealData = {
-        id: [],
-        personalAccount: [],
-        modifiedPersonalAccount: [],
-        address: [],
-        type: [],
-        status: [],
-        createdAt: []
-    };
-
-    const appeals: AppealData = data.appeals.reduce(
-        (accumulator, appeal) => {
-            accumulator.id.push(appeal.id);
-            accumulator.personalAccount.push(`${appeal.personalAccount} ${appeal.name}`);
-            accumulator.modifiedPersonalAccount.push(`${formatNumber(
-                appeal.personalAccount ?
-                    appeal.personalAccount
-                    : ""
-            )} ${formatFullName(appeal.name)}`);
-            const status = getEnumValueByKey(AppealStatus, appeal.status);
-            accumulator.status.push(status);
-            const type = getEnumValueByKey(AppealType, appeal.typeOfAppeal);
-            accumulator.type.push(type);
-            accumulator.address.push(appeal.address ? appeal.address : "");
-            accumulator.createdAt.push(format(new Date(appeal.createdAt), "dd.MM.yyyy"));
-            return accumulator;
-        },
-        initialData
-    );
-
-    const {
-        id, personalAccount, modifiedPersonalAccount, type, status, address, createdAt
-    } = appeals;
 
     return (
         <>
-            <Table
-                title="Обращения"
-                filters={[
-                    {
-                        title: "Дата",
-                        titleEng: "createdAt",
-                        type: "date"
-                    },
-                    {
-                        title: "Тип обращения",
-                        titleEng: "type",
-                        type: "checkbox",
-                        items: Array.from(new Set(type))
-                    },
-                    {
-                        title: "Статус",
-                        titleEng: "status",
-                        type: "checkbox",
-                        items: Array.from(new Set(status))
-                    }
-                ]}
-                rows={{
-                    actions: {
-                        actions: [{ type: "view", onClick: () => { }, id: 0 }]
-                    },
-                    ids: id,
-                    items: [
-                        {
-                            title: "Лицевой счёт",
-                            type: "text",
-                            items: modifiedPersonalAccount,
-                            infoItems: personalAccount
-                        },
-                        {
-                            title: "Объект учёта",
-                            type: "text",
-                            items: address
-                        },
-                        {
-                            title: "Тип обращения",
-                            type: "text",
-                            items: type
-                        },
-                        // {
-                        //     title: "Подробности",
-                        //     type: "text",
-                        //     items: text
-                        // },
-                        // {
-                        //     title: "Вложения",
-                        //     type: "text",
-                        //     items: text
-                        // },
-                        {
-                            title: "Статус",
-                            type: "icon",
-                            items: status,
-                            icons: [{
-                                key: String(AppealStatus.Rejected),
-                                icon: <RejectedIcon />
-                            },
-                            {
-                                key: String(AppealStatus.Processing),
-                                icon: <ProcessingIcon />
-                            },
-                            {
-                                key: String(AppealStatus.Closed),
-                                icon: <ClosedIcon />
-                            }]
-                        },
-                        {
-                            title: "Дата создания",
-                            type: "text",
-                            items: createdAt
-                        },
-                    ],
-                    keyElements: {
-                        first: [1], second: 3, tags: [2, 4, 5],
-                        isSecondNoNeedTitle: true
-                    },
-                }} />
+            <AppealPageComponent user={user} appeals={data.appeals} />
         </>
     );
 }

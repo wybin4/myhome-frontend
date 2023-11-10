@@ -1,0 +1,43 @@
+.topPart {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bottomPart {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 2vw;
+}
+
+.title {
+    margin-bottom: 4rem;
+}
+
+.filterIcon {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .topPart {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .title {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .topPart {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .title {
+        margin-bottom: 1rem;
+
+        text-align: center;
+    }
+}
