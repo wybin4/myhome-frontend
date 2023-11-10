@@ -13,8 +13,9 @@ import { Button } from '../../Button/Button';
 import cn from "classnames";
 
 export const DatePickerInput = forwardRef(({
-    choosedDate, setChoosedDate,
+    choosedDate, setChoosedDate, numberInOrder,
     inputTitle, inputSize = "s", inputError,
+    className,
     ...props
 }: DatePickerInputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
     const [isPickerOpened, setIsPickerOpened] = useState<boolean>(false);
@@ -67,7 +68,7 @@ export const DatePickerInput = forwardRef(({
     }, [date]);
 
     return (
-        <div {...props} ref={pickerRef}>
+        <div className={cn(styles.pickerWrapper, className)} {...props} ref={pickerRef}>
             <Input
                 title={inputTitle}
                 placeholder=""
@@ -88,6 +89,7 @@ export const DatePickerInput = forwardRef(({
                     setToday={setToday}
                     clear={clear}
                     className="mt-3"
+                    numberInOrder={numberInOrder}
                 />
             }
         </div>
@@ -97,7 +99,7 @@ export const DatePickerInput = forwardRef(({
 const DatePickerI = ({
     innerRef,
     date, setDate,
-    className,
+    className, numberInOrder,
     setToday, clear,
     ...props
 }: DatePickerIProps): JSX.Element => {
@@ -133,7 +135,10 @@ const DatePickerI = ({
     }
 
     return (
-        <div className={cn(className, styles.datepickerWrapper)}
+        <div className={cn(className, {
+            [styles.datepickerWrapperBottom]: numberInOrder === undefined || numberInOrder <= 3,
+            [styles.datepickerWrapperTop]: numberInOrder && numberInOrder > 3,
+        })}
             {...props}
             ref={innerRef}
         >

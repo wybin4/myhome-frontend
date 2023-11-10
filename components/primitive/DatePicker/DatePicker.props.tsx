@@ -9,6 +9,8 @@ export interface DatePickerInputProps extends DetailedHTMLProps<HTMLAttributes<H
     inputSize?: "l" | "m" | "s";
 
     inputError?: string;
+
+    numberInOrder?: number;
 }
 
 export interface DatePickerRangeProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -35,6 +37,7 @@ export interface DatePickerIProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
     date: IDateInput;
     setDate: Dispatch<SetStateAction<IDateInput>>;
     innerRef?: LegacyRef<HTMLDivElement>;
+    numberInOrder?: number;
 }
 
 export interface DayProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {

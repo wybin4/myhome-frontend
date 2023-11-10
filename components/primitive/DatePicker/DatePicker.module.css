@@ -1,6 +1,18 @@
-.datepickerWrapper {
+.pickerWrapper {
+    position: relative;
+}
+
+.datepickerWrapperBottom {
     position: absolute;
-    
+}
+
+.datepickerWrapperTop {
+    position: absolute;
+    top: -19.75rem;
+}
+
+.datepickerWrapperBottom,
+.datepickerWrapperTop {
     width: 16rem;
 
     background: var(--white);

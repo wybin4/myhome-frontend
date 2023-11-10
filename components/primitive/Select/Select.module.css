@@ -185,3 +185,18 @@
     border: solid 1px var(--red);
     background: var(--red-background);
 }
+
+.errorOptions .littleOption {
+    border: solid 1px var(--red);
+
+    background-color: var(--red-background);
+}
+
+.errorOptions .littleOption .unchecked svg {
+    stroke: var(--red);
+    background-color: var(--red-background);
+}
+
+.errorOptions .littleOption .checked svg {
+    fill: var(--red);
+}

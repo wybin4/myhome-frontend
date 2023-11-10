@@ -100,8 +100,11 @@
     color: var(--red);
 }
 
-.inputError .input:focus:not(.readonly),
-.inputError .input:not(.readonly) {
+.inputError .icon svg {
+    fill: var(--red);
+}
+
+.inputError .input {
+    background-color: var(--red-background);
     border: solid 1px var(--red);
-    background: var(--red-background);
 }

@@ -6,6 +6,8 @@ export interface AttachmentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 
     file: File;
     setFile: React.Dispatch<React.SetStateAction<File | undefined>>;
+
+    inputError?: string;
 }
 
 export enum FileType {

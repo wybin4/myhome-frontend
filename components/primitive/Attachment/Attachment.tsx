@@ -10,7 +10,7 @@ import cn from "classnames";
 
 export const Attachment = forwardRef(({
     text, fileFormat,
-    file, setFile,
+    file, setFile, inputError,
     className, ...props
 }: AttachmentProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
     const [error, setError] = useState<string>("");
@@ -58,7 +58,8 @@ export const Attachment = forwardRef(({
             }
 
             <div className={cn(styles.attachmentWrapper, {
-                "!hidden": file
+                "!hidden": file,
+                [styles.inputError]: inputError
             })}>
                 <div className={styles.wrapperText}>
                     <span className={styles.uploadIcon}><UploadIcon /></span>
@@ -92,6 +93,7 @@ export const Attachment = forwardRef(({
                     </div>
                 </div>
             }
+            {inputError && <span className={styles.error}>{inputError}</span>}
         </div>
     );
 });

@@ -1,4 +1,4 @@
-import React, { useState, useRef, ForwardedRef, forwardRef } from "react";
+import React, { useState, useRef, ForwardedRef, forwardRef, useEffect } from "react";
 import { LittleRadioProps, LittleSelectProps, SelectProps, SelectorOption } from "./Select.props";
 import styles from "./Select.module.css";
 import cn from "classnames";
@@ -25,6 +25,19 @@ export const Select = forwardRef(({
         setIsOpen(false);
     };
 
+    useEffect(() => {
+        document.addEventListener("click", handleDocumentClick);
+        return () => {
+            document.removeEventListener("click", handleDocumentClick);
+        };
+    }, []);
+
+    const handleDocumentClick = (e: MouseEvent) => {
+        if (selectRef.current && !selectRef.current.contains(e.target as Node)) {
+            setIsOpen(false);
+        }
+    };
+    
     return (
         <div className={cn(styles.select, className, {
             [styles.s]: size === "s",
@@ -81,7 +94,9 @@ export const LittleSelect = forwardRef(({
                 [styles.inputError]: inputError
             })} ref={ref}>
                 {inputTitle && <div className={styles.inputTitle}>{inputTitle}</div>}
-                <div className={styles.littleOptions}>
+                <div className={cn(styles.littleOptions, {
+                    [styles.errorOptions]: inputError
+                })}>
                     {options.map((option: SelectorOption, index: number) => {
                         return (
                             (

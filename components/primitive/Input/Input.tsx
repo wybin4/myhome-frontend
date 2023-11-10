@@ -63,7 +63,7 @@ export const Input = forwardRef(({
                             },
                         )} value={value ? value : ""} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
                     {icon &&
-                        <div className={cn("absolute inset-y-0 flex items-center pointer-events-none",
+                        <div className={cn(styles.icon, "absolute inset-y-0 flex items-center pointer-events-none",
                             {
                                 "right-0 pr-3": alignOfIcon === "right",
                                 "left-0 pl-3": alignOfIcon === "left",

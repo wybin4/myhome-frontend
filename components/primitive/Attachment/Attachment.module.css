@@ -94,3 +94,23 @@
 
     fill: var(--grey);
 }
+
+.error {
+    font-size: 0.875rem;
+
+    color: var(--red);
+}
+
+.inputError {
+    background: var(--red-background);
+    border: 2px dashed var(--input-border, var(--red));
+}
+
+.inputError .realInput {
+    color: var(--red);
+    border: solid 1px var(--red);
+}
+
+.inputError .uploadIcon {
+    background-color: var(--red);
+}

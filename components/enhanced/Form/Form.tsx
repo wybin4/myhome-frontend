@@ -86,6 +86,9 @@ export const Form = <T extends FieldValues>({
     formComponents.sort((a, b) => a.numberInOrder - b.numberInOrder);
     const elementCount = Math.max(...formComponents.map(component => component.numberInOrder));
     const newFormComponents = formComponents.map(component => {
+        if (component.type === "datepicker") {
+            return component;
+        }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { numberInOrder, ...rest } = component;
         return rest;
@@ -112,7 +115,7 @@ export const Form = <T extends FieldValues>({
                     flatObject[key] = (flatObject as { [key: string]: SelectorValue })[key].value;
                 }
             }
-            
+
             const flatObjectWithData: { [key: string]: string | number | SelectorValue | { [key: string]: string | number | SelectorValue } } = flatObject;
             if (dataList) {
                 const dataArr: { [key: string]: string | number | SelectorValue } = {};
@@ -285,7 +288,7 @@ export const Form = <T extends FieldValues>({
                                                     return (
                                                         <>
                                                             {
-                                                                component.selectorType === "ordinary" &&
+                                                                component.selectorType !== "little" &&
                                                                 <Select
                                                                     selected={field.value}
                                                                     setSelected={field.onChange}
@@ -356,6 +359,7 @@ export const Form = <T extends FieldValues>({
                                                         setFile={field.onChange}
                                                         ref={field.ref}
                                                         className="mb-4 mt-6"
+                                                        inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         {...component} />
                                                 )}
                                             />
