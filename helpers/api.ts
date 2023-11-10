@@ -38,7 +38,7 @@ export const API: {
         singlePaymentDocument: { get: string; calculate: string };
         voting: { add: string };
         houseNotification: { add: string };
-        appeal: { add: string };
+        appeal: { add: string; update: string; };
     };
     reference: IDataGet;
     common: IDataGet;
@@ -120,6 +120,7 @@ export const API: {
         },
         appeal: {
             add: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/add-appeal`,
+            update: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/update-appeal`,
         }
     },
     reference: {

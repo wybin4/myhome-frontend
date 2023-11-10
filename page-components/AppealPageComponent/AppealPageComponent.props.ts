@@ -18,4 +18,6 @@ export interface AppealDetailPageComponentProps extends Omit<AppealPageComponent
 
     isInfoWindowOpen: boolean;
     setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>;
+
+    setError: Dispatch<SetStateAction<string>>;
 }

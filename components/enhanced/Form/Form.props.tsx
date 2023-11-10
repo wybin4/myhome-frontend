@@ -150,6 +150,11 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     dataList?: string[];
 
     setPostData?: (newData: any) => void;
+
+    buttonsText?: {
+        add: string;
+        cancell: string;
+    };
 }
 
 export type FormSuccess = 200 | 201;
@@ -171,6 +176,8 @@ export interface SelectorFormProps<T extends FieldValues> {
     error: FormError;
 
     handleSelect?: (option: string | number) => void;
+
+    selectorType?: "little" | "ordinary";
 }
 
 export interface DatePickerFormProps<T extends FieldValues> {
@@ -210,4 +217,3 @@ export interface AttachmentFormProps<T extends FieldValues> {
     numberInOrder: number;
     error: FormError;
 }
-

@@ -1,4 +1,4 @@
-import { IAppeal } from "./event/appeal.interface";
+import { AppealStatus, IAppeal } from "./event/appeal.interface";
 import { IHouseNotification } from "./event/notification.interface";
 import { IOption, IVoting } from "./event/voting.interface";
 
@@ -24,6 +24,11 @@ export interface IGetAppeal extends IAppeal {
     name: string;
     address?: string;
     personalAccount?: string;
+}
+
+export interface IUpdateAppeal {
+    id: number;
+    status: AppealStatus;
 }
 
 export interface IGetVoting extends IVoting {

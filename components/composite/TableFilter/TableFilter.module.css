@@ -1,6 +1,8 @@
 .filterWrapper {
     width: 100%;
     max-width: 11.5rem;
+
+    z-index: 5;
 }
 
 .hidden {

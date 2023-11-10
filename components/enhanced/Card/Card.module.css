@@ -5,6 +5,8 @@
     border-radius: 15px;
 
     padding: 1.3125rem 1.5625rem;
+
+    z-index: 1;
 }
 
 .bottom {
@@ -165,6 +167,17 @@
     height: 0.8rem;
 }
 
+.tagSwap {
+    display: flex;
+    gap: 0.5rem;
+
+    cursor: pointer;
+}
+
+.swapIcon svg {
+    fill: var(--white);
+}
+
 @media (max-width: 600px) {
     .titleWrapper {
         width: 100%;
@@ -246,6 +259,10 @@
     }
 
     .chargeCard .bottom button {
+        display: none;
+    }
+
+    .mobileWithoutAttachment {
         display: none;
     }
 }

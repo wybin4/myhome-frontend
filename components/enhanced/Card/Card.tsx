@@ -4,6 +4,7 @@ import cn from "classnames";
 import { Button, Icon, Input, Paragraph, Tag, Voting } from "@/components";
 import React, { useState } from "react";
 import AttachmentIcon from "./attachment.svg";
+import SwapIcon from "./swap.svg";
 
 export const Card = ({
     titlePart, description,
@@ -41,10 +42,14 @@ export const CardTitle = ({
     return (
         <div className={styles.title} {...props}>
             <div className={styles.titleWrapper}>
-                {tag && <Icon fillType="stroke" type="icon" appearance="primary" className={styles.tagIcon} size="s">{tag.tagIcon}</Icon>}
+                {tag && <Icon fillType="stroke" type="icon" appearance="primary" className={styles.tagIcon} size="s">
+                    {tag.tagIcon}
+                </Icon>}
                 {iconLeft && <Icon className={cn(styles.iconLeft, {
                     [styles.iconLeftInvisible]: !iconLeftVisible,
-                })} size={iconLeftSize} type="icon" appearance="primary">{iconLeft}</Icon>}
+                })} size={iconLeftSize} type="icon" appearance="primary">
+                    {iconLeft}
+                </Icon>}
                 <div className={cn({
                     [styles.titleWithIcon]: iconLeftVisible,
                     [styles.titleWithoutIcon]: !iconLeftVisible
@@ -59,10 +64,25 @@ export const CardTitle = ({
                             [styles.symbolRightS]: symbolRight.size === "s",
                         })}
                         onClick={symbolRight.onClick}
-                    >{symbolRight.symbol}</span>
+                    >
+                        {symbolRight.symbol}
+                    </span>
                 }
             </div>
-            {tag && <Tag size="l" className="md:!hidden sm:!hidden">{tag.tag}</Tag>}
+            {tag &&
+                <Tag
+                    size="l"
+                    className={cn("md:!hidden sm:!hidden", {
+                        [styles.tagSwap]: tag.swap
+                    })}
+                    onClick={tag.onSwapClick}
+                >
+                    {tag.tag}
+                    {tag.swap && <span className={styles.swapIcon}>
+                        <SwapIcon />
+                    </span>}
+                </Tag>
+            }
         </div>
     );
 };
@@ -83,7 +103,9 @@ export const CardInput = ({ readOnly = false, title, value = "", setValue, textA
 
 export const CardBottom = ({ text, textAlign = "left", tag, onClick, attachment, ...props }: CardBottomProps): JSX.Element => {
     return (
-        <div className={styles.bottom}>
+        <div className={cn(styles.bottom, {
+            [styles.mobileWithoutAttachment]: !attachment
+        })}>
             {text &&
                 <Paragraph size="xs" className={cn(styles.bottomText, {
                     "text-center": textAlign === "center"

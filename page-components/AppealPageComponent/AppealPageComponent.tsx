@@ -1,10 +1,10 @@
-import { Card, CardForm, Form, Htag, TableButton, TableFilter, Tabs } from "@/components";
+import { Card, CardForm, Form, Htag, PopUp, TableButton, TableFilter, Tabs } from "@/components";
 import { AttachmentFormProps, TextAreaFormProps, InputFormProps, SelectorFormProps, DatePickerFormProps } from "@/components/enhanced/Form/Form.props";
 import { FileType } from "@/components/primitive/Attachment/Attachment.props";
 import { API } from "@/helpers/api";
 import { getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
 import { ITypeOfService } from "@/interfaces/common.interface";
-import { IGetAppeal } from "@/interfaces/event.interface";
+import { IGetAppeal, IUpdateAppeal } from "@/interfaces/event.interface";
 import { AppealStatus, AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
 import { IGetIndividualMeter, MeterType } from "@/interfaces/reference/meter.interface";
 import { IApartmentAllInfo } from "@/interfaces/reference/subscriber/apartment.interface";
@@ -17,36 +17,61 @@ import { getStatusIcon, getAttachment, getInfoWindow, getTypeIcon, getFormattedA
 import { UserRole } from "@/interfaces/account/user.interface";
 import styles from "./AppealPageComponent.module.css";
 import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
+import { SelectorOption } from "@/components/primitive/Select/Select.props";
 
 export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
 
+    useEffect(() => {
+        setIsPopupVisible(true);
+        const timer = setTimeout(() => {
+            setIsPopupVisible(false);
+        }, 3000);
 
+        return () => clearTimeout(timer);
+    }, [error]);
 
-    switch (user.userRole) {
-        case UserRole.ManagementCompany:
-            return (
-                <AppealManagementCompanyPageComponent
-                    user={user}
-                    selectedId={selectedId} setSelectedId={setSelectedId}
-                    isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
-                    appeals={appeals}
-                />
-            );
-        case UserRole.Owner:
-            return (
-                <AppealOwnerPageComponent
-                    user={user}
-                    users={users}
-                    selectedId={selectedId} setSelectedId={setSelectedId}
-                    isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
-                    appeals={appeals}
-                />
-            );
-        default:
-            return (<></>);
-    }
+    const getAppeals = () => {
+        switch (user.userRole) {
+            case UserRole.ManagementCompany:
+                return (
+                    <AppealManagementCompanyPageComponent
+                        user={user}
+                        selectedId={selectedId} setSelectedId={setSelectedId}
+                        isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
+                        appeals={appeals}
+                        setError={setError}
+                    />
+                );
+            case UserRole.Owner:
+                return (
+                    <AppealOwnerPageComponent
+                        user={user}
+                        users={users}
+                        selectedId={selectedId} setSelectedId={setSelectedId}
+                        isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
+                        appeals={appeals}
+                        setError={setError}
+                    />
+                );
+            default:
+                return (<></>);
+        }
+    };
+
+    return (
+        <>
+            {isPopupVisible &&
+                <PopUp type="failure" isOpen={error !== ""} setIsOpen={() => setError("")}>
+                    {error}
+                </PopUp>
+            }
+            {getAppeals()}
+        </>
+    );
 };
 
 
@@ -54,6 +79,7 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
 export const AppealOwnerPageComponent = ({
     appeals, users,
     selectedId, setSelectedId,
+    setError,
     isInfoWindowOpen, setIsInfoWindowOpen,
     user
 }: AppealDetailPageComponentProps): JSX.Element => {
@@ -137,7 +163,7 @@ export const AppealOwnerPageComponent = ({
                         setSelectedSubscriberId(subscriberId);
                     }
                 } else {
-                    console.log("Что-то пошло не так"); // ИСПРАВИТЬ
+                    setError("Такой счётчик не существует");
                 }
                 break;
             }
@@ -171,14 +197,14 @@ export const AppealOwnerPageComponent = ({
                             isNotAllInfo: true
                         });
                         if (!data) {
-                            console.log("Что-то пошло не так");
+                            setError("Невозможно получить данные о счётчиках");
                         } else {
                             setMeters(data.meters);
                         }
                     }
                 }
                 catch (e) {
-                    console.log(e); // ИСПРАВИТЬ
+                    setError("Невозможно получить данные о счётчиках");
                 }
                 break;
             }
@@ -188,7 +214,7 @@ export const AppealOwnerPageComponent = ({
                         const { data } = await axios.post<{ typesOfService: ITypeOfService[] }>(
                             API.reference.typeOfService.get);
                         if (!data) {
-                            console.log("Что-то пошло не так");
+                            setError("Невозможно получить данные о видах услуг");
                         } else {
                             setTypesOfService(data.typesOfService);
                         }
@@ -201,14 +227,14 @@ export const AppealOwnerPageComponent = ({
                             isAllInfo: true
                         });
                         if (!data) {
-                            console.log("Что-то пошло не так");
+                            setError("Невозможно получить данные о квартирах");
                         } else {
                             setApartments(data.apartments);
                         }
                     }
                 }
                 catch (e) {
-                    console.log(e); // ИСПРАВИТЬ
+                    setError("Невозможно получить данные о квартирах");
                 }
                 break;
             }
@@ -486,6 +512,7 @@ export const AppealOwnerPageComponent = ({
 
 export const AppealManagementCompanyPageComponent = ({
     appeals,
+    // setError,
     selectedId, setSelectedId,
     isInfoWindowOpen, setIsInfoWindowOpen,
 }: AppealDetailPageComponentProps): JSX.Element => {
@@ -493,6 +520,42 @@ export const AppealManagementCompanyPageComponent = ({
     const [type, setType] = useState<string[]>();
     const [status, setStatus] = useState<string[]>();
     const filterButtonRef = useRef(null);
+    const useFormData = useForm<IUpdateAppeal>();
+    const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+
+    const onSwapClick = (id: number) => {
+        setIsFormOpened(!isFormOpened);
+        setSelectedId(id);
+    };
+
+    const getStatus = (status: AppealStatus, id: number) => {
+        const getNonProcessing = () => {
+            return {
+                tag: {
+                    tag: status,
+                    tagIcon: getStatusIcon(status),
+                }
+            };
+        };
+
+        switch (status) {
+            case AppealStatus.Processing:
+                return {
+                    tag: {
+                        tag: status,
+                        tagIcon: getStatusIcon(status),
+                        swap: true,
+                        onSwapClick: () => {
+                            onSwapClick(id);
+                        }
+                    }
+                };
+            case AppealStatus.Rejected:
+                return getNonProcessing();
+            case AppealStatus.Closed:
+                return getNonProcessing();
+        }
+    };
 
     const getAppeals = (): JSX.Element => {
         appeals.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -503,29 +566,27 @@ export const AppealManagementCompanyPageComponent = ({
                     const { status, type, createdAt } = getFormattedAppealDate(appeal);
 
                     return (
-                        <Card
-                            key={key}
-                            maxWidth="38.375rem"
-                            titlePart={{
-                                text: `№${appeal.id}`,
-                                tag: {
-                                    tag: status,
-                                    tagIcon: getStatusIcon(status)
-                                },
-                                description: `${appeal.name} · ${createdAt}`,
-                                symbolRight: {
-                                    symbol: <span className="viewAction"><ArrowIcon /></span>,
-                                    size: "l",
-                                    onClick: () => {
-                                        setSelectedId(appeal.id);
-                                        setIsInfoWindowOpen(!isInfoWindowOpen);
-                                    }
-                                },
-                            }}
-                            text={appeal.data}
-                            isMobileText={false}
-                            {...getAttachment(appeal.attachment, String(appeal.createdAt), type, "card")}
-                        />
+                        <div key={key}>
+                            <Card
+                                maxWidth="38.375rem"
+                                titlePart={{
+                                    text: `№${appeal.id}`,
+                                    description: `${appeal.name} · ${createdAt}`,
+                                    symbolRight: {
+                                        symbol: <span className="viewAction"><ArrowIcon /></span>,
+                                        size: "l",
+                                        onClick: () => {
+                                            setSelectedId(appeal.id);
+                                            setIsInfoWindowOpen(!isInfoWindowOpen);
+                                        }
+                                    },
+                                    ...getStatus(status, appeal.id)
+                                }}
+                                text={appeal.data}
+                                isMobileText={false}
+                                {...getAttachment(appeal.attachment, String(appeal.createdAt), type, "card")}
+                            />
+                        </div>
                     );
                 })}
             </div>
@@ -580,27 +641,90 @@ export const AppealManagementCompanyPageComponent = ({
         }
     ];
 
+    const getStatusOptions = (): SelectorOption[] => {
+        const statuses = Object.values(AppealStatus).map(statusVal => {
+            switch (statusVal) {
+                case AppealStatus.Closed:
+                    return {
+                        value: getEnumKeyByValue(AppealStatus, AppealStatus.Closed),
+                        text: "Обработано"
+                    };
+                case AppealStatus.Rejected:
+                    return {
+                        value: getEnumKeyByValue(AppealStatus, AppealStatus.Rejected),
+                        text: "Отказ"
+                    };
+                default:
+                    return undefined;
+            }
+        });
+        return statuses.filter(s => s !== undefined) as SelectorOption[];
+    };
+
+    const handleAppeal = (id: number) => {
+        onSwapClick(id);
+        setIsInfoWindowOpen(false);
+    };
+
     return (
         <>
-            <div className={styles.topPart}>
-                <Htag size="h1" className={styles.title}>Обращения</Htag>
-                <TableButton buttons={[]}
-                    isFiltersExist={filters !== undefined}
-                    filterButtonRef={filterButtonRef}
-                    isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
+            <div>
+                <Form<IUpdateAppeal>
+                    successMessage="Обращение обработано"
+                    successCode={200}
+                    urlToPost={API.managementCompany.appeal.update}
+                    additionalFormData={[{
+                        "id": selectedId
+                    }]}
+                    useFormData={useFormData}
+                    isOpened={isFormOpened} setIsOpened={setIsFormOpened}
+                    title="Обработка обращения"
+                    selectors={
+                        [{
+                            inputTitle: "Статус",
+                            options: getStatusOptions(),
+                            id: "status",
+                            type: "select",
+                            numberInOrder: 1,
+                            selectorType: "little",
+                            error: {
+                                value: true, message: "Выберите статус"
+                            },
+                        }]
+                    }
+                    setPostData={(newData: { appeal: IAppeal }) => {
+                        const response = newData.appeal;
+                        appeals = appeals.map(a => {
+                            if (a.id === response.id) {
+                                a.status = response.status;
+                            }
+                            return a;
+                        });
+                    }}
+                    buttonsText={{ add: "Сохранить", cancell: "Отмена" }}
                 />
+                <div className={styles.topPart}>
+                    <Htag size="h1" className={styles.title}>Обращения</Htag>
+                    <TableButton buttons={[]}
+                        isFiltersExist={filters !== undefined}
+                        filterButtonRef={filterButtonRef}
+                        isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
+                    />
+                </div>
+                <div className={styles.bottomPart}>
+                    {filters &&
+                        <TableFilter
+                            isOpen={isFilterOpened}
+                            setIsOpen={setIsFilterOpened}
+                            title="Фильтры"
+                            items={filters}
+                            className={styles.filter}
+                            filterButtonRef={filterButtonRef}
+                        />}
+                    {selectedId !== 0 && getInfoWindow(appeals, selectedId, isInfoWindowOpen, setIsInfoWindowOpen, handleAppeal)}
+                    {getAppeals()}
+                </div>
             </div>
-            {filters &&
-                <TableFilter
-                    isOpen={isFilterOpened}
-                    setIsOpen={setIsFilterOpened}
-                    title="Фильтры"
-                    items={filters}
-                    className={styles.filter}
-                    filterButtonRef={filterButtonRef}
-                />}
-            {selectedId !== 0 && getInfoWindow(appeals, selectedId, isInfoWindowOpen, setIsInfoWindowOpen)}
-            {getAppeals()}
         </>
     );
 };

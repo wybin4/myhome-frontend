@@ -5,13 +5,12 @@
 
 .bottomPart {
     display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
+    flex-direction: row;
     gap: 2vw;
 }
 
 .title {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 
 .filterIcon {
@@ -39,5 +38,9 @@
         margin-bottom: 1rem;
 
         text-align: center;
+    }
+
+    .bottomPart {
+        display: block;
     }
 }

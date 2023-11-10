@@ -40,11 +40,16 @@ export const getTypeIcon = (type: string) => {
 export const getInfoWindow = (
     appeals: IGetAppeal[],
     selectedId: number,
-    isInfoWindowOpen: boolean, setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>
+    isInfoWindowOpen: boolean, setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>,
+    handleAppeal?: (id: number) => void
 ) => {
     const appeal = appeals.find(a => a.id === selectedId);
     if (appeal) {
         const { status, type, createdAt } = getFormattedAppealDate(appeal);
+        const attachmentButton = getAttachment(appeal.attachment, String(appeal.createdAt), type, "info");
+        const appealButton = getHandleAppeal(status, selectedId, handleAppeal);
+
+        const buttons = (appealButton?.buttons ?? []).concat(attachmentButton?.buttons ?? []);
 
         return (
             <InfoWindow
@@ -54,7 +59,7 @@ export const getInfoWindow = (
                 tags={[status, type]}
                 isOpen={isInfoWindowOpen}
                 setIsOpen={setIsInfoWindowOpen}
-                {...getAttachment(appeal.attachment, String(appeal.createdAt), type, "info")}
+                buttons={buttons}
             />
         );
     } else return <></>;
@@ -78,8 +83,31 @@ export const getAttachment = (attachment: string | undefined, date: string, appe
             };
         } else if (place === "info") {
             return {
-                buttons: [{ name: "Скачать вложение", onClick: () => downloadImage(attachment, date) }]
+                buttons: [
+                    { name: "Скачать вложение", onClick: () => downloadImage(attachment, date) },
+                ]
             };
         }
-    } else return;
+    } else {
+        if (place === "card") {
+            return {
+                bottom: {
+                    tag: appealType
+                }
+            };
+        } else if (place === "info") {
+            return undefined;
+        }
+    }
+};
+
+export const getHandleAppeal = (status: AppealStatus, id: number, handleAppeal?: (id: number) => void) => {
+    if (handleAppeal && status === AppealStatus.Processing) {
+        return {
+            buttons: [
+                { name: "Обработать обращение", onClick: () => handleAppeal(id) },
+            ]
+        };
+    }
+    return undefined;
 };

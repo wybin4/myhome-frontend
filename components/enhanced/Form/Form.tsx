@@ -3,7 +3,7 @@ import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProp
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePickerInput, Icon, Input, Paragraph, PopUp, Select, Textarea } from "@/components";
+import { Button, Checkbox, DatePickerInput, Icon, Input, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 import ArrowIcon from "./arrow.svg";
@@ -65,7 +65,7 @@ export const Form = <T extends FieldValues>({
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
     successCode, successMessage, setPostData,
-    oneRow = false, dataList,
+    oneRow = false, dataList, buttonsText,
     ...props
 }: FormProps<T>): JSX.Element => {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -112,7 +112,7 @@ export const Form = <T extends FieldValues>({
                     flatObject[key] = (flatObject as { [key: string]: SelectorValue })[key].value;
                 }
             }
-
+            
             const flatObjectWithData: { [key: string]: string | number | SelectorValue | { [key: string]: string | number | SelectorValue } } = flatObject;
             if (dataList) {
                 const dataArr: { [key: string]: string | number | SelectorValue } = {};
@@ -281,17 +281,34 @@ export const Form = <T extends FieldValues>({
                                                         }
                                                     }
                                                 }
-                                                render={({ field }) => (
-                                                    <Select
-                                                        selected={field.value}
-                                                        setSelected={field.onChange}
-                                                        ref={field.ref}
-                                                        className="mb-4"
-                                                        inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
-                                                        handleSelect={component.handleSelect}
-                                                        size="m"
-                                                        {...component} />
-                                                )}
+                                                render={({ field }) => {
+                                                    return (
+                                                        <>
+                                                            {
+                                                                component.selectorType === "ordinary" &&
+                                                                <Select
+                                                                    selected={field.value}
+                                                                    setSelected={field.onChange}
+                                                                    ref={field.ref}
+                                                                    className="mb-4"
+                                                                    inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                                    handleSelect={component.handleSelect}
+                                                                    size="m"
+                                                                    {...component} />
+                                                            }
+                                                            {
+                                                                component.selectorType === "little" &&
+                                                                <LittleSelect
+                                                                    selected={field.value}
+                                                                    setSelected={field.onChange}
+                                                                    ref={field.ref}
+                                                                    className="mb-4"
+                                                                    inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                                    {...component} />
+                                                            }
+                                                        </>
+                                                    );
+                                                }}
                                             />
                                         );
                                     case "textarea":
@@ -350,8 +367,8 @@ export const Form = <T extends FieldValues>({
                             <Button appearance="ghost" size="m" type="button" onClick={() => {
                                 reset();
                                 setIsOpened && setIsOpened(!isOpened);
-                            }}>Отмена</Button>
-                            <Button appearance="primary" size="m">Добавить</Button>
+                            }}>{buttonsText ? buttonsText.cancell : "Отмена"}</Button>
+                            <Button appearance="primary" size="m">{buttonsText ? buttonsText.add : "Добавить"}</Button>
                         </div>
                     </div>
                 </form>

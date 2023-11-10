@@ -70,7 +70,7 @@ export const InfoWindow = ({
                 <div className={styles.text}>
                     {text}
                 </div>
-                {buttons && <div className={styles.buttons}>
+                {buttons && buttons.length !== 0 && <div className={styles.buttons}>
                     {
                         buttons.map((button, key) =>
                             <Button

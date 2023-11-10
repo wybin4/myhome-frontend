@@ -9,6 +9,8 @@ export interface BaseCardTitleProps extends DetailedHTMLProps<HTMLAttributes<HTM
     tag?: {
         tag: string;
         tagIcon: any;
+        swap?: boolean;
+        onSwapClick?: () => void;
     };
 }
 

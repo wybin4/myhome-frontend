@@ -1,7 +1,6 @@
 import { withLayout } from "@/layout/Layout";
 
 function Home(): JSX.Element {
-
     // const options = [
     //     { value: 'option1', text: 'Option 1' },
     //     { value: 'option2', text: 'Option 2' },

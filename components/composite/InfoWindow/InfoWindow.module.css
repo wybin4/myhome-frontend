@@ -70,14 +70,29 @@
 
 .buttons {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     flex-wrap: wrap;
 
     margin-top: 2rem;
 }
 
 .buttons button {
+    width: auto;
+
     border-radius: 2rem;
+
+    padding: 0.5rem 1rem;
+}
+
+.buttons button:nth-child(2n) {
+    border: solid 1px var(--primary);
+    background-color: var(--white) !important;
+
+    color: var(--primary) !important;
+}
+
+.buttons button:nth-child(1n) {
+    background-color: var(--primary);
 }
 
 @media (max-width: 900px) {

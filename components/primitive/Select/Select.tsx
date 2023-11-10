@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef, ForwardedRef, forwardRef } from "react";
-import { SelectProps, SelectorOption } from "./Select.props";
+import React, { useState, useRef, ForwardedRef, forwardRef } from "react";
+import { LittleRadioProps, LittleSelectProps, SelectProps, SelectorOption } from "./Select.props";
 import styles from "./Select.module.css";
 import cn from "classnames";
 import ArrowIcon from "./arrow.svg";
+import CheckedIcon from "./checked.svg";
+import UnCheckedIcon from "./unchecked.svg";
 
 export const Select = forwardRef(({
     id,
@@ -14,19 +16,6 @@ export const Select = forwardRef(({
 }: SelectProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef<HTMLButtonElement | null>(null);
-
-    useEffect(() => {
-        document.addEventListener("click", handleDocumentClick);
-        return () => {
-            document.removeEventListener("click", handleDocumentClick);
-        };
-    }, []);
-
-    const handleDocumentClick = (e: MouseEvent) => {
-        if (selectRef.current && !selectRef.current.contains(e.target as Node)) {
-            setIsOpen(false);
-        }
-    };
 
     const handleOptionClick = (option: SelectorOption) => {
         if (handleSelect) {
@@ -79,3 +68,49 @@ export const Select = forwardRef(({
         </div>
     );
 });
+
+export const LittleSelect = forwardRef(({
+    selected, setSelected,
+    inputTitle, inputError,
+    options,
+    className
+}: LittleSelectProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
+    return (
+        <>
+            <div className={cn(styles.select, className, {
+                [styles.inputError]: inputError
+            })} ref={ref}>
+                {inputTitle && <div className={styles.inputTitle}>{inputTitle}</div>}
+                <div className={styles.littleOptions}>
+                    {options.map((option: SelectorOption, index: number) => {
+                        return (
+                            (
+                                <LittleRadio
+                                    key={index}
+                                    option={option}
+                                    checked={selected?.value === option.value}
+                                    onClick={() => setSelected(option)}
+                                />
+                            )
+                        );
+                    })}
+                </div>
+                {inputError && <span className={styles.error}>{inputError}</span>}
+            </div>
+        </>
+    );
+});
+
+const LittleRadio = ({ option, checked, onClick, ...props }: LittleRadioProps) => {
+    return (
+        <div className={styles.littleOption} onClick={onClick} {...props}>
+            <span className={styles.littleIcon}>
+                {checked && <span className={styles.checked}><CheckedIcon /></span>}
+                <span className={styles.unchecked}><UnCheckedIcon /></span>
+            </span>
+            <label htmlFor={String(option)}>
+                {option.text}
+            </label>
+        </div>
+    );
+};
