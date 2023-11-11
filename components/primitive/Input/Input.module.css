@@ -75,8 +75,13 @@
     padding-left: 1.625rem;
 }
 
-.input:focus:not(.readonly) {
+.input:focus:not(.readonly),
+.input:focus:not(.datepicker) {
     border: solid 1px var(--primary);
+}
+
+.datepicker {
+    border: solid 1px var(--grey-light) !important;
 }
 
 .input:focus {
@@ -104,7 +109,8 @@
     fill: var(--red);
 }
 
-.inputError .input {
-    background-color: var(--red-background);
+.inputError .input:focus:not(.readonly),
+.inputError .input:not(.readonly) {
     border: solid 1px var(--red);
+    background: var(--red-background);
 }

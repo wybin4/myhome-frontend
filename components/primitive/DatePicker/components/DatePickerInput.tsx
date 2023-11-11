@@ -78,7 +78,7 @@ export const DatePickerInput = forwardRef(({
                 icon={<CalendarIcon />}
                 alignOfIcon="right"
                 value={choosedDate ? formatDate(choosedDate) : ""}
-                readOnly={true}
+                datePicker={true}
                 inputError={inputError}
                 ref={ref}
             />

@@ -16,6 +16,7 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
     inputType?: "string" | "number";
 
     readOnly?: boolean;
+    datePicker?: boolean;
 
     innerRef?: LegacyRef<HTMLInputElement>;
 

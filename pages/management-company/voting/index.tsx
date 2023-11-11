@@ -1,6 +1,6 @@
 import { Form, Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRole } from "@/interfaces/account/user.interface";
 import { IVoting, VotingStatus } from "@/interfaces/event/voting.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
@@ -215,5 +215,5 @@ export async function getServerSideProps() {
 
 interface IVotingProps extends Record<string, unknown> {
     data: { votings: IGetVoting[]; houses: IHouse[] };
-    role: UserRoleType;
+    role: UserRole;
 }

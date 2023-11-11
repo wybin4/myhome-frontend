@@ -6,7 +6,7 @@ import VotingIcon from "./voting.svg";
 import cn from "classnames";
 import { EventType, IGetEvents, IGetHouseNotification, IGetVoting } from "@/interfaces/event.interface";
 import { API } from "@/helpers/api";
-import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRole } from "@/interfaces/account/user.interface";
 import axios from "axios";
 import { getEnumKeyByValue, getHumanDate } from "@/helpers/constants";
 import { format } from "date-fns";
@@ -200,5 +200,5 @@ interface EventProps extends Record<string, unknown> {
         notifications: IGetHouseNotification[];
         votings: IGetVoting[];
     };
-    role: UserRoleType;
+    role: UserRole;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IReferencePageComponent } from "@/interfaces/reference/page.interface";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 import { FieldValues } from "react-hook-form";
@@ -7,4 +8,7 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
 
     uriToAdd: string;
     uriToAddMany?: string;
+
+    additionalFormData?: Record<string | number, any>[];
+    setPostData: (newData: any) => void;
 }

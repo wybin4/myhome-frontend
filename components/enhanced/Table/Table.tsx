@@ -19,7 +19,7 @@ export const Table = ({
                 <div className={styles.topPart}>
                     {title && <Htag size="h1" className={styles.title}>{title}</Htag>}
                     {(buttons || filters) && <TableButton buttons={buttons}
-                        isFiltersExist={filters !== undefined}
+                        isFiltersExist={filters !== undefined && filters.length !== 0}
                         filterButtonRef={filterButtonRef}
                         isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
                     />}
@@ -29,7 +29,7 @@ export const Table = ({
                         {isSearch && <TableSearch size="l" className={cn("mb-8", styles.searchBar)} />}
                         <TableRow {...rows} className={styles.rows} />
                     </div>
-                    {filters &&
+                    {filters && filters.length !== 0 &&
                         <TableFilter
                             isOpen={isFilterOpened}
                             setIsOpen={setIsFilterOpened}

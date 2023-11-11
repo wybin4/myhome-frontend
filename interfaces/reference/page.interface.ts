@@ -1,5 +1,5 @@
 import { ActionProps } from "@/components/composite/TableRow/Action/Action.props";
-import {  RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
+import { RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { FieldValues, Path } from "react-hook-form";
 import { Gender } from "russian-nouns-js/src/Gender";
@@ -43,4 +43,5 @@ export interface IReferencePageItem<T extends FieldValues> {
 export interface IReferenceTitle {
     word: string;
     isChangeable?: boolean;
+    replace?: string[];
 }

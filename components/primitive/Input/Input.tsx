@@ -9,7 +9,7 @@ export const Input = forwardRef(({
     value, setValue, inputType = "string",
     icon, sizeOfIcon = "normal", alignOfIcon = "left",
     className,
-    readOnly = false,
+    readOnly = false, datePicker = false,
     inputError,
     ...props
 }: InputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
@@ -56,12 +56,16 @@ export const Input = forwardRef(({
                                 "text-left": textAlign === "left",
                                 [styles.bigInput]: sizeOfIcon === "big",
                                 [styles.normalInput]: sizeOfIcon === "normal",
-                                "focus:ring-4 focus:ring-violet-200": !readOnly && !inputError,
+                                "focus:ring-4 focus:ring-violet-200": !readOnly && !inputError && !datePicker,
                                 "focus:ring-4 focus:ring-red-200": !readOnly && inputError,
                                 [styles.readonly]: readOnly,
+                                [styles.datepicker]: datePicker,
                                 [styles.svgM]: icon && size === "m"
                             },
-                        )} value={value ? value : ""} onChange={handleInputChange} placeholder={placeholder} readOnly={readOnly} {...props} />
+                        )} value={value ? value : ""}
+                        onChange={handleInputChange}
+                        placeholder={placeholder}
+                        readOnly={readOnly || datePicker} {...props} />
                     {icon &&
                         <div className={cn(styles.icon, "absolute inset-y-0 flex items-center pointer-events-none",
                             {

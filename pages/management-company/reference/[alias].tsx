@@ -1,24 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/helpers/api";
-import { IUserReferenceData, IUserReferenceDataItem, UserRole, UserRoleType, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
+import { IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
 import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData } from "@/interfaces/reference/meter.interface";
-import { IReferencePageComponent, IReferencePageItem, IReferenceData } from "@/interfaces/reference/page.interface";
+import { IReferencePageComponent, IReferenceData } from "@/interfaces/reference/page.interface";
 import { IApartmentReferenceData, IApartmentReferenceDataItem, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
 import { IHouseReferenceData, IHouseReferenceDataItem, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
 import { ISubscriberReferenceData, ISubscriberReferenceDataItem, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { IMunicipalTariffReferenceDataItem, municipalTariffPageComponent, INormReferenceDataItem, normPageComponent, ISocialNormReferenceDataItem, socialNormPageComponent, ISeasonalityFactorReferenceDataItem, seasonalityFactorPageComponent, ICommonHouseNeedTariffReferenceDataItem, сommonHouseNeedTariffPageComponent, ICommonHouseNeedTariffReferenceData, IMunicipalTariffReferenceData, INormReferenceData, ISeasonalityFactorReferenceData, ISocialNormReferenceData } from "@/interfaces/reference/tariff-and-norm.interface";
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
-import axios from "axios";
-import { format, isDate, isValid } from "date-fns";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 
-function ReferencePage({ data }: ReferencePageProps): JSX.Element {
+function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
+    const [data, setData] = useState(initialData);
     const [engName, setEngName] = useState<string>("");
     const router = useRouter();
+
+    const additionalFormData = [{ managementCompanyId: 1 }];
 
     const getEngName = () => {
         let engName = router.asPath.split("/")[3];
@@ -29,6 +31,12 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
             case "general-meter":
                 engName = "generalMeter";
                 break;
+            case "owner":
+                engName = "user";
+                break;
+            case "penalty-rule":
+                engName = "penaltyRule";
+                break;
         }
         return engName;
     };
@@ -37,12 +45,21 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         setEngName(getEngName());
     }, [router.asPath]);
 
+    const setPostData = (newData: any) => {
+        setData(prevData => {
+            const newDataArray = [...prevData[engName + "s"], newData[engName]];
+            return { ...prevData, [engName + "s"]: newDataArray };
+        });
+    };
+
     const createComponent = <T extends FieldValues>(
         item: IReferencePageComponent<T>,
     ) => {
-        const newItem = enrich(item, engName);
+        const newItem = enrichReferenceComponent(data, item, engName);
         return (
             <ReferencePageComponent<T>
+                setPostData={setPostData}
+                additionalFormData={additionalFormData}
                 key={newItem.engName}
                 item={newItem}
                 uriToAdd={API.managementCompany.reference[engName].add}
@@ -55,77 +72,17 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
         baseEngName: string,
         item: IReferencePageComponent<T>,
     ) => {
-        const newItem = enrich(item, baseEngName);
+        const newItem = enrichReferenceComponent(data, item, baseEngName);
         return (
             <ReferencePageComponent<T>
+                setPostData={setPostData}
+                additionalFormData={additionalFormData}
                 key={newItem.engName}
                 item={newItem}
                 uriToAdd={API.managementCompany.reference[baseEngName].add}
                 uriToAddMany={API.managementCompany.reference[baseEngName].addMany}
             />
         );
-    };
-
-    const parseValue = (value: string) => {
-        const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-        if (dateRegex.test(value)) {
-            return new Date(value);
-        }
-        const numberValue = parseFloat(value);
-        if (!isNaN(numberValue)) {
-            return numberValue;
-        }
-        return value;
-    };
-
-    const valueFormat = (value: string | number | Date) => {
-        if (typeof value === "string") {
-            const parsed = parseValue(value);
-            if (isDate(parsed) && isValid(parsed)) {
-                return String(format(parsed as Date, 'dd.MM.yyyy'));
-            } else return String(value);
-        } else if (isDate(value) && isValid(value)) {
-            return String(format(value, 'dd.MM.yyyy'));
-        } else {
-            return String(value);
-        }
-    };
-
-    const enrich = <T extends FieldValues>(
-        item: IReferencePageComponent<T>, baseEngName: string
-    ): IReferencePageComponent<T> => {
-        const enrichedComponent = { ...item };
-        const dataFromBack = data[baseEngName + "s"];
-        if (dataFromBack) {
-            const enrichedComponents = enrichedComponent.components.map(component => {
-                const values = dataFromBack.map(item => item[component.id]);
-                const rows = values.map(value => value ? valueFormat(value) : "");
-                if (component.isFilter) {
-                    const uniqueValues = Array.from(new Set(values));
-                    const filterItems = [{
-                        name: [{ word: component.title.map(t => t.word).join(" ") }],
-                        items: uniqueValues.map(value => value ? valueFormat(value) : "")
-                    }];
-
-                    return {
-                        ...component,
-                        filterItems,
-                        rows
-                    } as IReferencePageItem<T>;
-                }
-                return {
-                    ...component,
-                    rows
-                };
-            });
-
-            return {
-                ...enrichedComponent,
-                components: enrichedComponents
-            };
-        }
-
-        return enrichedComponent;
     };
 
     return (
@@ -142,15 +99,19 @@ function ReferencePage({ data }: ReferencePageProps): JSX.Element {
             {engName === "common-house-need-tariff" && createBaseComponent<ICommonHouseNeedTariffReferenceDataItem>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
             {engName === "penalty-rule" &&
                 <ReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem>
+                    setPostData={setPostData}
+                    additionalFormData={additionalFormData}
                     key={penaltyCalcRulePageComponent.engName}
-                    item={enrich(penaltyCalcRulePageComponent, "penaltyRule")}
+                    item={enrichReferenceComponent(data, penaltyCalcRulePageComponent, "penaltyRule")}
                     uriToAdd={API.managementCompany.correction.penaltyRule.add}
                 />
             }
             {engName === "owner" &&
                 <ReferencePageComponent<IUserReferenceDataItem>
+                    setPostData={setPostData}
+                    additionalFormData={additionalFormData}
                     key={ownerPageComponent.engName}
-                    item={enrich(ownerPageComponent, "user")}
+                    item={enrichReferenceComponent(data, ownerPageComponent, "user")}
                     uriToAdd={API.managementCompany.common.owner.add}
                     uriToAddMany={API.managementCompany.common.owner.addMany}
                 />
@@ -206,36 +167,36 @@ export async function getServerSideProps({ resolvedUrl }: any) {
     try {
         switch (engName) {
             case "house":
-                return await fetchData<IHouseReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IHouseReferenceData>(apiUrl, postData);
             case "apartment":
-                return await fetchData<IApartmentReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IApartmentReferenceData>(apiUrl, postData);
             case "subscriber":
-                return await fetchData<ISubscriberReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ISubscriberReferenceData>(apiUrl, postData);
             case "owner":
-                return await fetchData<IUserReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IUserReferenceData>(apiUrl, postData);
             case "individual-meter":
                 postData["meterType"] = "Individual";
-                return await fetchData<IIndividualMeterReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IIndividualMeterReferenceData>(apiUrl, postData);
             case "general-meter":
                 postData["meterType"] = "General";
-                return await fetchData<IGeneralMeterReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IGeneralMeterReferenceData>(apiUrl, postData);
             case "municipal-tariff":
                 postData["type"] = "MunicipalTariff";
-                return await fetchData<IMunicipalTariffReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IMunicipalTariffReferenceData>(apiUrl, postData);
             case "norm":
                 postData["type"] = "Norm";
-                return await fetchData<INormReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<INormReferenceData>(apiUrl, postData);
             case "social-norm":
                 postData["type"] = "SocialNorm";
-                return await fetchData<ISocialNormReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ISocialNormReferenceData>(apiUrl, postData);
             case "seasonality-factor":
                 postData["type"] = "SeasonalityFactor";
-                return await fetchData<ISeasonalityFactorReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ISeasonalityFactorReferenceData>(apiUrl, postData);
             case "common-house-need-tariff":
                 postData["type"] = "CommonHouseNeedTariff";
-                return await fetchData<ICommonHouseNeedTariffReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ICommonHouseNeedTariffReferenceData>(apiUrl, postData);
             case "penalty-rule":
-                return await fetchData<IPenaltyCalculationRuleReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(apiUrl, postData);
             default:
                 return {
                     notFound: true
@@ -248,22 +209,7 @@ export async function getServerSideProps({ resolvedUrl }: any) {
     }
 }
 
-async function fetchData<T extends IReferenceData>
-    (apiUrl: string, postData: any) {
-    const { data } = await axios.post<{ data: T }>(apiUrl, postData);
-    if (!data) {
-        return {
-            notFound: true
-        };
-    }
-    return {
-        props: {
-            data
-        }
-    };
-}
-
 interface ReferencePageProps extends Record<string, unknown> {
     data: IReferenceData;
-    role: UserRoleType;
+    role: UserRole;
 }

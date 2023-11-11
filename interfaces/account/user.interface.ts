@@ -1,20 +1,21 @@
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent } from "../reference/page.interface";
 
-export type UserRoleType = "admin" | "subscriber" | "management-company" | "none";
-
 export enum UserRole {
     ManagementCompany = 'ManagementCompany',
     Owner = 'Owner',
     Admin = 'Admin',
+    None = 'None'
 }
 
 export interface IUser {
-    id?: number;
+    id: number;
     name?: string;
     email: string;
     passwordHash: string;
     checkingAcount?: string;
 }
+
+export type IGetUser = Omit<IUser, 'passwordHash'>;
 
 export interface IGetUserWithSubscriber {
     user: Omit<IUser, 'passwordHash'>;
@@ -52,5 +53,30 @@ export const ownerPageComponent:
             title: [{ word: "email" }], numberInOrder: 2, id: "email", gender: "мужской",
             rows: []
         }
+    ]
+};
+
+export const managementCompanyPageComponent:
+    IReferencePageComponent<IUserReferenceDataItem> = {
+    engName: "managementCompany",
+    rusName: [{ word: "управляюшая", isChangeable: true, replace: ["ш", "щ"] }, { word: "компания", isChangeable: true }],
+    gender: "женский",
+    keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true },
+    components: [
+        {
+            type: "input",
+            title: [{ word: "название" }], numberInOrder: 1, id: "name", gender: "средний",
+            rows: []
+        },
+        {
+            type: "input",
+            title: [{ word: "email" }], numberInOrder: 2, id: "email", gender: "мужской",
+            rows: []
+        },
+        {
+            type: "input",
+            title: [{ word: "расчётный" }, { word: "счёт" }], numberInOrder: 3, id: "checkingAccount", gender: "мужской",
+            rows: []
+        },
     ]
 };

@@ -8,14 +8,14 @@ export const Menu = ({ title, items, className, ...props }: MenuProps): JSX.Elem
     return (
         <>
             <div className={cn(styles.referenceMenu, className)} {...props}>
-                <Paragraph size="l" className={styles.menuTitle}>{title}</Paragraph>
+                {title && <Paragraph size="l" className={styles.menuTitle}>{title}</Paragraph>}
                 {items && items.map((item, key) => <MenuItem key={key} {...item} />)}
             </div>
         </>
     );
 };
 
-export const MenuItem = ({ title, text, icon, href, ...props }: MenuItemProps): JSX.Element => {
+export const MenuItem = ({ title, text, icon, href }: MenuItemProps): JSX.Element => {
     return (
         <>
             <Link className={cn(styles.referenceMenuItem)} href={href}>

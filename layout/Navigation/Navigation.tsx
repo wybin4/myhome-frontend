@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import CloseIcon from "../close.svg";
 import MenuIcon from "./menu.svg";
+import { UserRole } from "@/interfaces/account/user.interface";
 
 export const Navigation = ({ className, ...props }: NavigationProps): JSX.Element => {
     const { role, setRole } = useContext(AppContext);
@@ -16,12 +17,12 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
     const router = useRouter();
 
     useEffect(() => {
-        setRole && setRole("subscriber");
+        setRole && setRole(UserRole.Admin);
     });
 
     const menu: IMenu[] = [
         {
-            role: "subscriber", items:
+            role: UserRole.Owner, items:
                 [{
                     name: "Счётчики", route: "meter", number: 0,
                 },
@@ -36,7 +37,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                 }],
         },
         {
-            role: "management-company", items:
+            role: UserRole.ManagementCompany, items:
                 [{
                     name: "Справочники", route: "reference", number: 0,
                 },
@@ -54,7 +55,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                 }]
         },
         {
-            role: "admin", items:
+            role: UserRole.Admin, items:
                 [{
                     name: "Справочники", route: "reference", number: 0,
                 },
@@ -65,6 +66,18 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
     ];
     const currentMenu = menu.find((m: IMenu) => m.role === role);
 
+    const getCursiveRole = (role: UserRole) => {
+        switch (role) {
+            case UserRole.Admin:
+                return "admin";
+            case UserRole.ManagementCompany:
+                return "management-company";
+            case UserRole.Owner:
+                return "owner";
+            default: return "none";
+        }
+    };
+
     return (
         <>
             {isMenu && <span onClick={() => setIsMenu(!isMenu)} className={styles.closeIcon}><CloseIcon /></span>}
@@ -72,7 +85,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
             {isMenu &&
                 <div className={cn(className, styles.mobileNavWrapper)} {...props}>
                     <p className={styles.mobileText}>Навигация по сайту</p>
-                    {role !== "none" &&
+                    {role !== UserRole.None &&
                         currentMenu &&
                         currentMenu.items.map(menuItem => {
                             return <div key={menuItem.route}
@@ -80,7 +93,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                                     [styles.activeItem]: router.asPath.split("/")[2] == menuItem.route
                                 })}
                             >
-                                <Link href={`/${currentMenu.role}/${menuItem.route}`}>
+                                <Link href={`/${getCursiveRole(currentMenu.role)}/${menuItem.route}`}>
                                     <span>{menuItem.name}</span>
                                 </Link>
                             </div>;
@@ -88,7 +101,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                 </div>
             }
             <div className={cn(className, styles.desktopNavWrapper)} {...props}>
-                {role !== "none" &&
+                {role !== UserRole.None &&
                     currentMenu &&
                     currentMenu.items.map(menuItem => {
                         return <div key={menuItem.route}
@@ -96,7 +109,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                                 [styles.activeItem]: router.asPath.split("/")[2] == menuItem.route
                             })}
                         >
-                            <Link href={`/${currentMenu.role}/${menuItem.route}`}>
+                            <Link href={`/${getCursiveRole(currentMenu.role)}/${menuItem.route}`}>
                                 <span>{menuItem.name}</span>
                             </Link>
                         </div>;

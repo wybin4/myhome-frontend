@@ -2,7 +2,7 @@ import { DetailedHTMLProps, HTMLAttributes } from "react";
 
 export interface MenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     items: MenuItemProps[];
-    title: string;
+    title?: string;
 }
 
 export interface MenuItemProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

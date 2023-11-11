@@ -1,5 +1,5 @@
 import { API } from "@/helpers/api";
-import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
@@ -49,5 +49,5 @@ export async function getServerSideProps() {
 
 interface AppealProps extends Record<string, unknown> {
     data: { appeals: IGetAppeal[] };
-    role: UserRoleType;
+    role: UserRole;
 }

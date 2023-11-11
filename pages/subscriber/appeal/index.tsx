@@ -1,5 +1,5 @@
 import { API } from "@/helpers/api";
-import { UserRole, IGetUserWithSubscriber, UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, IGetUserWithSubscriber, UserRole } from "@/interfaces/account/user.interface";
 import { EventType, IGetEvents, IGetAppeal } from "@/interfaces/event.interface";
 import { withLayout } from "@/layout/Layout";
 import { AppealPageComponent } from "@/page-components";
@@ -62,5 +62,5 @@ interface AppealProps extends Record<string, unknown> {
         appeals: IGetAppeal[];
         users: IGetUserWithSubscriber[];
     };
-    role: UserRoleType;
+    role: UserRole;
 }

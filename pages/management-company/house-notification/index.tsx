@@ -1,6 +1,6 @@
 import { Form, Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import axios from "axios";
 import { format } from "date-fns";
@@ -224,5 +224,5 @@ export async function getServerSideProps() {
 
 interface IHouseNotificationProps extends Record<string, unknown> {
     data: { notifications: IGetHouseNotification[]; houses: IHouse[] };
-    role: UserRoleType;
+    role: UserRole;
 }

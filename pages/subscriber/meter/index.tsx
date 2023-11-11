@@ -7,7 +7,7 @@ import ElectricityIcon from "./icons/electricity.svg";
 import ArrowIcon from "./icons/arrow.svg";
 import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
-import { UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole } from "@/interfaces/account/user.interface";
 import { API } from "@/helpers/api";
 import { useState } from "react";
 import cn from "classnames";
@@ -187,7 +187,7 @@ export async function getServerSideProps() {
 
 interface MeterPageProps extends Record<string, unknown> {
     data: { meters: IGetMeterByAIDs[] };
-    role: UserRoleType;
+    role: UserRole;
 }
 
 export interface IGetMeterByAIDs {

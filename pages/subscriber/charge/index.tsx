@@ -1,5 +1,5 @@
 import { API } from "@/helpers/api";
-import { UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import { ChargePageComponent } from "@/page-components";
 import { ISpdData } from "@/page-components/ChargePageComponent/ChargePageComponent.props";
@@ -50,7 +50,7 @@ export async function getServerSideProps() {
 
 interface IChargeProps extends Record<string, unknown> {
     data: { singlePaymentDocuments: ISpdData[] };
-    role: UserRoleType;
+    role: UserRole;
 }
 
 export default withLayout(Charge);

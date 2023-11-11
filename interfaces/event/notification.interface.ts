@@ -1,4 +1,4 @@
-import { UserRoleType } from "../account/user.interface";
+import { UserRole } from "../account/user.interface";
 
 export interface IHouseNotification {
     id?: number;
@@ -12,7 +12,7 @@ export interface IHouseNotification {
 export interface IServiceNotification {
     id?: number;
     userId: number;
-    userRole: UserRoleType;
+    userRole: UserRole;
     title: string;
     description?: string;
     text: string;

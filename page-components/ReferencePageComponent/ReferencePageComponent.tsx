@@ -12,6 +12,7 @@ import { DatePickerFormProps, InputFormProps, SelectorFormProps } from "@/compon
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
     uriToAdd,
+    additionalFormData, setPostData
     // uriToAddMany
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
@@ -27,10 +28,13 @@ export const ReferencePageComponent = <T extends FieldValues>({
     ) => {
         return title.map(word => {
             if (word.isChangeable) {
-                return rne.pluralize({ text: word.word, gender })[0];
+                const pluralized = rne.pluralize({ text: word.word, gender })[0];
+                const replaced = replaceLettersInDeclinedWord(pluralized, word.replace);
+                return replaced;
             } else return word.word;
         }).join(" ");
     };
+
     const getCase = (
         title: IReferenceTitle[],
         gender: Gender[keyof Gender],
@@ -38,12 +42,27 @@ export const ReferencePageComponent = <T extends FieldValues>({
     ) => {
         return title.map(word => {
             if (word.isChangeable) {
-                return rne.decline({
+                const declinedWord = rne.decline({
                     text: word.word,
                     gender: gender
                 }, caseName)[0];
+                const replaced = replaceLettersInDeclinedWord(declinedWord, word.replace);
+                return replaced;
             } else return word.word;
         }).join(" ");
+    };
+
+    const replaceLettersInDeclinedWord = (declinedWord: string, replace?: string[]): string => {
+        if (replace && replace.length === 2) {
+            const replacedWord = declinedWord
+                .split('')
+                .map(letter => (letter === replace[0] ? replace[1] : letter))
+                .join('');
+
+            return replacedWord;
+        }
+
+        return declinedWord;
     };
 
     const phraseByArr = (arr: IReferenceTitle[]) => {
@@ -115,9 +134,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     noun, gender, "предложный"
                 )} добавлены`}
                 successCode={201}
-                additionalFormData={
-                    [{ managementCompanyId: 1 }]
-                }
+                additionalFormData={additionalFormData}
                 urlToPost={uriToAdd}
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
@@ -127,6 +144,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 inputs={inputs}
                 selectors={selectors}
                 datePickers={datePickers}
+                setPostData={setPostData}
             >
             </Form>
             <Table

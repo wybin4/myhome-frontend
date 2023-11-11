@@ -40,6 +40,10 @@ export const API: {
         houseNotification: { add: string };
         appeal: { add: string; update: string; };
     };
+    admin: {
+        reference: IData;
+        correction: { penaltyCalculationRule: { add: string; get: string } };
+    };
     reference: IDataGet;
     common: IDataGet;
 } = {
@@ -121,6 +125,21 @@ export const API: {
         appeal: {
             add: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/add-appeal`,
             update: `${process.env.NEXT_PUBLIC_DOMAIN}/appeal/update-appeal`,
+        }
+    },
+    admin: {
+        reference: {
+            managementCompany: {
+                add: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/register`,
+                addMany: ``,
+                get: `${process.env.NEXT_PUBLIC_DOMAIN}/user/get-all-users`
+            }
+        },
+        correction: {
+            penaltyCalculationRule: {
+                add: ``,
+                get: ``
+            }
         }
     },
     reference: {
