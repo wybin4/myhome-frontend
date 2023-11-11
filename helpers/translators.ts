@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 const monthMappings: Record<string, string> = {
     "January": "Январь",
     "February": "Февраль",
@@ -36,4 +38,11 @@ export const translateMonthToRussian = (monthLabel: string) => {
 export const translateWeekdayToRussian = (weekdayLabel: string) => {
     const russianWeekday = weekdayMappings[weekdayLabel];
     return russianWeekday || weekdayLabel;
+};
+
+export const formatDateToRussian = (date: Date) => {
+    const formattedDate = format(date, "MMMM yyyy");
+    const translatedMonth = translateMonthToRussian(formattedDate);
+
+    return translatedMonth;
 };

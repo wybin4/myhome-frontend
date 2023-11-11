@@ -75,12 +75,29 @@
     overflow: hidden;
 }
 
+.deskIcon svg {
+    fill: var(--primary);
+
+    width: 1.22rem;
+    height: 1.5rem;
+}
+
 .itemMobile .icon {
     padding: 0.4rem;
 }
 
 .itemMobile .iconWrapper {
-    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
+.itemMobile .iconWrapper svg {
+    width: 1rem !important;
+    height: 1.2rem !important;
 }
 
 .itemMobile .iconWrapper svg {

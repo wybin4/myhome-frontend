@@ -1,5 +1,5 @@
 import { API } from "@/helpers/api";
-import { UserRoleType } from "@/interfaces/account/user.interface";
+import { UserRole, UserRoleType } from "@/interfaces/account/user.interface";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { withLayout } from "@/layout/Layout";
 import { GetSPDPageComponent } from "@/page-components";
@@ -80,9 +80,10 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
 export default withLayout(GetSPD);
 
 export async function getServerSideProps() {
-    const apiUrl = API.managementCompany.reference["subscriber"].get;
+    const apiUrl = API.reference.subscriber.get;
     const postData = {
-        managementCompanyId: 1
+        userId: 1,
+        userRole: UserRole.ManagementCompany
     };
 
     try {

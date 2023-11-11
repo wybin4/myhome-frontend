@@ -21,7 +21,7 @@ export const Action = ({ actions, isMobile = false, ...props }: ActionProps): JS
                     case "addComment":
                         return <div key={index} {...props} onClick={action.onClick}><CommentIcon className={styles.comment} /></div>;
                     case "download":
-                        return <div key={index} {...props} onClick={action.onClick}><DownloadIcon /></div>;
+                        return <div key={index} id={String(action.id)} {...props} onClick={action.onClick}><DownloadIcon /></div>;
                     case "view":
                         return (
                             <ViewAction

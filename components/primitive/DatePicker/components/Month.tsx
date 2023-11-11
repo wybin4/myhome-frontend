@@ -2,7 +2,7 @@ import { MonthProps } from "../DatePicker.props";
 import styles from '../DatePicker.module.css';
 import { Day } from "./Day";
 import { useMonth } from "@datepicker-react/hooks";
-import { translateMonthToRussian, translateWeekdayToRussian } from "../helpers/translators";
+import { translateMonthToRussian, translateWeekdayToRussian } from "@/helpers/translators";
 
 export const Month = ({ year, month, firstDayOfWeek }: MonthProps): JSX.Element => {
     const { days, weekdayLabels, monthLabel } = useMonth({

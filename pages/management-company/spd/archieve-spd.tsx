@@ -68,7 +68,7 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
     const uniqueHouseNames = uniqueArray(houseNames);
 
     const download: MouseEventHandler<HTMLDivElement> = (event) => {
-        const spd = data.singlePaymentDocuments.find(s => s.id === Number(event.currentTarget.id));
+        const spd = data.singlePaymentDocuments.find(s => s.id === parseInt(event.currentTarget.id));
         if (spd && spd.pdfBuffer) {
             downloadPdf(spd.pdfBuffer, String(spd.createdAt));
         }
@@ -102,7 +102,8 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
                     actions: {
                         actions: [{
                             type: "download",
-                            onClick: download
+                            onClick: download,
+                            id: 0
                         }]
                     },
                     ids: spdIds,

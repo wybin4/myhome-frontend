@@ -186,7 +186,7 @@ const TableRowDesktop = ({
 const TableRowItemDesktop = ({ items, elId, startIcon, actions, ...props }: TableRowItemDesktopProps) => {
     return (
         <tr className="align-top" {...props}>
-            {startIcon && <td>{startIcon}</td>}
+            {startIcon && <td><span className={styles.deskIcon}>{startIcon}</span></td>}
             {items && items.map((item, key) => {
                 switch (item.type) {
                     case "tag":

@@ -6,6 +6,8 @@ export interface ChargePageComponentProps extends DetailedHTMLProps<HTMLAttribut
 
     isInfoWindowOpen: boolean;
     setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>;
+
+    singlePaymentDocuments: ISpdData[];
 }
 
 export interface ChargeTextProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -14,4 +16,12 @@ export interface ChargeTextProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
     debt: string;
     date: string;
     downloadUrl: string;
+}
+
+export interface ISpdData {
+    id: number;
+    apartmentName: string;
+    fileSize: number;
+    pdfBuffer: string;
+    createdAt: Date;
 }
