@@ -77,7 +77,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             break;
         }
         default:
-            apiUrl = API.reference[engName].get;
+            apiUrl = API.admin.reference[engName].get;
     }
 
     try {

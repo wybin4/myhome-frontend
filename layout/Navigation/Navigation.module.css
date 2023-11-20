@@ -69,8 +69,7 @@
        .menuIcon {
            display: block;
            position: absolute;
-           top: 2.08rem;
-           right: 2.5rem;
+
 
            width: 1.61rem;
 
@@ -82,6 +81,16 @@
        .closeIcon svg {
            stroke: var(--black);
            stroke-width: 2;
+       }
+
+       .closeIcon {
+           top: 2.08rem;
+           right: 2.5rem;
+       }
+
+       .menuIcon {
+           top: 2.08rem;
+           right: 5.2rem;
        }
 
        .menuIcon svg {

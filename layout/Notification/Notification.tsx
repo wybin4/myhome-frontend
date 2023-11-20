@@ -2,7 +2,7 @@ import { NotificationProps } from "./Notification.props";
 import styles from "./Notification.module.css";
 import NotificationIcon from "./notification.svg";
 import CloseIcon from "../close.svg";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IServiceNotification, NotificationStatus, ServiceNotificationType } from "@/interfaces/event/notification.interface";
 import { Icon } from "@/components";
 import WarningIcon from "./warning.svg";
@@ -10,14 +10,12 @@ import CheckIcon from "./check.svg";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import Link from "next/link";
-import { AppContext } from "@/context/app.context";
 import { API, api } from "@/helpers/api";
 import cn from "classnames";
 import { UserRole } from "@/interfaces/account/user.interface";
 
 export const Notification = ({ user, notifications, className, ...props }: NotificationProps): JSX.Element => {
     const [isNotification, setIsNotification] = useState<boolean>(false);
-    const { userRole } = useContext(AppContext);
 
     useEffect(() => {
         if (isNotification) {
@@ -57,17 +55,17 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
     const getUrl = (type: ServiceNotificationType) => {
         switch (type) {
             case ServiceNotificationType.Appeal:
-                return `/${userRole}/appeal`;
+                return `/${user.userRole}/appeal`;
             case ServiceNotificationType.HouseNotification:
-                if (userRole === UserRole.Owner) {
-                    return `/${userRole}/event`;
+                if (user.userRole === UserRole.Owner) {
+                    return `/${user.userRole}/event`;
                 }
                 return "#";
             case ServiceNotificationType.Meter:
-                if (userRole === UserRole.Owner) {
-                    return `/${userRole}/meter`;
-                } else if (userRole === UserRole.ManagementCompany) {
-                    return `/${userRole}/reference/meter`;
+                if (user.userRole === UserRole.Owner) {
+                    return `/${user.userRole}/meter`;
+                } else if (user.userRole === UserRole.ManagementCompany) {
+                    return `/${user.userRole}/reference/meter`;
                 }
                 return "#";
             default: return "#";
@@ -143,48 +141,52 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
     };
 
     return (
-        <div className={className} {...props} >
-            <span
-                onClick={() => {
-                    setIsNotification(!isNotification);
-                }}
-                className={cn(styles.notificationIcon, "viewNotifications")}
-            ><NotificationIcon /></span>
-            {isNotification &&
-                <>
-                    <div className={cn(styles.notificationWrapper, "viewNotifications")}>
-                        <div className={cn(styles.topWrapper, "viewNotifications")}>
-                            <div className={cn(styles.mobileText, "viewNotifications")}>Уведомления</div>
-                            <span
-                                onClick={() => setIsNotification(!isNotification)}
-                                className={styles.closeIcon}
-                            >
-                                <CloseIcon />
-                            </span>
-                        </div>
-                        <div className={cn(styles.notificationsContent, "viewNotifications")}>
-                            {getNotifications(notifications)}
-                        </div>
-                        <div className={cn(styles.buttonWrapper, "viewNotifications")}>
-                            <button
-                                className={cn(styles.readAll, "viewNotifications")}
-                                onClick={async () => {
-                                    await api.post(API.serviceNotification.readAll, {
-                                        userId: user.userId,
-                                        userRole: user.userRole
-                                    });
-                                }}
-                            >
-                                <CheckIcon />
-                                Прочитать всё
-                            </button>
-                            <button className={cn(styles.viewAll, "viewNotifications")}>
-                                Просмотреть всё
-                            </button>
-                        </div>
-                    </div>
-                </>
+        <>
+            {user.userRole !== UserRole.Admin &&
+                <div className={className} {...props} >
+                    <span
+                        onClick={() => {
+                            setIsNotification(!isNotification);
+                        }}
+                        className={cn(styles.notificationIcon, "viewNotifications")}
+                    ><NotificationIcon /></span>
+                    {isNotification &&
+                        <>
+                            <div className={cn(styles.notificationWrapper, "viewNotifications")}>
+                                <div className={cn(styles.topWrapper, "viewNotifications")}>
+                                    <div className={cn(styles.mobileText, "viewNotifications")}>Уведомления</div>
+                                    <span
+                                        onClick={() => setIsNotification(!isNotification)}
+                                        className={styles.closeIcon}
+                                    >
+                                        <CloseIcon />
+                                    </span>
+                                </div>
+                                <div className={cn(styles.notificationsContent, "viewNotifications")}>
+                                    {getNotifications(notifications)}
+                                </div>
+                                <div className={cn(styles.buttonWrapper, "viewNotifications")}>
+                                    <button
+                                        className={cn(styles.readAll, "viewNotifications")}
+                                        onClick={async () => {
+                                            await api.post(API.serviceNotification.readAll, {
+                                                userId: user.userId,
+                                                userRole: user.userRole
+                                            });
+                                        }}
+                                    >
+                                        <CheckIcon />
+                                        Прочитать всё
+                                    </button>
+                                    <button className={cn(styles.viewAll, "viewNotifications")}>
+                                        Просмотреть всё
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    }
+                </div>
             }
-        </div>
+        </>
     );
 };

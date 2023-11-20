@@ -17,8 +17,8 @@ function References(): JSX.Element {
                 "xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1"
             )}>
                 <Menu items={[
-                    { title: "Управляющие компании", text: "Добавление управляющих компаний", icon: <HouseIcon />, href: `${baseUrl}/penalty-calculation-rule` },
-                    { title: "Пеня", text: "Добавление и изменение правил начисления пени", icon: <PenaltyIcon />, href: `${baseUrl}/management-company` }
+                    { title: "Управляющие компании", text: "Добавление управляющих компаний", icon: <HouseIcon />, href: `${baseUrl}/management-company` },
+                    { title: "Пеня", text: "Добавление и изменение правил начисления пени", icon: <PenaltyIcon />, href: `${baseUrl}/penalty-calculation-rule` }
                 ]} />
             </div>
         </>

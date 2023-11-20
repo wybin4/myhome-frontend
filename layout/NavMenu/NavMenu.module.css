@@ -1,0 +1,44 @@
+   .desktop {
+       display: flex;
+   }
+
+   .mobile {
+       display: none;
+   }
+
+   .exitIcon {
+       display: none;
+   }
+
+   @media (max-width: 900px) {
+       .desktop {
+           display: none !important;
+       }
+
+       .mobile {
+           position: fixed;
+           top: 0;
+           left: 0;
+
+           display: block;
+           width: 100%;
+       }
+
+       .exitIcon {
+           display: block;
+           position: absolute;
+           top: 1.9rem;
+           right: 2.5rem;
+
+           width: 1.61rem;
+
+           cursor: pointer;
+
+           z-index: 4;
+       }
+
+       .exitIcon svg {
+           stroke: var(--black);
+           stroke-width: 2px;
+       }
+   }

@@ -1,10 +1,10 @@
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { FunctionComponent, useContext, useEffect, useRef, useState } from "react";
 import { Footer } from "./Footer/Footer";
 import { Header } from "./Header/Header";
 import { LayoutProps } from "./Layout.props";
 import styles from "./Layout.module.css";
 import { Navigation } from "./Navigation/Navigation";
-import { AppContextProvider, IAppContext } from "@/context/app.context";
+import { AppContext, AppContextProvider, IAppContext } from "@/context/app.context";
 import cn from 'classnames';
 import { Notification } from "./Notification/Notification";
 import { Chat } from "./Chat/Chat";
@@ -12,19 +12,21 @@ import { IChat, IMessage } from "@/interfaces/chat.interface";
 import { IServiceNotification } from "@/interfaces/event/notification.interface";
 import { io } from "socket.io-client";
 import { API, api } from "@/helpers/api";
+import { NavMenu } from "./NavMenu/NavMenu";
 import { UserRole } from "@/interfaces/account/user.interface";
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
     const [chats, setChats] = useState<IChat[]>([]);
     const [notifications, setNotifications] = useState<IServiceNotification[]>([]);
+    const { userId, userRole } = useContext(AppContext);
     // const [isChatItem, setIsChatItem] = useState<string>("");
     const isChatItemRef = useRef("");
 
-    // ИСПРАВИТЬ!!!!
     const user = {
-        userId: 1,
-        userRole: UserRole.Owner
+        userId: userId,
+        userRole: userRole
     };
+
     useEffect(() => {
         const socket = io('http://localhost:3100', {
             extraHeaders: {
@@ -153,21 +155,26 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
     }, []);
 
     return (
-        <div className={cn(styles.wrapper, {
-            // [styles.blurScreen]: isFormOpened ИСПРАВИТЬ
-        })}>
-            <Header className={styles.header} />
-            <Navigation className={styles.navigation} />
-            <Notification user={user} notifications={notifications} className={styles.notification} />
-            <Chat
-                isChatItemRef={isChatItemRef}
-                user={user} chats={chats}
-            />
-            <div className={styles.body}>
-                {children}
-            </div>
-            <Footer className={styles.footer} />
-        </div>
+        <>
+            {user && user.userRole && user.userRole !== UserRole.None &&
+                <div className={cn(styles.wrapper, {
+                    // [styles.blurScreen]: isFormOpened ИСПРАВИТЬ
+                })}>
+                    <Header className={styles.header} />
+                    <Navigation user={user} className={styles.navigation} />
+                    <NavMenu user={user} className={styles.navMenu} />
+                    <Notification user={user} notifications={notifications} className={styles.notification} />
+                    <Chat
+                        isChatItemRef={isChatItemRef}
+                        user={user} chats={chats}
+                    />
+                    <div className={styles.body}>
+                        {children}
+                    </div>
+                    <Footer className={styles.footer} />
+                </div>
+            }
+        </>
     );
 };
 

@@ -126,141 +126,145 @@ export const Chat = ({
     }, [isChat, isChatItemRef]);
 
     return (
-        <div className={className} {...props}>
-            <div className={cn(styles.icon, "viewChats")}>
-                {!isChat &&
-                    <Icon
-                        size="s" type="icon"
-                        className={cn("viewChats", styles.chatIcon)}
-                        onClick={() => setIsChat(!isChat)}
-                    >
-                        <ChatIcon />
-                    </Icon>
-                }
-            </div>
-            {isChat &&
-                <div className={styles.chatsWrapper} ref={chatsRef}>
-                    <span
-                        onClick={() => {
-                            setIsChat(!isChat);
-                        }}
-                        className={styles.closeIcon}
-                    >
-                        <CloseIcon />
-                    </span>
-                    <Icon
-                        onClick={async () => {
-                            if (!receivers) {
-                                const { data } = await api.post(API.chat.getReceivers, {
-                                    userId: user.userId,
-                                    userRole: user.userRole
-                                });
-                                if (data.receivers) {
-                                    setReceivers(data.receivers);
-                                }
-                                setIsReceiversItem(!isReceiversItem);
-                            } else {
-                                setIsReceiversItem(!isReceiversItem);
-                            }
-                        }}
-                        size="s" type="icon"
-                        className={cn(styles.writeIcon, "viewRecievers")}
-                    >
-                        <WriteIcon />
-                    </Icon>
-                    <div className={styles.mobileText}>Чаты</div>
-                    {chats && chats
-                        .sort((a, b) => {
-                            const lastMessageA = a.messages?.[a.messages.length - 1];
-                            const lastMessageB = b.messages?.[b.messages.length - 1];
-
-                            const dateA = lastMessageA?.createdAt || a.createdAt;
-                            const dateB = lastMessageB?.createdAt || b.createdAt;
-
-                            return new Date(dateB).getTime() - new Date(dateA).getTime();
-                        })
-                        .map((chat, key) => {
-                            const lastMessage = chat.messages?.[chat.messages.length - 1];
-                            const { name, cap } = getName(chat, user);
-                            const countUnread = chat.messages?.reduce((count, message) => {
-                                if (
-                                    message.status === MessageStatus.Unread &&
-                                    (message.sender.userId !== user.userId || message.sender.userRole !== user.userRole)
-                                ) {
-                                    return count + 1;
-                                }
-                                return count;
-                            }, 0);
-                            return (
-                                <div
-                                    className={cn(styles.chat, "viewChatItem")} key={key}
-                                    onClick={async () => {
-                                        if (chat) {
-                                            isChatItemRef.current = chat._id ? chat._id : "";
-                                            setIsChat(!isChat);
-                                            if (chat._id) {
-                                                await api.post(API.chat.readMessages, {
-                                                    userId: user.userId,
-                                                    userRole: user.userRole,
-                                                    chatId: chat._id
-                                                });
-                                            }
+        <>
+            {user.userRole !== UserRole.Admin &&
+                <div className={className} {...props}>
+                    <div className={cn(styles.icon, "viewChats")}>
+                        {!isChat &&
+                            <Icon
+                                size="s" type="icon"
+                                className={cn("viewChats", styles.chatIcon)}
+                                onClick={() => setIsChat(!isChat)}
+                            >
+                                <ChatIcon />
+                            </Icon>
+                        }
+                    </div>
+                    {isChat &&
+                        <div className={styles.chatsWrapper} ref={chatsRef}>
+                            <span
+                                onClick={() => {
+                                    setIsChat(!isChat);
+                                }}
+                                className={styles.closeIcon}
+                            >
+                                <CloseIcon />
+                            </span>
+                            <Icon
+                                onClick={async () => {
+                                    if (!receivers) {
+                                        const { data } = await api.post(API.chat.getReceivers, {
+                                            userId: user.userId,
+                                            userRole: user.userRole
+                                        });
+                                        if (data.receivers) {
+                                            setReceivers(data.receivers);
                                         }
-                                    }}
-                                >
-                                    <div className={cn(styles.photoIcon, "viewChatItem")}>{cap}</div>
-                                    <div>
-                                        <div className={cn(styles.name, "viewChatItem")}>{name}</div>
-                                        {lastMessage &&
-                                            <div className={cn(styles.lastMessage, "viewChatItem")}>
-                                                {
-                                                    lastMessage.sender.userId === user.userId &&
-                                                    lastMessage.sender.userRole === user.userRole &&
-                                                    "Вы: "
-                                                }
-                                                {lastMessage.text}
-                                            </div>
-                                        }
-                                    </div>
-                                    {lastMessage &&
-                                        <div className={cn(styles.thirdCol, "viewChatItem")}>
-                                            <div className={cn(styles.time, "viewChatItem")}>{getTime(lastMessage)}</div>
-                                            {countUnread !== 0 && <div className={cn(styles.countUnread, "viewChatItem")}>{
-                                                countUnread
-                                            }</div>}
-                                        </div>
+                                        setIsReceiversItem(!isReceiversItem);
+                                    } else {
+                                        setIsReceiversItem(!isReceiversItem);
                                     }
-                                </div>
-                            );
+                                }}
+                                size="s" type="icon"
+                                className={cn(styles.writeIcon, "viewRecievers")}
+                            >
+                                <WriteIcon />
+                            </Icon>
+                            <div className={styles.mobileText}>Чаты</div>
+                            {chats && chats
+                                .sort((a, b) => {
+                                    const lastMessageA = a.messages?.[a.messages.length - 1];
+                                    const lastMessageB = b.messages?.[b.messages.length - 1];
 
-                        })}
+                                    const dateA = lastMessageA?.createdAt || a.createdAt;
+                                    const dateB = lastMessageB?.createdAt || b.createdAt;
+
+                                    return new Date(dateB).getTime() - new Date(dateA).getTime();
+                                })
+                                .map((chat, key) => {
+                                    const lastMessage = chat.messages?.[chat.messages.length - 1];
+                                    const { name, cap } = getName(chat, user);
+                                    const countUnread = chat.messages?.reduce((count, message) => {
+                                        if (
+                                            message.status === MessageStatus.Unread &&
+                                            (message.sender.userId !== user.userId || message.sender.userRole !== user.userRole)
+                                        ) {
+                                            return count + 1;
+                                        }
+                                        return count;
+                                    }, 0);
+                                    return (
+                                        <div
+                                            className={cn(styles.chat, "viewChatItem")} key={key}
+                                            onClick={async () => {
+                                                if (chat) {
+                                                    isChatItemRef.current = chat._id ? chat._id : "";
+                                                    setIsChat(!isChat);
+                                                    if (chat._id) {
+                                                        await api.post(API.chat.readMessages, {
+                                                            userId: user.userId,
+                                                            userRole: user.userRole,
+                                                            chatId: chat._id
+                                                        });
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            <div className={cn(styles.photoIcon, "viewChatItem")}>{cap}</div>
+                                            <div>
+                                                <div className={cn(styles.name, "viewChatItem")}>{name}</div>
+                                                {lastMessage &&
+                                                    <div className={cn(styles.lastMessage, "viewChatItem")}>
+                                                        {
+                                                            lastMessage.sender.userId === user.userId &&
+                                                            lastMessage.sender.userRole === user.userRole &&
+                                                            "Вы: "
+                                                        }
+                                                        {lastMessage.text}
+                                                    </div>
+                                                }
+                                            </div>
+                                            {lastMessage &&
+                                                <div className={cn(styles.thirdCol, "viewChatItem")}>
+                                                    <div className={cn(styles.time, "viewChatItem")}>{getTime(lastMessage)}</div>
+                                                    {countUnread !== 0 && <div className={cn(styles.countUnread, "viewChatItem")}>{
+                                                        countUnread
+                                                    }</div>}
+                                                </div>
+                                            }
+                                        </div>
+                                    );
+
+                                })}
+                        </div>
+                    }
+                    {isChatItemRef.current !== "" &&
+                        <ChatItem
+                            chat={chats.find(c => c._id === isChatItemRef.current)}
+                            className={styles.chatItemWrapper}
+                            user={user}
+                            innerRef={chatItemRef}
+                        >
+                            <div
+                                className={styles.backIcon}
+                                onClick={() => {
+                                    isChatItemRef.current = "";
+                                    setIsChat(!isChat);
+                                }}
+                            >
+                                <BackIcon />
+                            </div>
+                        </ChatItem>
+                    }
+                    {isReceiversItem && receivers &&
+                        <ReceiversItem receivers={receivers} user={user}
+                            isChatItemRef={isChatItemRef}
+                            setIsReceiverItem={setIsReceiversItem}
+                        />
+                    }
                 </div>
             }
-            {isChatItemRef.current !== "" &&
-                <ChatItem
-                    chat={chats.find(c => c._id === isChatItemRef.current)}
-                    className={styles.chatItemWrapper}
-                    user={user}
-                    innerRef={chatItemRef}
-                >
-                    <div
-                        className={styles.backIcon}
-                        onClick={() => {
-                            isChatItemRef.current = "";
-                            setIsChat(!isChat);
-                        }}
-                    >
-                        <BackIcon />
-                    </div>
-                </ChatItem>
-            }
-            {isReceiversItem && receivers &&
-                <ReceiversItem receivers={receivers} user={user}
-                    isChatItemRef={isChatItemRef}
-                    setIsReceiverItem={setIsReceiversItem}
-                />
-            }
-        </div>
+        </>
     );
 };
 
