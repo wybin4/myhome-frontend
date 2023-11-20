@@ -1,5 +1,5 @@
 import { Form, Table } from "@/components";
-import { API, api } from "@/helpers/api";
+import { API } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { IVoting, VotingStatus } from "@/interfaces/event/voting.interface";
 import { withLayout } from "@/layout/Layout";
@@ -10,6 +10,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { EventType, IGetEvents, IGetVoting } from "@/interfaces/event.interface";
+import { fetchReferenceData } from "@/helpers/reference-constants";
+import { GetServerSidePropsContext } from "next";
 
 function Voting({ data }: IVotingProps): JSX.Element {
     const useFormData = useForm<IVoting>();
@@ -178,21 +180,15 @@ function Voting({ data }: IVotingProps): JSX.Element {
 
 export default withLayout(Voting);
 
-export async function getServerSideProps() {
-    // ИСПРАВИТЬ!!!!
-    const postDataHouses = {
-        userId: 1,
-        userRole: UserRole.ManagementCompany,
-    };
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const postDataVotings = {
-        userId: 1,
-        userRole: UserRole.ManagementCompany,
         events: [EventType.Voting]
     };
+
     try {
-        const votings = await api.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
-        const houses = await api.post<{ houses: IHouse[] }>(API.reference.house.get, postDataHouses);
-        if (!votings.data || !houses.data) {
+        const { props: votingProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataVotings);
+        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, undefined);
+        if (!votingProps || !houseProps) {
             return {
                 notFound: true
             };
@@ -200,8 +196,8 @@ export async function getServerSideProps() {
         return {
             props: {
                 data: {
-                    votings: votings.data.events.votings,
-                    houses: houses.data.houses
+                    votings: votingProps.data.events.votings,
+                    houses: houseProps.data.houses
                 }
             }
         };
@@ -214,5 +210,6 @@ export async function getServerSideProps() {
 
 interface IVotingProps extends Record<string, unknown> {
     data: { votings: IGetVoting[]; houses: IHouse[] };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }

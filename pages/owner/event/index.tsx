@@ -1,6 +1,6 @@
 import { Card, Htag, TableButton, TableFilter } from "@/components";
 import { withLayout } from "@/layout/Layout";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import NotificationIcon from "./notification.svg";
 import VotingIcon from "./voting.svg";
 import cn from "classnames";
@@ -11,6 +11,9 @@ import { getEnumKeyByValue, getHumanDate } from "@/helpers/constants";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { IOption, VotingStatus } from "@/interfaces/event/voting.interface";
+import { fetchReferenceData } from "@/helpers/reference-constants";
+import { GetServerSidePropsContext } from "next";
+import { AppContext } from "@/context/app.context";
 
 interface IEvent {
     event: IGetVoting | IGetHouseNotification;
@@ -20,7 +23,7 @@ interface IEvent {
 function Event({ data }: EventProps): JSX.Element {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
     const filterButtonRef = useRef(null);
-    const userId = 1; // ИСПРАВИТЬ
+    const { userId } = useContext(AppContext);
     const closeStatus = getEnumKeyByValue(VotingStatus, VotingStatus.Close);
 
     const groupEventsByDate = () => {
@@ -164,34 +167,25 @@ function Event({ data }: EventProps): JSX.Element {
 
 export default withLayout(Event);
 
-export async function getServerSideProps() {
-    // ИСПРАВИТЬ!!!!
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const postData = {
-        userId: 1,
-        userRole: UserRole.Owner,
         events: [EventType.Voting, EventType.Notification]
     };
 
-    try {
-        const { data } = await api.post<{ events: IGetEvents }>(API.event.get, postData);
-        if (!data) {
-            return {
-                notFound: true
-            };
-        }
-        return {
-            props: {
-                data: {
-                    notifications: data.events.notifications,
-                    votings: data.events.votings
-                }
-            }
-        };
-    } catch {
+    const { props } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postData);
+    if (!props) {
         return {
             notFound: true
         };
     }
+    return {
+        props: {
+            data: {
+                notifications: props.data.events.notifications,
+                votings: props.data.events.votings
+            }
+        }
+    };
 }
 
 interface EventProps extends Record<string, unknown> {
@@ -199,5 +193,6 @@ interface EventProps extends Record<string, unknown> {
         notifications: IGetHouseNotification[];
         votings: IGetVoting[];
     };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }

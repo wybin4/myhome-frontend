@@ -1,5 +1,5 @@
 import { Form, Table } from "@/components";
-import { API, api } from "@/helpers/api";
+import { API } from "@/helpers/api";
 import { withLayout } from "@/layout/Layout";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -8,6 +8,8 @@ import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { HouseNotificationType, IHouseNotification } from "@/interfaces/event/notification.interface";
 import { EventType, IGetEvents, IGetHouseNotification } from "@/interfaces/event.interface";
 import { UserRole } from "@/interfaces/account/user.interface";
+import { fetchReferenceData } from "@/helpers/reference-constants";
+import { GetServerSidePropsContext } from "next";
 
 function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
     const useFormData = useForm<IHouseNotification>();
@@ -186,22 +188,15 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
 
 export default withLayout(HouseNotification);
 
-export async function getServerSideProps() {
-    // ИСПРАВИТЬ!!!!
-    const postDataHouses = {
-        userId: 1,
-        userRole: UserRole.ManagementCompany
-    };
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const postDataVotings = {
-        userId: 1,
-        userRole: UserRole.ManagementCompany,
         events: [EventType.Notification]
     };
 
     try {
-        const notifications = await api.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
-        const houses = await api.post<{ houses: IHouse[] }>(API.reference.house.get, postDataHouses);
-        if (!notifications.data || !houses.data) {
+        const { props: notificationProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataVotings);
+        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, undefined);
+        if (!notificationProps || !houseProps) {
             return {
                 notFound: true
             };
@@ -209,8 +204,8 @@ export async function getServerSideProps() {
         return {
             props: {
                 data: {
-                    notifications: notifications.data.events.notifications,
-                    houses: houses.data.houses
+                    notifications: notificationProps.data.events.notifications,
+                    houses: houseProps.data.houses
                 }
             }
         };
@@ -223,5 +218,6 @@ export async function getServerSideProps() {
 
 interface IHouseNotificationProps extends Record<string, unknown> {
     data: { notifications: IGetHouseNotification[]; houses: IHouse[] };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }

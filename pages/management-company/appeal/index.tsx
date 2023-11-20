@@ -1,52 +1,47 @@
-import { API, api } from "@/helpers/api";
+import { API } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
 import { AppealPageComponent } from "@/page-components";
+import { GetServerSidePropsContext } from "next";
+import { fetchReferenceData } from "@/helpers/reference-constants";
+import { AppContext } from "@/context/app.context";
+import { useContext } from "react";
 
 function Appeal({ data }: AppealProps): JSX.Element {
-    const user = { // ИСПРАВИТЬ
-        userId: 1,
-        userRole: UserRole.ManagementCompany
-    };
+    const { userId, userRole } = useContext(AppContext);
 
     return (
         <>
-            <AppealPageComponent user={user} appeals={data.appeals} />
+            <AppealPageComponent user={{ userId, userRole }} appeals={data.appeals} />
         </>
     );
 }
 
 export default withLayout(Appeal);
 
-export async function getServerSideProps() {
-    // ИСПРАВИТЬ!!!!
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const postData = {
-        userId: 1,
-        userRole: UserRole.ManagementCompany,
         events: [EventType.Appeal]
     };
 
-    try {
-        const { data } = await api.post<{ events: IGetEvents }>(API.event.get, postData);
-        if (!data) {
-            return {
-                notFound: true
-            };
-        }
-        return {
-            props: {
-                data: { appeals: data.events.appeals }
-            }
-        };
-    } catch {
+    const { props } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postData);
+    if (!props) {
         return {
             notFound: true
         };
     }
+    return {
+        props: {
+            data: {
+                appeals: props.data.events.appeals
+            }
+        }
+    };
 }
 
 interface AppealProps extends Record<string, unknown> {
     data: { appeals: IGetAppeal[] };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }

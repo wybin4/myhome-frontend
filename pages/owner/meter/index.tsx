@@ -7,11 +7,13 @@ import ArrowIcon from "./icons/arrow.svg";
 import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
 import { UserRole } from "@/interfaces/account/user.interface";
-import { API, api } from "@/helpers/api";
+import { API } from "@/helpers/api";
 import { useState } from "react";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
-import { ISubscriberAddMeterForm } from "@/interfaces/reference/meter.interface";
+import { ISubscriberAddMeterForm, MeterType } from "@/interfaces/reference/meter.interface";
+import { GetServerSidePropsContext } from "next";
+import { fetchReferenceData } from "@/helpers/reference-constants";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
@@ -21,11 +23,9 @@ function Meter({ data }: MeterPageProps): JSX.Element {
     const tabs = data.meters.map(obj => {
         return {
             name: "Квартира " + obj.apartmentNumber,
-            id: obj.apartmentNumber
+            id: obj.apartmentId
         };
     });
-
-    // ИСПРАВИТЬ MOCK-DATA 
 
     const selectedData = data.meters.find(obj => obj.apartmentId === apartmentId);
 
@@ -159,34 +159,19 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
 
 export default withLayout<MeterPageProps>(Meter);
 
-export async function getServerSideProps() {
-    const apiUrl = API.subscriber.meter.index;
-
-    try {
-        const postData = {
-            "subscriberIds": [1, 2], // ИСПРАВИТЬ!!!
-        };
-        const { data } = await api.post<{ data: IGetMeterByAIDs[] }>(apiUrl, postData);
-        if (!data) {
-            return {
-                notFound: true
-            };
-        }
-        return {
-            props: {
-                data
-            }
-        };
-    } catch {
-        return {
-            notFound: true
-        };
-    }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const apiUrl = API.reference.meter.get;
+    const postData = {
+        "meterType": MeterType.Individual,
+        "isNotAllInfo": false
+    };
+    return await fetchReferenceData<IGetMeterByAIDs>(context, apiUrl, postData);
 }
 
 interface MeterPageProps extends Record<string, unknown> {
     data: { meters: IGetMeterByAIDs[] };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }
 
 export interface IGetMeterByAIDs {

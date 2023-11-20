@@ -153,7 +153,8 @@ export async function getServerSideProps() {
 
 interface IArchieveSPDProps extends Record<string, unknown> {
     data: { singlePaymentDocuments: IArchieveSPDData[] };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }
 
 interface IArchieveSPDData {

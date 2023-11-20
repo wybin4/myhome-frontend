@@ -49,7 +49,8 @@ export async function getServerSideProps() {
 
 interface IChargeProps extends Record<string, unknown> {
     data: { singlePaymentDocuments: ISpdData[] };
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }
 
 export default withLayout(Charge);

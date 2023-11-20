@@ -6,7 +6,6 @@ import { GetSPDPageComponent } from "@/page-components";
 import axios from "axios";
 import { useState } from "react";
 
-
 function GetSPD({ data }: IGetSPDProps): JSX.Element {
     const [formCheckedIds, setFormCheckedIds] = useState<number[]>([]);
     const [isHouses, setIsHouses] = useState<boolean>(true);
@@ -107,7 +106,8 @@ export async function getServerSideProps() {
 
 interface IGetSPDProps extends Record<string, unknown> {
     data: ISubscriberReferenceData;
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }
 
 interface IGetSPDData {

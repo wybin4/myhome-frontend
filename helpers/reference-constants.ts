@@ -7,13 +7,13 @@ import { API } from "./api";
 import { parse } from "cookie";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export async function fetchReferenceData<T extends IReferenceData>(
+export async function fetchReferenceData<T extends Record<string, string | number | any>>(
     { req, res }: GetServerSidePropsContext,
     apiUrl: string,
     postData: any
 ) {
     const originalRequest = async (cookie?: string) => {
-        return await axios.post<{ data: T }>(
+        return await axios.post<T>(
             `${process.env.NEXT_PUBLIC_DOMAIN}/${apiUrl}`, postData,
             {
                 withCredentials: true,

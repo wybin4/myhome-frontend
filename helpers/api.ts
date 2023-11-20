@@ -28,7 +28,6 @@ export const API: {
     event: { get: string };
     subscriber: {
         appeal: { add: string };
-        meter: { index: string; get: string };
         apartment: { get: string };
         singlePaymentDocument: { get: string };
         voting: { update: string };
@@ -66,10 +65,6 @@ export const API: {
         },
         appeal: { add: `appeal/add-appeal` },
         voting: { update: `voting/update-voting` },
-        meter: {
-            index: `meter/get-meters-all-info-by-sid`,
-            get: `meter/get-meters-by-user`
-        },
         singlePaymentDocument: {
             get: `single-payment-document/get-single-payment-documents-by-sid`,
         }
