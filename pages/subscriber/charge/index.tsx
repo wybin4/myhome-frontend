@@ -1,9 +1,8 @@
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import { ChargePageComponent } from "@/page-components";
 import { ISpdData } from "@/page-components/ChargePageComponent/ChargePageComponent.props";
-import axios from "axios";
 import { useState } from "react";
 
 function Charge({ data }: IChargeProps): JSX.Element {
@@ -30,7 +29,7 @@ export async function getServerSideProps() {
     };
 
     try {
-        const { data } = await axios.post<{ singlePaymentDocuments: ISpdData[] }>(apiUrl, postData);
+        const { data } = await api.post<{ singlePaymentDocuments: ISpdData[] }>(apiUrl, postData);
         if (!data) {
             return {
                 notFound: true

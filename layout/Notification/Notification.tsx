@@ -11,13 +11,13 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import Link from "next/link";
 import { AppContext } from "@/context/app.context";
-import axios from "axios";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import cn from "classnames";
+import { UserRole } from "@/interfaces/account/user.interface";
 
 export const Notification = ({ user, notifications, className, ...props }: NotificationProps): JSX.Element => {
     const [isNotification, setIsNotification] = useState<boolean>(false);
-    const { role } = useContext(AppContext);
+    const { userRole } = useContext(AppContext);
 
     useEffect(() => {
         if (isNotification) {
@@ -57,17 +57,17 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
     const getUrl = (type: ServiceNotificationType) => {
         switch (type) {
             case ServiceNotificationType.Appeal:
-                return `/${role}/appeal`;
+                return `/${userRole}/appeal`;
             case ServiceNotificationType.HouseNotification:
-                if (role === "subscriber") {
-                    return `/${role}/event`;
+                if (userRole === UserRole.Owner) {
+                    return `/${userRole}/event`;
                 }
                 return "#";
             case ServiceNotificationType.Meter:
-                if (role === "subscriber") {
-                    return `/${role}/meter`;
-                } else if (role === "management-company") {
-                    return `/${role}/reference/meter`;
+                if (userRole === UserRole.Owner) {
+                    return `/${userRole}/meter`;
+                } else if (userRole === UserRole.ManagementCompany) {
+                    return `/${userRole}/reference/meter`;
                 }
                 return "#";
             default: return "#";
@@ -90,7 +90,7 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
                             href={getUrl(notification.type)}
                             onClick={async () => {
                                 if (notification.status !== NotificationStatus.Read) {
-                                    await axios.post(API.serviceNotification.read, {
+                                    await api.post(API.serviceNotification.read, {
                                         id: notification.id
                                     });
                                 }
@@ -169,7 +169,7 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
                             <button
                                 className={cn(styles.readAll, "viewNotifications")}
                                 onClick={async () => {
-                                    await axios.post(API.serviceNotification.readAll, {
+                                    await api.post(API.serviceNotification.readAll, {
                                         userId: user.userId,
                                         userRole: user.userRole
                                     });

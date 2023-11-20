@@ -1,7 +1,6 @@
-import { API } from "@/helpers/api";
-import { UserRole, UserRole } from "@/interfaces/account/user.interface";
+import { API, api } from "@/helpers/api";
+import { UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
-import axios from "axios";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
 import { AppealPageComponent } from "@/page-components";
 
@@ -29,7 +28,7 @@ export async function getServerSideProps() {
     };
 
     try {
-        const { data } = await axios.post<{ events: IGetEvents }>(API.event.get, postData);
+        const { data } = await api.post<{ events: IGetEvents }>(API.event.get, postData);
         if (!data) {
             return {
                 notFound: true

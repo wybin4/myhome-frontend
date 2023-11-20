@@ -1,6 +1,5 @@
 import { Card, Form, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
-import axios from "axios";
 import HeatingIcon from "./icons/heating.svg";
 import WaterIcon from "./icons/water.svg";
 import ElectricityIcon from "./icons/electricity.svg";
@@ -8,7 +7,7 @@ import ArrowIcon from "./icons/arrow.svg";
 import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
 import { UserRole } from "@/interfaces/account/user.interface";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { useState } from "react";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
@@ -38,7 +37,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 title="Добавление счётчика"
                 selectors={[
                     {
-                        size: "m", inputTitle: "Тип услуги", id: "typeOfService",
+                        inputTitle: "Тип услуги", id: "typeOfService",
                         options: [
                             { value: 1, text: "Газ" },
                             { value: 2, text: "Электричество" },
@@ -50,17 +49,17 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 ]}
                 datePickers={[
                     {
-                        id: "verificationDate", type: "datepicker", inputTitle: "Дата поверки", inputSize: "m", numberInOrder: 2,
+                        id: "verificationDate", type: "datepicker", inputTitle: "Дата поверки", numberInOrder: 2,
                         error: { value: true, message: "Заполните дату поверки" }
                     },
                     {
-                        id: "dateOfPreviousReading", type: "datepicker", inputTitle: "Дата предыдущего показания", inputSize: "m", numberInOrder: 3,
+                        id: "dateOfPreviousReading", type: "datepicker", inputTitle: "Дата предыдущего показания", numberInOrder: 3,
                         error: { value: true, message: "Заполните дату предыдущего показания" }
                     },
                 ]}
                 inputs={[
                     {
-                        id: "previousReading", type: "input", size: "m", title: "Предыдущее показание", numberInOrder: 4,
+                        id: "previousReading", type: "input", title: "Предыдущее показание", numberInOrder: 4,
                         error: { value: true, message: "Заполните предыдущее показание" }
                     }
                 ]} urlToPost={""} successCode={200} successMessage={""}            >
@@ -167,7 +166,7 @@ export async function getServerSideProps() {
         const postData = {
             "subscriberIds": [1, 2], // ИСПРАВИТЬ!!!
         };
-        const { data } = await axios.post<{ data: IGetMeterByAIDs[] }>(apiUrl, postData);
+        const { data } = await api.post<{ data: IGetMeterByAIDs[] }>(apiUrl, postData);
         if (!data) {
             return {
                 notFound: true

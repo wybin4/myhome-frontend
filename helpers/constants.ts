@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { UserRole } from "@/interfaces/account/user.interface";
+import { parse } from "cookie";
 import { isToday, isYesterday, format } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -109,5 +111,20 @@ export const getFileType = (buffer: Buffer) => {
         return "png";
     } else {
         return "unknown";
+    }
+};
+
+export const getUserCookie = (
+    setUserRole: (newRole: UserRole) => void,
+    setUserId: (newId: number) => void
+) => {
+    const newRole = parse(document.cookie).userRole;
+    if (newRole) {
+        setUserRole(String(newRole) as UserRole);
+    }
+
+    const newId = parse(document.cookie).userId;
+    if (newId) {
+        setUserId(parseInt(newId));
     }
 };

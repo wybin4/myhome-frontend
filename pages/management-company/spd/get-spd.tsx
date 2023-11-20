@@ -1,5 +1,5 @@
-import { API } from "@/helpers/api";
-import { UserRole, UserRole } from "@/interfaces/account/user.interface";
+import { API, api } from "@/helpers/api";
+import { UserRole } from "@/interfaces/account/user.interface";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { withLayout } from "@/layout/Layout";
 import { GetSPDPageComponent } from "@/page-components";
@@ -27,7 +27,7 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
             formData["houseIds"] = formCheckedIds;
         }
 
-        await axios.post(API.managementCompany.singlePaymentDocument.calculate, formData, {
+        await api.post(API.managementCompany.singlePaymentDocument.calculate, formData, {
             responseType: 'blob',
             timeout: 5000,
         }).then((response) => {
@@ -54,7 +54,7 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
 
     const fetchKeyRate = async () => {
         try {
-            const { data } = await axios.post<{ keyRate: number }>(API.managementCompany.correction.cbr.get, null, {
+            const { data } = await api.post<{ keyRate: number }>(API.managementCompany.correction.cbr.get, null, {
                 timeout: 1000,
             });
             return data;
@@ -87,7 +87,7 @@ export async function getServerSideProps() {
     };
 
     try {
-        const { data } = await axios.post<{ data: ISubscriberReferenceData }>(apiUrl, postData);
+        const { data } = await api.post<{ data: ISubscriberReferenceData }>(apiUrl, postData);
         if (!data) {
             return {
                 notFound: true

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { IAppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
-import { IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IUserReferenceData, IUserReferenceDataItem, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
 import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData } from "@/interfaces/reference/meter.interface";
 import { IReferencePageComponent, IReferenceData } from "@/interfaces/reference/page.interface";
@@ -11,6 +12,7 @@ import { ISubscriberReferenceData, ISubscriberReferenceDataItem, subscriberPageC
 import { IMunicipalTariffReferenceDataItem, municipalTariffPageComponent, INormReferenceDataItem, normPageComponent, ISocialNormReferenceDataItem, socialNormPageComponent, ISeasonalityFactorReferenceDataItem, seasonalityFactorPageComponent, ICommonHouseNeedTariffReferenceDataItem, сommonHouseNeedTariffPageComponent, ICommonHouseNeedTariffReferenceData, IMunicipalTariffReferenceData, INormReferenceData, ISeasonalityFactorReferenceData, ISocialNormReferenceData } from "@/interfaces/reference/tariff-and-norm.interface";
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -106,7 +108,7 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                     uriToAdd={API.managementCompany.correction.penaltyRule.add}
                 />
             }
-            {engName === "owner" &&
+            {engName === "user" &&
                 <ReferencePageComponent<IUserReferenceDataItem>
                     setPostData={setPostData}
                     additionalFormData={additionalFormData}
@@ -122,81 +124,75 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
 
 export default withLayout(ReferencePage);
 
-export async function getServerSideProps({ resolvedUrl }: any) {
-    const url = resolvedUrl || "";
-    const engName = url.split("/")[3];
-
-    let postData: {
-        [key: string]: number | string | Date | undefined
-    } = {
-        "userId": 1, // ИСПРАВИТЬ
-        "userRole": UserRole.ManagementCompany
-    };
-
-    let apiUrl: string = '';
-    switch (engName) {
-        case "owner":
-            apiUrl = API.common.owner.get;
-            break;
-        case "individual-meter":
-        case "general-meter":
-            apiUrl = API.reference["meter"].get;
-            break;
-        case "norm":
-        case "social-norm":
-        case "seasonality-factor":
-        case "common-house-need-tariff":
-        case "municipal-tariff": {
-            postData = {
-                "managementCompanyId": 1, // ИСПРАВИТЬ
-            };
-            apiUrl = API.reference["tariffAndNorm"].get;
-            break;
-        }
-        case "penalty-rule": {
-            postData = {
-                "managementCompanyId": 1, // ИСПРАВИТЬ
-            };
-            apiUrl = API.managementCompany.correction["penaltyRule"].get;
-            break;
-        }
-        default:
-            apiUrl = API.reference[engName].get;
-    }
-
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     try {
+        const url = context.resolvedUrl || "";
+        const engName = url.split("/")[3];
+        let postData: { [key: string]: number | string | Date | undefined } = {};
+
+        let apiUrl: string = '';
+        switch (engName) {
+            case "owner":
+                apiUrl = API.common.owner.get;
+                break;
+            case "individual-meter":
+            case "general-meter":
+                apiUrl = API.reference["meter"].get;
+                break;
+            case "norm":
+            case "social-norm":
+            case "seasonality-factor":
+            case "common-house-need-tariff":
+            case "municipal-tariff": {
+                postData = {
+                    "managementCompanyId": 1, // ИСПРАВИТЬ
+                };
+                apiUrl = API.reference["tariffAndNorm"].get;
+                break;
+            }
+            case "penalty-rule": {
+                postData = {
+                    "managementCompanyId": 1, // ИСПРАВИТЬ
+                };
+                apiUrl = API.managementCompany.correction["penaltyRule"].get;
+                break;
+            }
+            default:
+                apiUrl = API.reference[engName].get;
+        }
+
         switch (engName) {
             case "house":
-                return await fetchReferenceData<IHouseReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IHouseReferenceData>(context, apiUrl, postData);
             case "apartment":
-                return await fetchReferenceData<IApartmentReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IApartmentReferenceData>(context, apiUrl, postData);
             case "subscriber":
-                return await fetchReferenceData<ISubscriberReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ISubscriberReferenceData>(context, apiUrl, postData);
             case "owner":
-                return await fetchReferenceData<IUserReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, postData);
             case "individual-meter":
                 postData["meterType"] = "Individual";
-                return await fetchReferenceData<IIndividualMeterReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl, postData);
             case "general-meter":
                 postData["meterType"] = "General";
-                return await fetchReferenceData<IGeneralMeterReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IGeneralMeterReferenceData>(context, apiUrl, postData);
             case "municipal-tariff":
                 postData["type"] = "MunicipalTariff";
-                return await fetchReferenceData<IMunicipalTariffReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IMunicipalTariffReferenceData>(context, apiUrl, postData);
             case "norm":
                 postData["type"] = "Norm";
-                return await fetchReferenceData<INormReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<INormReferenceData>(context, apiUrl, postData);
             case "social-norm":
                 postData["type"] = "SocialNorm";
-                return await fetchReferenceData<ISocialNormReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ISocialNormReferenceData>(context, apiUrl, postData);
             case "seasonality-factor":
                 postData["type"] = "SeasonalityFactor";
-                return await fetchReferenceData<ISeasonalityFactorReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ISeasonalityFactorReferenceData>(context, apiUrl, postData);
             case "common-house-need-tariff":
                 postData["type"] = "CommonHouseNeedTariff";
-                return await fetchReferenceData<ICommonHouseNeedTariffReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<ICommonHouseNeedTariffReferenceData>(context, apiUrl, postData);
             case "penalty-rule":
-                return await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(apiUrl, postData);
+                return await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, postData);
             default:
                 return {
                     notFound: true
@@ -209,7 +205,7 @@ export async function getServerSideProps({ resolvedUrl }: any) {
     }
 }
 
-interface ReferencePageProps extends Record<string, unknown> {
+interface ReferencePageProps extends IAppContext {
     data: IReferenceData;
-    role: UserRole;
+    [key: string]: unknown;
 }

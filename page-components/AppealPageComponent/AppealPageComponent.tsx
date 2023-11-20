@@ -1,14 +1,13 @@
 import { Card, CardForm, Form, Htag, PopUp, TableButton, TableFilter, Tabs } from "@/components";
 import { AttachmentFormProps, TextAreaFormProps, InputFormProps, SelectorFormProps, DatePickerFormProps } from "@/components/enhanced/Form/Form.props";
 import { FileType } from "@/components/primitive/Attachment/Attachment.props";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
 import { ITypeOfService } from "@/interfaces/common.interface";
 import { IGetAppeal, IUpdateAppeal } from "@/interfaces/event.interface";
 import { AppealStatus, AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
 import { IGetIndividualMeter, MeterType } from "@/interfaces/reference/meter.interface";
 import { IApartmentAllInfo } from "@/interfaces/reference/subscriber/apartment.interface";
-import axios from "axios";
 import { AppealPageComponentProps, AppealDetailPageComponentProps } from "./AppealPageComponent.props";
 import ArrowIcon from "./arrow.svg";
 import { useEffect, useRef, useState } from "react";
@@ -189,7 +188,7 @@ export const AppealOwnerPageComponent = ({
             case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
                 try {
                     if (!meters) {
-                        const { data } = await axios.post<{ meters: IGetIndividualMeter[] }>(
+                        const { data } = await api.post<{ meters: IGetIndividualMeter[] }>(
                             API.subscriber.meter.get, {
                             userId: user.userId,
                             userRole: user.userRole,
@@ -211,7 +210,7 @@ export const AppealOwnerPageComponent = ({
             case getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter): {
                 try {
                     if (!typesOfService) {
-                        const { data } = await axios.post<{ typesOfService: ITypeOfService[] }>(
+                        const { data } = await api.post<{ typesOfService: ITypeOfService[] }>(
                             API.reference.typeOfService.get);
                         if (!data) {
                             setError("Невозможно получить данные о видах услуг");
@@ -220,7 +219,7 @@ export const AppealOwnerPageComponent = ({
                         }
                     }
                     if (!apartments) {
-                        const { data } = await axios.post<{ apartments: IApartmentAllInfo[] }>(
+                        const { data } = await api.post<{ apartments: IApartmentAllInfo[] }>(
                             API.subscriber.apartment.get, {
                             userId: user.userId,
                             userRole: user.userRole,

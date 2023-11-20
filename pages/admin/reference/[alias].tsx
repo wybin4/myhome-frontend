@@ -5,6 +5,7 @@ import { IUserReferenceData, IUserReferenceDataItem, UserRole, managementCompany
 import { IReferenceData } from "@/interfaces/reference/page.interface";
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -62,16 +63,9 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
 
 export default withLayout(ReferencePage);
 
-export async function getServerSideProps({ resolvedUrl }: any) {
-    const url = resolvedUrl || "";
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const url = context.resolvedUrl || "";
     const engName = url.split("/")[3];
-
-    // const postData: {
-    //     [key: string]: number | string | Date | undefined
-    // } = {
-    //     "userId": 1, // ИСПРАВИТЬ
-    //     "userRole": UserRole.Admin
-    // };
 
     let apiUrl: string = '';
     switch (engName) {
@@ -93,7 +87,7 @@ export async function getServerSideProps({ resolvedUrl }: any) {
                     "userRole": UserRole.ManagementCompany,
                     "requesterRole": UserRole.Admin
                 };
-                return await fetchReferenceData<IUserReferenceData>(apiUrl, mcPostData);
+                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, mcPostData);
             }
             // case "penalty-calculation-rule":
             //     return await fetchData<IApartmentReferenceData>(apiUrl, postData);
@@ -111,5 +105,6 @@ export async function getServerSideProps({ resolvedUrl }: any) {
 
 interface ReferencePageProps extends Record<string, unknown> {
     data: IReferenceData;
-    role: UserRole;
+    userRole: UserRole;
+    userId: number;
 }

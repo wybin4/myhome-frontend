@@ -1,9 +1,8 @@
 import { Form, Table } from "@/components";
-import { API } from "@/helpers/api";
-import { UserRole, UserRole } from "@/interfaces/account/user.interface";
+import { API, api } from "@/helpers/api";
+import { UserRole } from "@/interfaces/account/user.interface";
 import { IVoting, VotingStatus } from "@/interfaces/event/voting.interface";
 import { withLayout } from "@/layout/Layout";
-import axios from "axios";
 import { format } from "date-fns";
 import CloseIcon from "./close.svg";
 import OpenIcon from "./open.svg";
@@ -191,8 +190,8 @@ export async function getServerSideProps() {
         events: [EventType.Voting]
     };
     try {
-        const votings = await axios.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
-        const houses = await axios.post<{ houses: IHouse[] }>(API.managementCompany.reference.house.get, postDataHouses);
+        const votings = await api.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
+        const houses = await api.post<{ houses: IHouse[] }>(API.reference.house.get, postDataHouses);
         if (!votings.data || !houses.data) {
             return {
                 notFound: true

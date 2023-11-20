@@ -5,12 +5,13 @@ import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Checkbox, DatePickerInput, Icon, Input, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
-import axios, { AxiosError } from "axios";
 import ArrowIcon from "./arrow.svg";
 import SuccessIcon from "./success.svg";
 import FailureIcon from "./failure.svg";
 import CloseIcon from "./close.svg";
 import { Attachment } from "@/components/primitive/Attachment/Attachment";
+import { api } from "@/helpers/api";
+import { AxiosError } from "axios";
 
 export const BaseForm = <T extends FieldValues>({
     isOpened, setIsOpened,
@@ -136,13 +137,13 @@ export const Form = <T extends FieldValues>({
             const response =
                 dataList
                     ?
-                    await axios.post(urlToPost, flatObjectWithData, {
+                    await api.post(urlToPost, flatObjectWithData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         }
                     })
                     :
-                    await axios.post(urlToPost, flatObjectWithData);
+                    await api.post(urlToPost, flatObjectWithData);
 
             if (response.status === successCode) {
                 setIsSuccess(true);

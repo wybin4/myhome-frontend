@@ -65,7 +65,9 @@ export const Input = forwardRef(({
                         )} value={value ? value : ""}
                         onChange={handleInputChange}
                         placeholder={placeholder}
-                        readOnly={readOnly || datePicker} {...props} />
+                        readOnly={readOnly || datePicker}
+                        type={inputType === "password" ? "password" : undefined}
+                        {...props} />
                     {icon &&
                         <div className={cn(styles.icon, "absolute inset-y-0 flex items-center pointer-events-none",
                             {

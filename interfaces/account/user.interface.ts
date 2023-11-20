@@ -15,6 +15,12 @@ export interface IUser {
     checkingAcount?: string;
 }
 
+export interface ILoginUser {
+    email: string;
+    password: string;
+    userRole: UserRole;
+}
+
 export type IGetUser = Omit<IUser, 'passwordHash'>;
 
 export interface IGetUserWithSubscriber {

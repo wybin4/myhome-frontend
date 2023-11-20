@@ -18,7 +18,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
-
+    
     const rne = new RussianNounsJS.Engine();
 
     const noun = item.rusName;

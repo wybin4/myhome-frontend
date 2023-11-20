@@ -1,14 +1,13 @@
 import { Form, Table } from "@/components";
-import { API } from "@/helpers/api";
-import { UserRole, UserRole } from "@/interfaces/account/user.interface";
+import { API, api } from "@/helpers/api";
 import { withLayout } from "@/layout/Layout";
-import axios from "axios";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { HouseNotificationType, IHouseNotification } from "@/interfaces/event/notification.interface";
 import { EventType, IGetEvents, IGetHouseNotification } from "@/interfaces/event.interface";
+import { UserRole } from "@/interfaces/account/user.interface";
 
 function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
     const useFormData = useForm<IHouseNotification>();
@@ -200,8 +199,8 @@ export async function getServerSideProps() {
     };
 
     try {
-        const notifications = await axios.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
-        const houses = await axios.post<{ houses: IHouse[] }>(API.managementCompany.reference.house.get, postDataHouses);
+        const notifications = await api.post<{ events: IGetEvents }>(API.event.get, postDataVotings);
+        const houses = await api.post<{ houses: IHouse[] }>(API.reference.house.get, postDataHouses);
         if (!notifications.data || !houses.data) {
             return {
                 notFound: true

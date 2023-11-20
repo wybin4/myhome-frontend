@@ -1,9 +1,8 @@
-import { API } from "@/helpers/api";
-import { UserRole, IGetUserWithSubscriber, UserRole } from "@/interfaces/account/user.interface";
+import { API, api } from "@/helpers/api";
+import { IGetUserWithSubscriber, UserRole } from "@/interfaces/account/user.interface";
 import { EventType, IGetEvents, IGetAppeal } from "@/interfaces/event.interface";
 import { withLayout } from "@/layout/Layout";
 import { AppealPageComponent } from "@/page-components";
-import axios from "axios";
 
 function Appeal({ data }: AppealProps): JSX.Element {
     const user = { // ИСПРАВИТЬ
@@ -34,8 +33,8 @@ export async function getServerSideProps() {
 
 
     try {
-        const events = await axios.post<{ events: IGetEvents }>(API.event.get, postDataEvents);
-        const users = await axios.post<{ users: IGetUserWithSubscriber[] }>(API.common.owner.get, postDataUsers);
+        const events = await api.post<{ events: IGetEvents }>(API.event.get, postDataEvents);
+        const users = await api.post<{ users: IGetUserWithSubscriber[] }>(API.common.owner.get, postDataUsers);
 
         if (!events || !users) {
             return {

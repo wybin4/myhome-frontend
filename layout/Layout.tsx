@@ -11,8 +11,7 @@ import { Chat } from "./Chat/Chat";
 import { IChat, IMessage } from "@/interfaces/chat.interface";
 import { IServiceNotification } from "@/interfaces/event/notification.interface";
 import { io } from "socket.io-client";
-import axios from "axios";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
@@ -112,7 +111,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             });
 
             if (data.createdMessage && isChatItemRef.current === data.createdMessage.chatId) {
-                await axios.post(API.chat.readMessages, {
+                await api.post(API.chat.readMessages, {
                     userId: user.userId,
                     userRole: user.userRole,
                     chatId: data.createdMessage.chatId
@@ -176,7 +175,8 @@ export const withLayout = <T extends Record<string, unknown> & IAppContext>(Comp
     return function withLayoutComponent(props: T): JSX.Element {
         return (
             <AppContextProvider
-                role={props.role}
+                userId={props.userId}
+                userRole={props.userRole}
             >
                 <Layout>
                     <Component {...props} />

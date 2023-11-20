@@ -1,8 +1,7 @@
 import { Table } from "@/components";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
-import axios from "axios";
 import PdfIcon from "./icons/pdf.svg";
 import { MouseEventHandler } from "react";
 import { bytesToSize, downloadPdf, monthNamesInNominativeCase } from "@/helpers/constants";
@@ -134,7 +133,7 @@ export async function getServerSideProps() {
     };
 
     try {
-        const { data } = await axios.post<{ singlePaymentDocuments: IArchieveSPDData[] }>(apiUrl, postData);
+        const { data } = await api.post<{ singlePaymentDocuments: IArchieveSPDData[] }>(apiUrl, postData);
         if (!data) {
             return {
                 notFound: true

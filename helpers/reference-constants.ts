@@ -1,21 +1,76 @@
 import { IReferenceData, IReferencePageComponent, IReferencePageItem } from "@/interfaces/reference/page.interface";
-import axios from "axios";
 import { format, isDate, isValid } from "date-fns";
 import { FieldValues } from "react-hook-form";
+import { GetServerSidePropsContext } from "next";
+import axios from "axios";
+import { API } from "./api";
+import { parse } from "cookie";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export async function fetchReferenceData<T extends IReferenceData>
-    (apiUrl: string, postData: any) {
-    const { data } = await axios.post<{ data: T }>(apiUrl, postData);
-    if (!data) {
+export async function fetchReferenceData<T extends IReferenceData>(
+    { req, res }: GetServerSidePropsContext,
+    apiUrl: string,
+    postData: any
+) {
+    const originalRequest = async (cookie?: string) => {
+        return await axios.post<{ data: T }>(
+            `${process.env.NEXT_PUBLIC_DOMAIN}/${apiUrl}`, postData,
+            {
+                withCredentials: true,
+                headers: {
+                    Cookie: [req.headers.cookie, cookie].join(";"),
+                }
+            });
+    };
+    try {
+        const { data } = await originalRequest();
+        if (!data) {
+            return {
+                notFound: true
+            };
+        }
         return {
-            notFound: true
+            props: {
+                data
+            }
         };
     }
-    return {
-        props: {
-            data
+    catch (error: any) {
+        if (error.response.status === 401) {
+            try {
+                const refresh = await axios.get(API.auth.refresh, {
+                    baseURL: `${process.env.NEXT_PUBLIC_DOMAIN}/`,
+                    withCredentials: true,
+                    headers: {
+                        Cookie: req.headers.cookie,
+                    }
+                });
+                const cookie = refresh.headers["set-cookie"] || [""];
+                const token = parse(cookie.join())["token"];
+                res.setHeader("set-cookie", cookie);
+                const response = await originalRequest("token=" + token);
+                if (!response.data) {
+                    return {
+                        notFound: true
+                    };
+                }
+                return {
+                    props: {
+                        data: response.data
+                    }
+                };
+            } catch (e) {
+                return {
+                    redirect: {
+                        destination: '/login',
+                        permanent: false
+                    }
+                };
+            }
         }
+    }
+    return {
+        notFound: true
     };
 }
 

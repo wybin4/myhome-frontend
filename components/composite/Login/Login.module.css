@@ -1,0 +1,278 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    height: 100vh;
+}
+
+.itemWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    padding-top: 5rem;
+
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.pic {
+    align-self: center;
+}
+
+.button {
+    font-weight: 500;
+    padding: 1rem 3rem;
+    width: fit-content;
+    align-self: center;
+}
+
+.logoFormPageWrapper svg {
+    fill: var(--primary);
+}
+
+.wrapper svg {
+    height: 65vw;
+    max-height: 300px;
+    max-width: 500px;
+
+    fill: var(--primary);
+
+    margin-top: 3rem;
+}
+
+.admin svg {
+    width: 26vw;
+}
+
+.owner svg {
+    width: 14vw;
+}
+
+.mc svg {
+    width: 12vw;
+}
+
+.admin,
+.mc {
+    background-color: var(--primary-light-background);
+}
+
+.owner {
+    background-color: var(--primary-light-hover-background);
+}
+
+.htag {
+    position: absolute;
+    top: 3rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    gap: 2rem;
+
+    width: 100%;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--primary);
+
+    border-radius: 1rem;
+
+    width: 4rem;
+    height: 4rem;
+}
+
+.logo svg {
+    width: 3rem;
+    height: 2rem;
+
+    fill: var(--white);
+}
+
+.titlePicker {
+    font-weight: 500;
+    font-size: 1.3rem;
+
+    text-align: center;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.logoFormPageWrapper {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0 4rem;
+    height: 100vh;
+}
+
+.leftWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    height: 100vh;
+}
+
+.loginIcon {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.loginIcon svg {
+    max-width: 600px;
+    max-height: 700px;
+    width: 60vw;
+    height: 100vw;
+}
+
+.par {
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+}
+
+.markedPar {
+    color: var(--primary);
+}
+
+.welcomeHtag {
+    font-size: 3rem !important;
+    line-height: 3.4rem;
+}
+
+.formWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    width: 30rem;
+    max-width: 100%;
+}
+
+.formWrapper .button {
+    width: 100%;
+
+    margin-top: 1rem;
+}
+
+.formWrapper .input input {
+    height: 2.6rem;
+}
+
+.ownerLogoIcon,
+.mcLogoIcon {
+    display: none;
+}
+
+.logoWrapperIcon {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    max-width: 300px;
+}
+
+.logoWrapperIcon svg {
+    fill: var(--primary);
+
+    width: 19vw;
+    height: 12.6vw;
+}
+
+.formLogo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 5;
+
+    margin: auto;
+}
+
+.formLogo svg {
+    width: 4vw;
+    height: 4vw;
+
+    fill: var(--white);
+}
+
+@media (max-width: 1200px) {
+    .logoFormPageWrapper {
+        display: block;
+    }
+
+    .loginIcon {
+        display: none;
+    }
+
+    .welcomeHtag,
+    .par {
+        text-align: center;
+    }
+
+    .leftWrapper {
+        align-items: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .wrapper {
+        display: block;
+    }
+
+    .itemWrapper {
+        height: 100vh;
+    }
+
+    .wrapper svg {
+        height: 100vw;
+        max-height: 320px;
+
+        margin-top: 3rem;
+    }
+
+    .admin svg {
+        width: 50vw;
+    }
+
+    .owner svg {
+        width: 25vw;
+    }
+
+    .mc svg {
+        width: 23vw;
+    }
+
+    .titlePicker {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .logoFormPageWrapper {
+        padding: 0 2.5rem;
+    }
+
+    .ownerLogoIcon,
+    .mcLogoIcon {
+        display: flex;
+    }
+
+    .ownerLogoIcon {
+        margin-top: 100vh;
+    }
+
+    .mcLogoIcon {
+        margin-top: 200vh;
+    }
+
+}

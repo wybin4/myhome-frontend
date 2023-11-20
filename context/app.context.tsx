@@ -1,23 +1,38 @@
+import { getUserCookie } from "@/helpers/constants";
 import { UserRole } from "@/interfaces/account/user.interface";
-import { createContext, PropsWithChildren, useState } from "react";
+import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
 export interface IAppContext {
-	role: UserRole;
-	setRole?: (newRole: UserRole) => void;
+	userRole: UserRole;
+	setUserRole?: (newRole: UserRole) => void;
+	userId: number;
+	setUserId?: (newId: number) => void;
 }
+
 export const AppContext = createContext<IAppContext>({
-	role: UserRole.None
+	userRole: UserRole.None,
+	userId: 0
 });
 
-export const AppContextProvider = ({ role, children }: PropsWithChildren<IAppContext>): JSX.Element => {
-	const [roleState, setRoleState] = useState<UserRole>(role);
+export const AppContextProvider = ({ userId, userRole, children }: PropsWithChildren<IAppContext>): JSX.Element => {
+	const [userIdState, setUserIdState] = useState<number>(userId);
+	const [roleState, setRoleState] = useState<UserRole>(userRole);
 
-	const setRole = (newRole: UserRole) => {
+	const setUserRole = (newRole: UserRole) => {
 		setRoleState(newRole);
 	};
 
+	const setUserId = (newId: number) => {
+		setUserIdState(newId);
+	};
+
+	useEffect(() => {
+		getUserCookie(setUserRole, setUserId);
+	}, []);
+
 	return <AppContext.Provider value={{
-		role: roleState, setRole
+		userRole: roleState, setUserRole,
+		userId: userIdState, setUserId
 	}}>
 		{children}
 	</AppContext.Provider>;

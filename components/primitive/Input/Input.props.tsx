@@ -13,7 +13,7 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
 
     value?: number | string;
     setValue?: Dispatch<SetStateAction<number | string | undefined>>;
-    inputType?: "string" | "number";
+    inputType?: "string" | "number" | "password";
 
     readOnly?: boolean;
     datePicker?: boolean;

@@ -14,8 +14,7 @@ import { format } from "date-fns";
 import { UserRole } from "@/interfaces/account/user.interface";
 import { ru } from "date-fns/locale";
 import cn from "classnames";
-import axios from "axios";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { getHumanDate } from "@/helpers/constants";
 
 export const Chat = ({
@@ -152,7 +151,7 @@ export const Chat = ({
                     <Icon
                         onClick={async () => {
                             if (!receivers) {
-                                const { data } = await axios.post(API.chat.getReceivers, {
+                                const { data } = await api.post(API.chat.getReceivers, {
                                     userId: user.userId,
                                     userRole: user.userRole
                                 });
@@ -200,7 +199,7 @@ export const Chat = ({
                                             isChatItemRef.current = chat._id ? chat._id : "";
                                             setIsChat(!isChat);
                                             if (chat._id) {
-                                                await axios.post(API.chat.readMessages, {
+                                                await api.post(API.chat.readMessages, {
                                                     userId: user.userId,
                                                     userRole: user.userRole,
                                                     chatId: chat._id
@@ -307,7 +306,7 @@ const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatI
                 senderId: user.userId,
                 senderRole: user.userRole
             };
-            await axios.post(API.chat.sendMessage, postData);
+            await api.post(API.chat.sendMessage, postData);
             setMessage("");
             if (inputRef && inputRef.current) {
                 const ref = inputRef.current as HTMLElement;
@@ -441,7 +440,7 @@ const ReceiversItem = ({
                             <div
                                 className="flex gap-4 items-center viewRecievers cursor-pointer" key={key}
                                 onClick={async () => {
-                                    const { data } = await axios.post(API.chat.addChat, {
+                                    const { data } = await api.post(API.chat.addChat, {
                                         users: [user, receiver]
                                     });
                                     if (data.chat) {

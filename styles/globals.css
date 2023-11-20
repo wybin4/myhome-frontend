@@ -13,6 +13,8 @@
     --primary: #7653FC;
     --primary-hover: #6144d4;
     --primary-light-hover: rgba(211, 202, 250, 0.91);
+    --primary-light-background: #FBFBFF;
+    --primary-light-hover-background: #E5E4FF;
     --red: #DE0000;
     --red-light: #FC836D;
     --red-background: #FFF9F9;

@@ -1,5 +1,4 @@
-import { AppContext } from "@/context/app.context";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { NavigationProps } from "./Navigation.props";
 import { IMenu } from "@/interfaces/menu.interface";
 import styles from "./Navigation.module.css";
@@ -9,16 +8,12 @@ import { useRouter } from "next/router";
 import CloseIcon from "../close.svg";
 import MenuIcon from "./menu.svg";
 import { UserRole } from "@/interfaces/account/user.interface";
+import { AppContext } from "@/context/app.context";
 
 export const Navigation = ({ className, ...props }: NavigationProps): JSX.Element => {
-    const { role, setRole } = useContext(AppContext);
     const [isMenu, setIsMenu] = useState<boolean>(false);
-
+    const { userRole } = useContext(AppContext);
     const router = useRouter();
-
-    useEffect(() => {
-        setRole && setRole(UserRole.Admin);
-    });
 
     const menu: IMenu[] = [
         {
@@ -64,7 +59,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                 }]
         },
     ];
-    const currentMenu = menu.find((m: IMenu) => m.role === role);
+    const currentMenu = menu.find((m: IMenu) => m.role === userRole);
 
     const getCursiveRole = (role: UserRole) => {
         switch (role) {
@@ -85,7 +80,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
             {isMenu &&
                 <div className={cn(className, styles.mobileNavWrapper)} {...props}>
                     <p className={styles.mobileText}>Навигация по сайту</p>
-                    {role !== UserRole.None &&
+                    {userRole !== UserRole.None &&
                         currentMenu &&
                         currentMenu.items.map(menuItem => {
                             return <div key={menuItem.route}
@@ -101,7 +96,7 @@ export const Navigation = ({ className, ...props }: NavigationProps): JSX.Elemen
                 </div>
             }
             <div className={cn(className, styles.desktopNavWrapper)} {...props}>
-                {role !== UserRole.None &&
+                {userRole !== UserRole.None &&
                     currentMenu &&
                     currentMenu.items.map(menuItem => {
                         return <div key={menuItem.route}

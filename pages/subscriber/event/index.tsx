@@ -5,9 +5,8 @@ import NotificationIcon from "./notification.svg";
 import VotingIcon from "./voting.svg";
 import cn from "classnames";
 import { EventType, IGetEvents, IGetHouseNotification, IGetVoting } from "@/interfaces/event.interface";
-import { API } from "@/helpers/api";
-import { UserRole, UserRole } from "@/interfaces/account/user.interface";
-import axios from "axios";
+import { API, api } from "@/helpers/api";
+import { UserRole } from "@/interfaces/account/user.interface";
 import { getEnumKeyByValue, getHumanDate } from "@/helpers/constants";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -108,7 +107,7 @@ function Event({ data }: EventProps): JSX.Element {
                                                         activeId: active ? active.id : 0,
                                                         options: options ? options : [],
                                                         onAnswer: async (answerId: number) => {
-                                                            await axios.post(API.subscriber.voting.update, {
+                                                            await api.post(API.subscriber.voting.update, {
                                                                 "optionId": answerId,
                                                                 "userId": userId
                                                             });
@@ -174,7 +173,7 @@ export async function getServerSideProps() {
     };
 
     try {
-        const { data } = await axios.post<{ events: IGetEvents }>(API.event.get, postData);
+        const { data } = await api.post<{ events: IGetEvents }>(API.event.get, postData);
         if (!data) {
             return {
                 notFound: true
