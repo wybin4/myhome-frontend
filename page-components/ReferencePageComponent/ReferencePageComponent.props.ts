@@ -9,6 +9,8 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     uriToAdd: string;
     uriToAddMany?: string;
 
-    additionalFormData?: Record<string | number, any>[];
+    additionalSelectorOptions?: { data: Record<string, string | number>[]; id: string }[];
+
+    additionalFormData?: Record<string, string | number>[];
     setPostData: (newData: any) => void;
 }

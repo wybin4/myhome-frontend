@@ -7,10 +7,18 @@ export interface IBaseTariffAndNormReferenceDataItem extends IReferenceDataItem 
     typeOfServiceName: string;
 }
 
+export interface IBaseTariffAndNormReferenceData extends IReferenceData {
+    tariffAndNorms: IBaseTariffAndNormReferenceDataItem[];
+}
+
 export enum TypeOfNorm { Individual = 'Individual', General = 'General' }
 
-export interface INormReferenceData extends IReferenceData {
-    norms: INormReferenceDataItem[];
+export enum TariffAndNormType {
+    Norm = 'Norm',
+    MunicipalTariff = 'MunicipalTariff',
+    SocialNorm = 'SocialNorm',
+    SeasonalityFactor = 'SeasonalityFactor',
+    CommonHouseNeedTariff = 'CommonHouseNeedTariff',
 }
 
 export interface INormReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
@@ -18,10 +26,6 @@ export interface INormReferenceDataItem extends IBaseTariffAndNormReferenceDataI
     unitName: string;
     norm: number;
     typeOfNorm: TypeOfNorm;
-}
-
-export interface IMunicipalTariffReferenceData extends IReferenceData {
-    municipalTariffs: IMunicipalTariffReferenceDataItem[];
 }
 
 export interface IMunicipalTariffReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
@@ -32,28 +36,15 @@ export interface IMunicipalTariffReferenceDataItem extends IBaseTariffAndNormRef
     multiplyingFactor?: number;
 }
 
-export interface ISocialNormReferenceData extends IReferenceData {
-    socialNorms: ISocialNormReferenceDataItem[];
-}
-
 export interface ISocialNormReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     unitId: number;
     unitName: string;
     norm: number;
     amount: number;
 }
-
-export interface ISeasonalityFactorReferenceData extends IReferenceData {
-    seasonalityFactors: ISeasonalityFactorReferenceDataItem[];
-}
-
 export interface ISeasonalityFactorReferenceDataItem extends IBaseTariffAndNormReferenceDataItem {
     monthName: string;
     coefficient: number;
-}
-
-export interface ICommonHouseNeedTariffReferenceData extends IReferenceData {
-    commonHouseNeedTariffs: ICommonHouseNeedTariffReferenceDataItem[];
 }
 
 export interface ICommonHouseNeedTariffReferenceDataItem extends IReferenceDataItem {
@@ -65,19 +56,10 @@ export interface ICommonHouseNeedTariffReferenceDataItem extends IReferenceDataI
     houseId: number;
 }
 
-export type TariffAndNormReferenceType = INormReferenceDataItem
-    | ISocialNormReferenceData | ISeasonalityFactorReferenceData
-    | ICommonHouseNeedTariffReferenceData | IMunicipalTariffReferenceData;
-
-
 const baseTariffAndNormPageComponents: IReferencePageItem<IBaseTariffAndNormReferenceDataItem>[] = [
     {
-        type: "select", selectorOptions: [
-            { value: 1, text: "ХВС" },
-            { value: 2, text: "ГВС" },
-            { value: 3, text: "Отопление" },
-        ],
-        title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", gender: "женский",
+        type: "select", selectorOptions: [],
+        title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", sendId: "typeOfServiceId", gender: "женский",
         isFilter: true, filterItems: [
             { items: ["ХВС", "ГВС", "Отопление"] },
         ],
@@ -87,12 +69,8 @@ const baseTariffAndNormPageComponents: IReferencePageItem<IBaseTariffAndNormRefe
 
 const baseTariffAndNormWithUnitPageComponents: IReferencePageItem<(IBaseTariffAndNormReferenceDataItem & { unitId: number })>[] = [
     {
-        type: "select", selectorOptions: [
-            { value: 1, text: "ХВС" },
-            { value: 2, text: "ГВС" },
-            { value: 3, text: "Отопление" },
-        ],
-        title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", gender: "женский",
+        type: "select", selectorOptions: [],
+        title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", sendId: "typeOfServiceId", gender: "женский",
         isFilter: true, filterItems: [
             { items: [] },
         ],
@@ -100,7 +78,7 @@ const baseTariffAndNormWithUnitPageComponents: IReferencePageItem<(IBaseTariffAn
     },
     {
         type: "select", selectorOptions: [],
-        title: [{ word: "единицы" }, { word: "измерения" }], numberInOrder: 4, id: "unitName", gender: "женский",
+        title: [{ word: "единицы" }, { word: "измерения" }], numberInOrder: 4, id: "unitName", sendId: "unitId", gender: "женский",
         rows: []
     },
 ];
@@ -119,7 +97,7 @@ export const normPageComponent:
             rows: []
         },
         {
-            type: "select", selectorOptions: [
+            type: "select", selectorOptions: [ // не требует исправления
                 { value: TypeOfNorm.Individual, text: "Индивидуальная" },
                 { value: TypeOfNorm.General, text: "Общедомовая" },
             ],
@@ -160,9 +138,18 @@ export const seasonalityFactorPageComponent:
     components: [
         {
             type: "select", selectorOptions: [
-                { value: 1, text: "Январь" },
-                { value: 2, text: "Февраль" },
-                { value: 3, text: "Март" },
+                { value: "Январь", text: "Январь" },
+                { value: "Февраль", text: "Февраль" },
+                { value: "Март", text: "Март" },
+                { value: "Апрель", text: "Апрель" },
+                { value: "Май", text: "Май" },
+                { value: "Июнь", text: "Июнь" },
+                { value: "Июль", text: "Июль" },
+                { value: "Август", text: "Август" },
+                { value: "Сентябрь", text: "Сентябрь" },
+                { value: "Октябрь", text: "Октябрь" },
+                { value: "Ноябрь", text: "Ноябрь" },
+                { value: "Декабрь", text: "Декабрь" },
             ],
             title: [{ word: "месяц" }], numberInOrder: 2, id: "monthName", gender: "мужской",
             rows: []
@@ -184,11 +171,8 @@ export const сommonHouseNeedTariffPageComponent:
     keyElements: { first: [2], second: 1, isSecondNoNeedTitle: true },
     components: [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "д. 98" },
-                { value: 2, text: "д. 99" },
-            ],
-            title: [{ word: "дом" }], numberInOrder: 2, id: "houseName", gender: "мужской",
+            type: "select", selectorOptions: [],
+            title: [{ word: "дом" }], numberInOrder: 2, id: "houseName", sendId: "houseId", gender: "мужской",
             rows: []
         },
         {

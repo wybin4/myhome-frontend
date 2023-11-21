@@ -38,30 +38,23 @@ export const subscriberPageComponent:
     engName: "subscriber",
     rusName: [{ word: "лицевой", isChangeable: true }, { word: "счет", isChangeable: true }],
     gender: "мужской",
+    tableActions: { actions: [{ type: "editAndSave", onClick: () => { }, id: 0 }] },
     keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true },
     components: [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "А.А.А" },
-                { value: 2, text: "А.А.А" },
-                { value: 3, text: "А.А.А" },
-            ],
-            title: [{ word: "ФИО" }, { word: "ответств." }], numberInOrder: 1, id: "ownerName", gender: "мужской",
+            type: "select", selectorOptions: [],
+            title: [{ word: "ФИО" }, { word: "ответств." }], numberInOrder: 1, id: "ownerName", sendId: "ownerId", gender: "мужской",
             rows: []
         },
         {
-            type: "input", inputType: "number",
+            type: "input", inputType: "string",
             title: [{ word: "код" }], numberInOrder: 2, id: "personalAccount", gender: "мужской",
             rows: []
         },
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "д. 98" },
-                { value: 2, text: "д. 99" },
-                { value: 3, text: "д. 100" },
-            ],
+            type: "select", selectorOptions: [],
             title: [{ word: "объект" }, { word: "учета" }],
-            numberInOrder: 3, id: "apartmentName", gender: "мужской",
+            numberInOrder: 3, id: "apartmentName", sendId: "apartmentId", gender: "мужской",
             isFilter: true, filterItems: [
                 { name: [{ word: "город" }], items: [] },
                 { name: [{ word: "улица" }], items: [] },

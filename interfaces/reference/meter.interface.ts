@@ -87,16 +87,12 @@ const meterPageComponents: IReferencePageItem<
     Omit<IIndividualMeterReferenceDataItem, "apartmentId">
     | Omit<IGeneralMeterReferenceDataItem, "houseId">>[] = [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "ХВС" },
-                { value: 2, text: "ГВС" },
-                { value: 3, text: "Отопление" },
-            ],
-            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 2, id: "typeOfServiceName", gender: "женский",
+            type: "select", selectorOptions: [],
+            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 2, id: "typeOfServiceName", sendId: "typeOfServiceId", gender: "женский",
             rows: []
         },
         {
-            type: "input", inputType: "number",
+            type: "input", inputType: "string",
             title: [{ word: "заводской" }, { word: "номер" }], numberInOrder: 3, id: "factoryNumber", gender: "мужской",
             rows: []
         },
@@ -133,11 +129,8 @@ export const individualMeterPageComponent:
     keyElements: { first: [3], second: 2, isSecondNoNeedTitle: true },
     components: [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "кв. 12" },
-                { value: 2, text: "кв. 14" },
-            ],
-            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", gender: "мужской",
+            type: "select", selectorOptions: [],
+            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", sendId: "apartmentId", gender: "мужской",
             isFilter: true, filterItems: [
                 { name: [{ word: "город" }], items: ["Ростов-на-Дону"] },
                 { name: [{ word: "улица" }], items: ["ул. Малюгина", "пер. Соборный"] },
@@ -157,11 +150,8 @@ export const generalMeterPageComponent:
     gender: "мужской",
     components: [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "д. 98" },
-                { value: 2, text: "д. 99" },
-            ],
-            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", gender: "мужской",
+            type: "select", selectorOptions: [],
+            title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", sendId: "houseId", gender: "мужской",
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IGeneralMeterReferenceDataItem>[]

@@ -11,7 +11,7 @@ export interface IApartmentReferenceDataItem extends IReferenceDataItem {
     livingArea: number;
     noLivingArea: number;
     commonArea: number;
-    name: string;
+    houseId: string;
 }
 
 export interface IApartment {
@@ -23,6 +23,10 @@ export interface IApartment {
     numberOfRegistered: number;
 }
 
+export interface IGetApartment extends IApartment {
+    name: string;
+}
+
 export interface IApartmentAllInfo extends IApartment {
     address: string;
     subscriberId: number;
@@ -32,15 +36,10 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
     engName: "apartment",
     rusName: [{ word: "жилое", isChangeable: true }, { word: "помещение", isChangeable: true }],
     gender: "средний",
-    tableActions: { actions: [{ type: "editAndSave", onClick: () => { }, id: 0 }] },
     components: [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "д. 98" },
-                { value: 2, text: "д. 99" },
-                { value: 3, text: "д. 100" },
-            ],
-            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", gender: "мужской", isFilter: true,
+            type: "select", selectorOptions: [],
+            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", sendId: "houseId", gender: "мужской", isFilter: true,
             filterItems: [{ items: [] }],
             rows: []
         },

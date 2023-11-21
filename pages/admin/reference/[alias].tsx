@@ -46,10 +46,10 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
             } */}
             {engName === "profile" &&
                 <ReferencePageComponent<IUserReferenceDataItem>
-                    additionalFormData={[{
-                        userRole: UserRole.ManagementCompany,
-                        registerRole: UserRole.Admin // ИСПРАВИТЬ!!!
-                    }]}
+                    // additionalFormData={[{
+                    //     userRole: UserRole.ManagementCompany,
+                    //     registerRole: UserRole.Admin // ИСПРАВИТЬ!!!
+                    // }]}
                     setPostData={setPostData}
                     key={managementCompanyPageComponent.engName}
                     item={enrichReferenceComponent(data, managementCompanyPageComponent, engName)}
@@ -70,14 +70,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     let apiUrl: string = '';
     switch (engName) {
         case "management-company":
-            apiUrl = API.admin.reference["managementCompany"].get;
+            apiUrl = API.common.user.getAll;
             break;
         case "penalty-calculation-rule": {
             apiUrl = API.admin.correction.penaltyCalculationRule.get;
             break;
         }
         default:
-            apiUrl = API.admin.reference[engName].get;
+        // apiUrl = API.admin.reference[engName].get; // ИСПРАВИТЬ
     }
 
     try {

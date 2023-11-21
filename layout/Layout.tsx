@@ -22,17 +22,11 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
     // const [isChatItem, setIsChatItem] = useState<string>("");
     const isChatItemRef = useRef("");
 
-    const user = {
-        userId: userId,
-        userRole: userRole
-    };
+    const user = { userId, userRole };
 
     useEffect(() => {
         const socket = io('http://localhost:3100', {
-            extraHeaders: {
-                // ИСПРАВИТЬ!!!
-                Authorization: 'Bearer YOUR_TOKEN_HERE',
-            },
+            withCredentials: true,
         });
 
         socket.on('connect', function () {

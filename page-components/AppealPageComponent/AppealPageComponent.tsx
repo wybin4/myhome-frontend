@@ -189,7 +189,7 @@ export const AppealOwnerPageComponent = ({
                 try {
                     if (!meters) {
                         const { data } = await api.post<{ meters: IGetIndividualMeter[] }>(
-                            API.subscriber.meter.get, {
+                            API.reference.meter.get, { // ИСПРАВИТЬ!!!
                             userId: user.userId,
                             userRole: user.userRole,
                             meterType: MeterType.Individual,

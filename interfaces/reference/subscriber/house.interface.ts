@@ -24,6 +24,10 @@ export interface IHouse {
     commonArea: number;
 }
 
+export interface IGetHouse extends IHouse {
+    name: string;
+}
+
 export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem> = {
     engName: "house",
     rusName: [{ word: "дом", isChangeable: true }],

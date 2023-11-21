@@ -7,18 +7,19 @@ import RussianNounsJS from "russian-nouns-js";
 import { Gender } from "russian-nouns-js/src/Gender";
 import { IReferenceTitle } from "@/interfaces/reference/page.interface";
 import { DatePickerFormProps, InputFormProps, SelectorFormProps } from "@/components/enhanced/Form/Form.props";
+import { SelectorOption } from "@/components/primitive/Select/Select.props";
 // import cn from 'classnames';
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
-    uriToAdd,
-    additionalFormData, setPostData
+    uriToAdd, additionalSelectorOptions,
+    setPostData, additionalFormData
     // uriToAddMany
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
-    
+
     const rne = new RussianNounsJS.Engine();
 
     const noun = item.rusName;
@@ -80,7 +81,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     size: "m",
                     inputType: component.inputType ? component.inputType : "string",
                     numberInOrder: component.numberInOrder,
-                    id: component.id,
+                    id: component.sendId ? component.sendId : component.id,
                     type: "input",
                     error: {
                         value: true, message: `Заполните ${getCase(
@@ -93,12 +94,25 @@ export const ReferencePageComponent = <T extends FieldValues>({
     const selectors: SelectorFormProps<T>[] = item.components
         .filter(c => c.type === "select")
         .map(component => {
+            let selectorOptions: SelectorOption[] = [];
+            if (additionalSelectorOptions) {
+                const data = additionalSelectorOptions.find(ad => ad.id === component.sendId);
+                if (data) {
+                    selectorOptions = data.data.map(d => {
+                        return {
+                            value: d.id,
+                            text: String(d.name)
+                        };
+                    });
+                }
+            }
+
             return {
                 size: "m",
                 inputTitle: capFirstLetter(phraseByArr(component.title)),
-                options: component.selectorOptions ? component.selectorOptions : [],
+                options: [...selectorOptions, ...component.selectorOptions || []],
 
-                id: component.id,
+                id: component.sendId ? component.sendId : component.id,
                 type: "select",
                 numberInOrder: component.numberInOrder,
                 error: {
@@ -116,7 +130,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 inputTitle: capFirstLetter(phraseByArr(component.title)),
                 inputSize: "m",
 
-                id: component.id,
+                id: component.sendId ? component.sendId : component.id,
                 type: "datepicker",
                 numberInOrder: component.numberInOrder,
                 error: {
@@ -134,7 +148,6 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     noun, gender, "предложный"
                 )} добавлены`}
                 successCode={201}
-                additionalFormData={additionalFormData}
                 urlToPost={uriToAdd}
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
@@ -145,6 +158,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 selectors={selectors}
                 datePickers={datePickers}
                 setPostData={setPostData}
+                additionalFormData={additionalFormData}
             >
             </Form>
             <Table

@@ -123,6 +123,10 @@ function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
                         value: true, message: "Введите текст уведомления"
                     }
                 }]}
+                setPostData={(newData: { notification: IGetHouseNotification }) => {
+                    const response = newData.notification;
+                    data.notifications.unshift(response);
+                }}
             />
             <Table
                 title="Уведомления"

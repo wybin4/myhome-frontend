@@ -2,14 +2,15 @@
 import { IAppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
-import { IUserReferenceData, IUserReferenceDataItem, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
+import { IGetCommon, ITypeOfService } from "@/interfaces/common.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
-import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData } from "@/interfaces/reference/meter.interface";
+import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData, MeterType } from "@/interfaces/reference/meter.interface";
 import { IReferencePageComponent, IReferenceData } from "@/interfaces/reference/page.interface";
-import { IApartmentReferenceData, IApartmentReferenceDataItem, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
-import { IHouseReferenceData, IHouseReferenceDataItem, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
+import { IApartmentReferenceData, IApartmentReferenceDataItem, IGetApartment, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
+import { IGetHouse, IHouseReferenceData, IHouseReferenceDataItem, housePageComponent } from "@/interfaces/reference/subscriber/house.interface";
 import { ISubscriberReferenceData, ISubscriberReferenceDataItem, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
-import { IMunicipalTariffReferenceDataItem, municipalTariffPageComponent, INormReferenceDataItem, normPageComponent, ISocialNormReferenceDataItem, socialNormPageComponent, ISeasonalityFactorReferenceDataItem, seasonalityFactorPageComponent, ICommonHouseNeedTariffReferenceDataItem, сommonHouseNeedTariffPageComponent, ICommonHouseNeedTariffReferenceData, IMunicipalTariffReferenceData, INormReferenceData, ISeasonalityFactorReferenceData, ISocialNormReferenceData } from "@/interfaces/reference/tariff-and-norm.interface";
+import { IMunicipalTariffReferenceDataItem, municipalTariffPageComponent, INormReferenceDataItem, normPageComponent, ISocialNormReferenceDataItem, socialNormPageComponent, ISeasonalityFactorReferenceDataItem, seasonalityFactorPageComponent, ICommonHouseNeedTariffReferenceDataItem, сommonHouseNeedTariffPageComponent, TariffAndNormType, IBaseTariffAndNormReferenceData } from "@/interfaces/reference/tariff-and-norm.interface";
 import { withLayout } from "@/layout/Layout";
 import { ReferencePageComponent } from "@/page-components";
 import { GetServerSidePropsContext } from "next";
@@ -20,69 +21,105 @@ import { FieldValues } from "react-hook-form";
 function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [data, setData] = useState(initialData);
     const [engName, setEngName] = useState<string>("");
+    const [baseEngName, setBaseEngName] = useState<string>("");
     const router = useRouter();
 
-    const additionalFormData = [{ managementCompanyId: 1 }];
+    const getAdditionalFormData = () => {
+        switch (engName) {
+            case "individualMeter":
+                return { additionalFormData: [{ "meterType": MeterType.Individual }] };
+            case "generalMeter":
+                return { additionalFormData: [{ "meterType": MeterType.General }] };
+            case "socialNorm":
+                return { additionalFormData: [{ "type": TariffAndNormType.SocialNorm }] };
+            case "norm":
+                return { additionalFormData: [{ "type": TariffAndNormType.Norm }] };
+            case "seasonalityFactor":
+                return { additionalFormData: [{ "type": TariffAndNormType.SeasonalityFactor }] };
+            case "municipalTariff":
+                return { additionalFormData: [{ "type": TariffAndNormType.MunicipalTariff }] };
+            case "commonHouseNeedTariff":
+                return { additionalFormData: [{ "type": TariffAndNormType.CommonHouseNeedTariff }] };
+        }
+        return;
+    };
 
     const getEngName = () => {
         let engName = router.asPath.split("/")[3];
+        let baseEngName;
         switch (engName) {
             case "individual-meter":
+                baseEngName = "meter";
                 engName = "individualMeter";
                 break;
             case "general-meter":
+                baseEngName = "meter";
                 engName = "generalMeter";
                 break;
             case "owner":
+                baseEngName = "user";
                 engName = "user";
                 break;
+            case "norm":
+                engName = "norm";
+                baseEngName = "tariffAndNorm";
+                break;
+            case "social-norm":
+                engName = "socialNorm";
+                baseEngName = "tariffAndNorm";
+                break;
+            case "seasonality-factor":
+                engName = "seasonalityFactor";
+                baseEngName = "tariffAndNorm";
+                break;
+            case "common-house-need-tariff":
+                engName = "commonHouseNeedTariff";
+                baseEngName = "tariffAndNorm";
+                break;
+            case "municipal-tariff": {
+                engName = "municipalTariff";
+                baseEngName = "tariffAndNorm";
+                break;
+            }
             case "penalty-rule":
+                baseEngName = "penaltyRule";
                 engName = "penaltyRule";
                 break;
+            default:
+                baseEngName = engName;
+                break;
         }
-        return engName;
+        return { engName, baseEngName };
     };
 
     useEffect(() => {
-        setEngName(getEngName());
+        const { engName, baseEngName } = getEngName();
+        setEngName(engName);
+        setBaseEngName(baseEngName);
     }, [router.asPath]);
 
     const setPostData = (newData: any) => {
         setData(prevData => {
-            const newDataArray = [...prevData[engName + "s"], newData[engName]];
-            return { ...prevData, [engName + "s"]: newDataArray };
+            const newDataArray = [...prevData[baseEngName + "s"], newData[baseEngName]];
+            return { ...prevData, [baseEngName + "s"]: newDataArray };
         });
     };
 
     const createComponent = <T extends FieldValues>(
         item: IReferencePageComponent<T>,
-    ) => {
-        const newItem = enrichReferenceComponent(data, item, engName);
-        return (
-            <ReferencePageComponent<T>
-                setPostData={setPostData}
-                additionalFormData={additionalFormData}
-                key={newItem.engName}
-                item={newItem}
-                uriToAdd={API.managementCompany.reference[engName].add}
-                uriToAddMany={API.managementCompany.reference[engName].addMany}
-            />
-        );
-    };
-
-    const createBaseComponent = <T extends FieldValues>(
-        baseEngName: string,
-        item: IReferencePageComponent<T>,
+        uriToAdd?: string,
+        uriToAddMany?: string
     ) => {
         const newItem = enrichReferenceComponent(data, item, baseEngName);
         return (
             <ReferencePageComponent<T>
                 setPostData={setPostData}
-                additionalFormData={additionalFormData}
                 key={newItem.engName}
                 item={newItem}
-                uriToAdd={API.managementCompany.reference[baseEngName].add}
-                uriToAddMany={API.managementCompany.reference[baseEngName].addMany}
+                uriToAdd={uriToAdd ? uriToAdd : API.managementCompany.reference[baseEngName].add}
+                uriToAddMany={uriToAddMany ? uriToAddMany : API.managementCompany.reference[baseEngName].addMany}
+                additionalSelectorOptions={data.additionalData}
+                {...getAdditionalFormData()}
             />
         );
     };
@@ -92,32 +129,23 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
             {engName === "house" && createComponent<IHouseReferenceDataItem>(housePageComponent)}
             {engName === "apartment" && createComponent<IApartmentReferenceDataItem>(apartmentPageComponent)}
             {engName === "subscriber" && createComponent<ISubscriberReferenceDataItem>(subscriberPageComponent)}
-            {engName === "individualMeter" && createBaseComponent<IIndividualMeterReferenceDataItem>("meter", individualMeterPageComponent)}
-            {engName === "generalMeter" && createBaseComponent<IGeneralMeterReferenceDataItem>("meter", generalMeterPageComponent)}
-            {engName === "municipal-tariff" && createBaseComponent<IMunicipalTariffReferenceDataItem>("tariffAndNorm", municipalTariffPageComponent)}
-            {engName === "norm" && createBaseComponent<INormReferenceDataItem>("tariffAndNorm", normPageComponent)}
-            {engName === "social-norm" && createBaseComponent<ISocialNormReferenceDataItem>("tariffAndNorm", socialNormPageComponent)}
-            {engName === "seasonality-factor" && createBaseComponent<ISeasonalityFactorReferenceDataItem>("tariffAndNorm", seasonalityFactorPageComponent)}
-            {engName === "common-house-need-tariff" && createBaseComponent<ICommonHouseNeedTariffReferenceDataItem>("tariffAndNorm", сommonHouseNeedTariffPageComponent)}
-            {engName === "penalty-rule" &&
-                <ReferencePageComponent<IPenaltyCalculationRuleReferenceDataItem>
-                    setPostData={setPostData}
-                    additionalFormData={additionalFormData}
-                    key={penaltyCalcRulePageComponent.engName}
-                    item={enrichReferenceComponent(data, penaltyCalcRulePageComponent, "penaltyRule")}
-                    uriToAdd={API.managementCompany.correction.penaltyRule.add}
-                />
-            }
-            {engName === "user" &&
-                <ReferencePageComponent<IUserReferenceDataItem>
-                    setPostData={setPostData}
-                    additionalFormData={additionalFormData}
-                    key={ownerPageComponent.engName}
-                    item={enrichReferenceComponent(data, ownerPageComponent, "user")}
-                    uriToAdd={API.managementCompany.common.owner.add}
-                    uriToAddMany={API.managementCompany.common.owner.addMany}
-                />
-            }
+            {engName === "individualMeter" && createComponent<IIndividualMeterReferenceDataItem>(individualMeterPageComponent)}
+            {engName === "generalMeter" && createComponent<IGeneralMeterReferenceDataItem>(generalMeterPageComponent)}
+            {engName === "municipalTariff" && createComponent<IMunicipalTariffReferenceDataItem>(municipalTariffPageComponent)}
+            {engName === "norm" && createComponent<INormReferenceDataItem>(normPageComponent)}
+            {engName === "socialNorm" && createComponent<ISocialNormReferenceDataItem>(socialNormPageComponent)}
+            {engName === "seasonalityFactor" && createComponent<ISeasonalityFactorReferenceDataItem>(seasonalityFactorPageComponent)}
+            {engName === "commonHouseNeedTariff" && createComponent<ICommonHouseNeedTariffReferenceDataItem>(сommonHouseNeedTariffPageComponent)}
+            {engName === "penaltyRule" && createComponent<IPenaltyCalculationRuleReferenceDataItem>(
+                penaltyCalcRulePageComponent,
+                API.managementCompany.correction.penaltyRule.add,
+                API.managementCompany.correction.penaltyRule.addMany
+            )}
+            {engName === "user" && createComponent<IUserReferenceDataItem>(
+                ownerPageComponent,
+                API.common.user.add,
+                API.common.user.addMany
+            )}
         </>
     );
 }
@@ -128,15 +156,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     try {
         const url = context.resolvedUrl || "";
         const engName = url.split("/")[3];
-        let postData: { [key: string]: number | string | Date | undefined } = {};
 
         let apiUrl: string = '';
+        let additionalData: Record<string, string | number> = {};
         switch (engName) {
             case "owner":
-                apiUrl = API.common.owner.get;
+                apiUrl = API.common.user.get;
                 break;
             case "individual-meter":
+                additionalData = {
+                    "meterType": MeterType.Individual
+                };
+                apiUrl = API.reference["meter"].get;
+                break;
             case "general-meter":
+                additionalData = {
+                    "meterType": MeterType.General
+                };
                 apiUrl = API.reference["meter"].get;
                 break;
             case "norm":
@@ -144,16 +180,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             case "seasonality-factor":
             case "common-house-need-tariff":
             case "municipal-tariff": {
-                postData = {
-                    "managementCompanyId": 1, // ИСПРАВИТЬ
-                };
                 apiUrl = API.reference["tariffAndNorm"].get;
                 break;
             }
             case "penalty-rule": {
-                postData = {
-                    "managementCompanyId": 1, // ИСПРАВИТЬ
-                };
                 apiUrl = API.managementCompany.correction["penaltyRule"].get;
                 break;
             }
@@ -163,36 +193,148 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         switch (engName) {
             case "house":
-                return await fetchReferenceData<IHouseReferenceData>(context, apiUrl, postData);
+                return await fetchReferenceData<IHouseReferenceData>(context, apiUrl, { "isAllInfo": true });
             case "apartment":
-                return await fetchReferenceData<IApartmentReferenceData>(context, apiUrl, postData);
+                try {
+                    const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(context, API.reference.house.get,
+                        { "isAllInfo": true }
+                    );
+                    const { props: apartmentProps } = await fetchReferenceData<IApartmentReferenceData>(context, apiUrl, undefined);
+                    if (!apartmentProps || !houseProps) {
+                        return {
+                            notFound: true
+                        };
+                    }
+                    return {
+                        props: {
+                            data: {
+                                apartments: apartmentProps.data.apartments,
+                                additionalData: [{
+                                    data: houseProps.data.houses,
+                                    id: 'houseId'
+                                }]
+                            }
+                        }
+                    };
+                } catch {
+                    return {
+                        notFound: true
+                    };
+                }
             case "subscriber":
-                return await fetchReferenceData<ISubscriberReferenceData>(context, apiUrl, postData);
+                try {
+                    const { props: apartmentProps } = await fetchReferenceData<{ apartments: IGetApartment[] }>(context, API.reference.apartment.get,
+                        { "isAllInfo": false }
+                    );
+                    const { props: ownerProps } = await fetchReferenceData<{ profiles: IUser[] }>(context, API.common.user.getAll, { "userRole": UserRole.Owner });
+                    const { props: subscriberProps } = await fetchReferenceData<ISubscriberReferenceData>(context, apiUrl, undefined);
+                    if (!subscriberProps || !apartmentProps || !ownerProps) {
+                        return {
+                            notFound: true
+                        };
+                    }
+                    return {
+                        props: {
+                            data: {
+                                subscribers: subscriberProps.data.subscribers,
+                                additionalData: [{
+                                    data: apartmentProps.data.apartments,
+                                    id: 'apartmentId'
+                                },
+                                {
+                                    data: ownerProps.data.profiles,
+                                    id: 'ownerId'
+                                }]
+                            }
+                        }
+                    };
+                } catch {
+                    return {
+                        notFound: true
+                    };
+                }
             case "owner":
-                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, postData);
+                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, undefined);
             case "individual-meter":
-                postData["meterType"] = "Individual";
-                return await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl, postData);
+                try {
+                    const { props: meterProps } = await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl, additionalData);
+                    const { props: apartmentProps } = await fetchReferenceData<{ apartments: IGetApartment[] }>(context, API.reference.apartment.get,
+                        { "isAllInfo": false }
+                    );
+                    const { props: typeOfServiceProps } = await fetchReferenceData<{ typesOfService: ITypeOfService[] }>(
+                        context, API.reference.typeOfService.get, undefined
+                    );
+                    if (!apartmentProps || !meterProps || !typeOfServiceProps) {
+                        return {
+                            notFound: true
+                        };
+                    }
+                    return {
+                        props: {
+                            data: {
+                                meters: meterProps.data.meters,
+                                additionalData: [{
+                                    data: typeOfServiceProps.data.typesOfService,
+                                    id: 'typeOfServiceId'
+                                },
+                                {
+                                    data: apartmentProps.data.apartments,
+                                    id: 'apartmentId'
+                                }]
+                            }
+                        }
+                    };
+                } catch {
+                    return {
+                        notFound: true
+                    };
+                }
             case "general-meter":
-                postData["meterType"] = "General";
-                return await fetchReferenceData<IGeneralMeterReferenceData>(context, apiUrl, postData);
+                try {
+                    const { props: meterProps } = await fetchReferenceData<IGeneralMeterReferenceData>(context, apiUrl, additionalData);
+                    const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(context, API.reference.house.get,
+                        { "isAllInfo": true }
+                    );
+                    const { props: typeOfServiceProps } = await fetchReferenceData<{ typesOfService: ITypeOfService[] }>(
+                        context, API.reference.typeOfService.get, undefined
+                    );
+                    if (!houseProps || !meterProps || !typeOfServiceProps) {
+                        return {
+                            notFound: true
+                        };
+                    }
+                    return {
+                        props: {
+                            data: {
+                                meters: meterProps.data.meters,
+                                additionalData: [{
+                                    data: typeOfServiceProps.data.typesOfService,
+                                    id: 'typeOfServiceId'
+                                },
+                                {
+                                    data: houseProps.data.houses,
+                                    id: 'houseId'
+                                }]
+                            }
+                        }
+                    };
+                } catch {
+                    return {
+                        notFound: true
+                    };
+                }
             case "municipal-tariff":
-                postData["type"] = "MunicipalTariff";
-                return await fetchReferenceData<IMunicipalTariffReferenceData>(context, apiUrl, postData);
+                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.MunicipalTariff);
             case "norm":
-                postData["type"] = "Norm";
-                return await fetchReferenceData<INormReferenceData>(context, apiUrl, postData);
+                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.Norm);
             case "social-norm":
-                postData["type"] = "SocialNorm";
-                return await fetchReferenceData<ISocialNormReferenceData>(context, apiUrl, postData);
+                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.SocialNorm);
             case "seasonality-factor":
-                postData["type"] = "SeasonalityFactor";
-                return await fetchReferenceData<ISeasonalityFactorReferenceData>(context, apiUrl, postData);
+                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.SeasonalityFactor, true);
             case "common-house-need-tariff":
-                postData["type"] = "CommonHouseNeedTariff";
-                return await fetchReferenceData<ICommonHouseNeedTariffReferenceData>(context, apiUrl, postData);
+                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.CommonHouseNeedTariff, false, true);
             case "penalty-rule":
-                return await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, postData);
+                return await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, undefined);
             default:
                 return {
                     notFound: true
@@ -205,7 +347,88 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
+const fetchTariffAndNormData = async (
+    context: GetServerSidePropsContext,
+    apiUrl: string,
+    type: TariffAndNormType,
+    isNotUnit?: boolean,
+    isHouse?: boolean
+) => {
+    try {
+        const { props: tariffAndNormProps } = await fetchReferenceData<IBaseTariffAndNormReferenceData>(
+            context,
+            apiUrl,
+            { type }
+        );
+
+        const additionalData: {
+            data: any[];
+            id: string;
+        }[] = [];
+
+        if (isHouse) {
+            const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(
+                context,
+                API.reference.house.get,
+                { isAllInfo: true }
+            );
+
+            additionalData.push({
+                data: houseProps?.data.houses || [],
+                id: 'houseId',
+            });
+        }
+        if (!isNotUnit) {
+            const { props: commonProps } = await fetchReferenceData<IGetCommon>(
+                context,
+                API.reference.common.get,
+                undefined
+            );
+
+            additionalData.push({
+                data: commonProps?.data.typesOfService || [],
+                id: 'typeOfServiceId',
+            });
+            additionalData.push({
+                data: commonProps?.data.units || [],
+                id: 'unitId',
+            });
+        } else {
+            const { props: typeOfServiceProps } = await fetchReferenceData<{ typesOfService: ITypeOfService[] }>(
+                context,
+                API.reference.typeOfService.get,
+                undefined
+            );
+
+            additionalData.push({
+                data: typeOfServiceProps?.data.typesOfService || [],
+                id: 'typeOfServiceId',
+            });
+        }
+
+        if (!tariffAndNormProps) {
+            return {
+                notFound: true,
+            };
+        }
+
+        return {
+            props: {
+                data: {
+                    tariffAndNorms: tariffAndNormProps.data.tariffAndNorms,
+                    additionalData,
+                },
+            },
+        };
+    } catch {
+        return {
+            notFound: true,
+        };
+    }
+};
+
+
 interface ReferencePageProps extends IAppContext {
-    data: IReferenceData;
+    data: IReferenceData & { additionalData: { data: Record<string, string | number>[]; id: string }[] };
     [key: string]: unknown;
 }

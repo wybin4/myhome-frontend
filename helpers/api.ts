@@ -34,7 +34,6 @@ export const API: {
     },
     managementCompany: {
         reference: IDataWithoutGet;
-        common: IDataWithoutGet;
         correction: IData;
         singlePaymentDocument: { get: string; calculate: string };
         voting: { add: string };
@@ -42,11 +41,10 @@ export const API: {
         appeal: { add: string; update: string; };
     };
     admin: {
-        reference: IData;
         correction: { penaltyCalculationRule: { add: string; get: string } };
     };
     reference: IDataGet;
-    common: IDataGet;
+    common: { user: { [key: string]: string } };
     auth: { [key: string]: string };
 } = {
     chat: {
@@ -92,12 +90,6 @@ export const API: {
                 addMany: ``,
             },
         },
-        common: {
-            owner: {
-                add: ``,
-                addMany: ``,
-            }
-        },
         correction: {
             penaltyRule: {
                 add: ``,
@@ -126,13 +118,6 @@ export const API: {
         }
     },
     admin: {
-        reference: {
-            managementCompany: {
-                add: `auth/register`,
-                addMany: ``,
-                get: `user/get-all-users`
-            }
-        },
         correction: {
             penaltyCalculationRule: {
                 add: ``,
@@ -158,14 +143,20 @@ export const API: {
         },
         typeOfService: {
             get: `common/get-all-types-of-service`
+        },
+        common: {
+            get: 'common/get-common'
         }
     },
     event: {
         get: `event/get-events`
     },
     common: {
-        owner: {
-            get: `user/get-users-by-another-role`
+        user: {
+            get: `user/get-users-by-another-role`,
+            getAll: `user/get-all-users`,
+            add: 'auth/register',
+            addMany: 'auth/register-many'
         }
     },
     auth: {

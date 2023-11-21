@@ -73,10 +73,7 @@ function Voting({ data }: IVotingProps): JSX.Element {
             <Form<IVoting>
                 successMessage={"Опрос добавлен"}
                 successCode={201}
-                additionalFormData={
-                    [{ managementCompanyId: 1 }]
-                }
-                urlToPost={""}
+                urlToPost={API.managementCompany.voting.add}
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
                 title={"Добавление опроса"}
@@ -111,6 +108,11 @@ function Voting({ data }: IVotingProps): JSX.Element {
                         value: true, message: "Введите дату окончания"
                     }
                 }]}
+                // ИСПРАВИТЬ
+                setPostData={(newData: { voting: IGetVoting }) => {
+                    const response = newData.voting;
+                    data.votings.unshift(response);
+                }}
             />
             <Table
                 title="Опросы"

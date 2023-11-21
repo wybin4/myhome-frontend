@@ -24,6 +24,8 @@ export interface IReferencePageComponent<T extends FieldValues> {
 
 export interface IReferencePageItem<T extends FieldValues> {
     id: Path<T>;
+    sendId?: Path<T>;
+
     title: IReferenceTitle[];
     gender: Gender[keyof Gender];
 

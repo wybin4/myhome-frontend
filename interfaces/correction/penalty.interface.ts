@@ -16,14 +16,10 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
     engName: "penalty-rule",
     rusName: [{ word: "настройка", isChangeable: true }, { word: "пени" }],
     gender: "женский",
-    keyElements: {first: [], second: 1, isSecondNoNeedTitle: true},
+    keyElements: { first: [], second: 1, isSecondNoNeedTitle: true },
     components: [
         {
-            type: "select", selectorOptions: [
-                { value: 1, text: "ХВС" },
-                { value: 2, text: "ГВС" },
-                { value: 3, text: "Отопление" },
-            ],
+            type: "select", selectorOptions: [],
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", gender: "женский",
             isFilter: true, filterItems: [
                 { items: ["ХВС", "ГВС", "Отопление"] },
@@ -31,7 +27,7 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
             rows: []
         },
         {
-            type: "select", selectorOptions: [
+            type: "select", selectorOptions: [ // ИСПРАВИТЬ
                 { value: "34234fds324", text: "C 31 дня просрочки 1/300 ставки; С 91 дня 1/130 ставки" },
                 { value: "32234fds324", text: "С 1 дня просрочки 1/300 ставки" },
                 { value: "32145fds324", text: "Не начисляется" },
