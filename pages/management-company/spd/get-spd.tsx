@@ -1,9 +1,11 @@
+import { IAppContext } from "@/context/app.context";
 import { API, api } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
+import { fetchReferenceData } from "@/helpers/reference-constants";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { withLayout } from "@/layout/Layout";
 import { GetSPDPageComponent } from "@/page-components";
 import axios from "axios";
+import { GetServerSidePropsContext } from "next";
 import { useState } from "react";
 
 function GetSPD({ data }: IGetSPDProps): JSX.Element {
@@ -16,7 +18,6 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
 
     const fetchSPD = async (keyRate: number) => {
         const formData: IGetSPDData = {
-            managementCompanyId: 1, // ИСПРАВИТЬ
             keyRate: keyRate,
         };
 
@@ -78,40 +79,16 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
 
 export default withLayout(GetSPD);
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const apiUrl = API.reference.subscriber.get;
-    const postData = {
-        userId: 1,
-        userRole: UserRole.ManagementCompany
-    };
-
-    try {
-        const { data } = await api.post<{ data: ISubscriberReferenceData }>(apiUrl, postData);
-        if (!data) {
-            return {
-                notFound: true
-            };
-        }
-        return {
-            props: {
-                data
-            }
-        };
-    } catch {
-        return {
-            notFound: true
-        };
-    }
+    return await fetchReferenceData<{ data: ISubscriberReferenceData }>(context, apiUrl, undefined);
 }
 
-interface IGetSPDProps extends Record<string, unknown> {
+interface IGetSPDProps extends Record<string, unknown>, IAppContext {
     data: ISubscriberReferenceData;
-    userRole: UserRole;
-    userId: number;
 }
 
 interface IGetSPDData {
-    managementCompanyId: number;
     houseIds?: number[];
     subscriberIds?: number[];
     keyRate: number;

@@ -7,6 +7,15 @@ export interface IVoting {
     status: VotingStatus;
 }
 
+export interface IAddVoting {
+    houseId: number;
+    title: string;
+    expiredAt: Date;
+    options: {
+        val: string; text: number
+    };
+}
+
 export enum VotingStatus {
     Open = 'Открыт',
     Close = 'Закрыт'

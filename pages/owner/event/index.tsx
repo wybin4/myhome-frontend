@@ -6,14 +6,13 @@ import VotingIcon from "./voting.svg";
 import cn from "classnames";
 import { EventType, IGetEvents, IGetHouseNotification, IGetVoting } from "@/interfaces/event.interface";
 import { API, api } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
 import { getEnumKeyByValue, getHumanDate } from "@/helpers/constants";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { IOption, VotingStatus } from "@/interfaces/event/voting.interface";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
-import { AppContext } from "@/context/app.context";
+import { AppContext, IAppContext } from "@/context/app.context";
 
 interface IEvent {
     event: IGetVoting | IGetHouseNotification;
@@ -188,11 +187,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
 }
 
-interface EventProps extends Record<string, unknown> {
+interface EventProps extends Record<string, unknown>, IAppContext {
     data: {
         notifications: IGetHouseNotification[];
         votings: IGetVoting[];
     };
-    userRole: UserRole;
-    userId: number;
 }

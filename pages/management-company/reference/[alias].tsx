@@ -428,7 +428,6 @@ const fetchTariffAndNormData = async (
 };
 
 
-interface ReferencePageProps extends IAppContext {
+interface ReferencePageProps extends Record<string, unknown>, IAppContext {
     data: IReferenceData & { additionalData: { data: Record<string, string | number>[]; id: string }[] };
-    [key: string]: unknown;
 }

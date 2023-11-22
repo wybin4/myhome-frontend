@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./NavMenu.module.css";
 import { NavMenuProps } from "./NavMenu.props";
 import cn from 'classnames';
@@ -6,9 +6,8 @@ import ExitIcon from './exit.svg';
 import { useRouter } from "next/router";
 import axios from "axios";
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
 
-export const NavMenu = ({ user, className, ...props }: NavMenuProps): JSX.Element => {
+export const NavMenu = ({  className, ...props }: NavMenuProps): JSX.Element => {
     const [isNavMenu, setIsNavMenu] = useState<boolean>(false);
     const router = useRouter();
 
@@ -56,18 +55,16 @@ export const NavMenu = ({ user, className, ...props }: NavMenuProps): JSX.Elemen
 
     return (
         <>
-            {user.userRole && user.userRole !== UserRole.None &&
-                <div className={className} {...props}>
-                    {isNavMenu &&
-                        <div className={cn(className, styles.desktop)} {...props}>
+            <div className={className} {...props}>
+                {isNavMenu &&
+                    <div className={cn(className, styles.desktop)} {...props}>
 
-                        </div>
-                    }
-                    <div className={cn(className, styles.mobile)} {...props}>
-                        <span onClick={() => exit()} className={styles.exitIcon}><ExitIcon /></span>
                     </div>
+                }
+                <div className={cn(className, styles.mobile)} {...props}>
+                    <span onClick={() => exit()} className={styles.exitIcon}><ExitIcon /></span>
                 </div>
-            }
+            </div>
         </>
     );
 };

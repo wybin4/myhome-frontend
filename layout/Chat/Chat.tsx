@@ -153,10 +153,7 @@ export const Chat = ({
                             <Icon
                                 onClick={async () => {
                                     if (!receivers) {
-                                        const { data } = await api.post(API.chat.getReceivers, {
-                                            userId: user.userId,
-                                            userRole: user.userRole
-                                        });
+                                        const { data } = await api.post(API.chat.getReceivers);
                                         if (data.receivers) {
                                             setReceivers(data.receivers);
                                         }
@@ -202,8 +199,6 @@ export const Chat = ({
                                                     setIsChat(!isChat);
                                                     if (chat._id) {
                                                         await api.post(API.chat.readMessages, {
-                                                            userId: user.userId,
-                                                            userRole: user.userRole,
                                                             chatId: chat._id
                                                         });
                                                     }

@@ -1,7 +1,6 @@
 import { Form, Table } from "@/components";
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
-import { IVoting, VotingStatus } from "@/interfaces/event/voting.interface";
+import { IAddVoting, VotingStatus } from "@/interfaces/event/voting.interface";
 import { withLayout } from "@/layout/Layout";
 import { format } from "date-fns";
 import CloseIcon from "./close.svg";
@@ -12,10 +11,12 @@ import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { EventType, IGetEvents, IGetVoting } from "@/interfaces/event.interface";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
+import { IAppContext } from "@/context/app.context";
 
 function Voting({ data }: IVotingProps): JSX.Element {
-    const useFormData = useForm<IVoting>();
+    const useFormData = useForm<IAddVoting>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+
     type VotingData = {
         id: number[];
         title: string[];
@@ -50,8 +51,8 @@ function Voting({ data }: IVotingProps): JSX.Element {
             accumulator.status.push(status);
             accumulator.houseName.push(voting.name);
             accumulator.result.push(voting.result ? voting.result : "—");
-            accumulator.createdAt.push(format(new Date(voting.createdAt), "dd.mm.yyyy"));
-            accumulator.expiredAt.push(format(new Date(voting.expiredAt), "dd.mm.yyyy"));
+            accumulator.createdAt.push(format(new Date(voting.createdAt), "dd.MM.yyyy"));
+            accumulator.expiredAt.push(format(new Date(voting.expiredAt), "dd.MM.yyyy"));
             return accumulator;
         },
         initialData
@@ -70,7 +71,7 @@ function Voting({ data }: IVotingProps): JSX.Element {
 
     return (
         <>
-            <Form<IVoting>
+            <Form<IAddVoting>
                 successMessage={"Опрос добавлен"}
                 successCode={201}
                 urlToPost={API.managementCompany.voting.add}
@@ -89,6 +90,15 @@ function Voting({ data }: IVotingProps): JSX.Element {
                         }
                     }
                 ]}
+                inputVotes={[{
+                    title: "Варианты ответа",
+                    id: "options",
+                    type: "input-vote",
+                    numberInOrder: 3,
+                    error: {
+                        value: true, message: "Введите варианты ответов"
+                    }
+                }]}
                 selectors={[{
                     inputTitle: "Дом",
                     options: houses,
@@ -108,7 +118,6 @@ function Voting({ data }: IVotingProps): JSX.Element {
                         value: true, message: "Введите дату окончания"
                     }
                 }]}
-                // ИСПРАВИТЬ
                 setPostData={(newData: { voting: IGetVoting }) => {
                     const response = newData.voting;
                     data.votings.unshift(response);
@@ -189,7 +198,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     try {
         const { props: votingProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataVotings);
-        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, undefined);
+        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, { "isAllInfo": false });
         if (!votingProps || !houseProps) {
             return {
                 notFound: true
@@ -210,8 +219,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
-interface IVotingProps extends Record<string, unknown> {
+interface IVotingProps extends Record<string, unknown>, IAppContext {
     data: { votings: IGetVoting[]; houses: IHouse[] };
-    userRole: UserRole;
-    userId: number;
 }

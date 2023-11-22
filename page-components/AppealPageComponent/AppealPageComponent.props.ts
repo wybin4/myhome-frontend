@@ -12,7 +12,7 @@ export interface AppealPageComponentProps extends DetailedHTMLProps<HTMLAttribut
     users?: IGetUserWithSubscriber[];
 }
 
-export interface AppealDetailPageComponentProps extends Omit<AppealPageComponentProps, "userRole"> {
+export interface AppealDetailPageComponentProps extends Omit<AppealPageComponentProps, "user"> {
     selectedId: number;
     setSelectedId: Dispatch<SetStateAction<number>>;
 

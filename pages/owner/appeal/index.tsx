@@ -1,7 +1,7 @@
-import { AppContext } from "@/context/app.context";
+import { AppContext, IAppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { fetchReferenceData } from "@/helpers/reference-constants";
-import { IGetUserWithSubscriber, UserRole } from "@/interfaces/account/user.interface";
+import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
 import { EventType, IGetEvents, IGetAppeal } from "@/interfaces/event.interface";
 import { withLayout } from "@/layout/Layout";
 import { AppealPageComponent } from "@/page-components";
@@ -27,7 +27,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     try {
         const { props: eventProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataEvents);
-        const { props: userProps } = await fetchReferenceData<{ users: IGetUserWithSubscriber[] }>(context, API.common.owner.get, undefined);
+        const { props: userProps } = await fetchReferenceData<{ users: IGetUserWithSubscriber[] }>(context, API.common.user.get, undefined);
 
         if (!eventProps || !userProps) {
             return {
@@ -49,11 +49,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
-interface AppealProps extends Record<string, unknown> {
+interface AppealProps extends Record<string, unknown>, IAppContext {
     data: {
         appeals: IGetAppeal[];
         users: IGetUserWithSubscriber[];
     };
-    userRole: UserRole;
-    userId: number;
 }

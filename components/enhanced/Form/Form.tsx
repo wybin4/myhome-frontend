@@ -3,7 +3,7 @@ import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProp
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePickerInput, Icon, Input, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
+import { Button, Checkbox, DatePickerInput, Icon, Input, InputVote, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
 import ArrowIcon from "./arrow.svg";
 import SuccessIcon from "./success.svg";
@@ -61,7 +61,7 @@ export const BaseForm = <T extends FieldValues>({
 
 export const Form = <T extends FieldValues>({
     title,
-    inputs, selectors, datePickers, textAreas, attachments,
+    inputs, selectors, datePickers, textAreas, attachments, inputVotes,
     className, useFormData,
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
@@ -77,12 +77,14 @@ export const Form = <T extends FieldValues>({
 
     const { handleSubmit, control, formState: { errors }, reset } = useFormData;
 
+
     const formComponents: FormElementProps<T>[] = [
         ...inputs || [],
         ...selectors || [],
         ...datePickers || [],
         ...textAreas || [],
         ...attachments || [],
+        ...inputVotes || []
     ];
     formComponents.sort((a, b) => a.numberInOrder - b.numberInOrder);
     const elementCount = Math.max(...formComponents.map(component => component.numberInOrder));
@@ -242,6 +244,31 @@ export const Form = <T extends FieldValues>({
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         {...component}
                                                     />
+                                                )}
+                                            />
+                                        );
+                                    case "input-vote":
+                                        return (
+                                            <Controller
+                                                key={key}
+                                                control={control}
+                                                name={component.id}
+                                                rules={
+                                                    {
+                                                        required: {
+                                                            value: component.error.value,
+                                                            message: component.error.message ? component.error.message : ""
+                                                        }
+                                                    }
+                                                }
+                                                render={({ field }) => (
+                                                    <InputVote
+                                                        value={field.value}
+                                                        setValue={field.onChange}
+                                                        ref={field.ref}
+                                                        className="mb-4"
+                                                        inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
+                                                        {...component} />
                                                 )}
                                             />
                                         );

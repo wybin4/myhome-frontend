@@ -7,9 +7,9 @@ import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { HouseNotificationType, IHouseNotification } from "@/interfaces/event/notification.interface";
 import { EventType, IGetEvents, IGetHouseNotification } from "@/interfaces/event.interface";
-import { UserRole } from "@/interfaces/account/user.interface";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
+import { IAppContext } from "@/context/app.context";
 
 function HouseNotification({ data }: IHouseNotificationProps): JSX.Element {
     const useFormData = useForm<IHouseNotification>();
@@ -199,7 +199,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     try {
         const { props: notificationProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataVotings);
-        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, undefined);
+        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, { "isAllInfo": false });
         if (!notificationProps || !houseProps) {
             return {
                 notFound: true
@@ -220,8 +220,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
-interface IHouseNotificationProps extends Record<string, unknown> {
+interface IHouseNotificationProps extends Record<string, unknown>, IAppContext {
     data: { notifications: IGetHouseNotification[]; houses: IHouse[] };
-    userRole: UserRole;
-    userId: number;
 }

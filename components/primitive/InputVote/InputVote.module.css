@@ -1,0 +1,32 @@
+.input {
+    width: 100%;
+    height: 2.375rem;
+
+    border: solid 1px var(--grey-light);
+    border-radius: 0.625rem;
+
+    font-size: 0.875rem;
+
+    padding-left: 0.7rem;
+}
+
+.input:focus {
+    border: solid 1px var(--primary);
+    outline: none;
+}
+
+.inputTitle {
+    font-weight: 500;
+    font-size: 0.875rem;
+
+    margin-bottom: 0.4rem;
+}
+
+.inputsWrapper .input {
+    margin-bottom: 1rem;
+}
+
+.addOptionButton {
+    font-size: 0.92rem;
+    text-decoration-line: underline;
+}

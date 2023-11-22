@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { IAppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
 import { IUserReferenceData, IUserReferenceDataItem, UserRole, managementCompanyPageComponent } from "@/interfaces/account/user.interface";
@@ -53,7 +54,7 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                     setPostData={setPostData}
                     key={managementCompanyPageComponent.engName}
                     item={enrichReferenceComponent(data, managementCompanyPageComponent, engName)}
-                    uriToAdd={API.admin.reference["managementCompany"].add}
+                    uriToAdd={API.admin.reference["managementCompany"].add} // ИСПРАВИТЬ
                     uriToAddMany={API.admin.reference["managementCompany"].addMany}
                 />
             }
@@ -103,8 +104,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
-interface ReferencePageProps extends Record<string, unknown> {
+interface ReferencePageProps extends Record<string, unknown>, IAppContext {
     data: IReferenceData;
-    userRole: UserRole;
-    userId: number;
 }

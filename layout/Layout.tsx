@@ -108,8 +108,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
 
             if (data.createdMessage && isChatItemRef.current === data.createdMessage.chatId) {
                 await api.post(API.chat.readMessages, {
-                    userId: user.userId,
-                    userRole: user.userRole,
                     chatId: data.createdMessage.chatId
                 });
             }
@@ -156,7 +154,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                 })}>
                     <Header className={styles.header} />
                     <Navigation user={user} className={styles.navigation} />
-                    <NavMenu user={user} className={styles.navMenu} />
+                    <NavMenu className={styles.navMenu} />
                     <Notification user={user} notifications={notifications} className={styles.notification} />
                     <Chat
                         isChatItemRef={isChatItemRef}

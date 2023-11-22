@@ -169,10 +169,7 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
                                     <button
                                         className={cn(styles.readAll, "viewNotifications")}
                                         onClick={async () => {
-                                            await api.post(API.serviceNotification.readAll, {
-                                                userId: user.userId,
-                                                userRole: user.userRole
-                                            });
+                                            await api.post(API.serviceNotification.readAll);
                                         }}
                                     >
                                         <CheckIcon />

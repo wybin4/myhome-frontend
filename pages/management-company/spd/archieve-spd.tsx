@@ -1,10 +1,12 @@
 import { Table } from "@/components";
-import { API, api } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
+import { API } from "@/helpers/api";
 import { withLayout } from "@/layout/Layout";
 import PdfIcon from "./icons/pdf.svg";
 import { MouseEventHandler } from "react";
 import { bytesToSize, downloadPdf, monthNamesInNominativeCase } from "@/helpers/constants";
+import { GetServerSidePropsContext } from "next";
+import { fetchReferenceData } from "@/helpers/reference-constants";
+import { IAppContext } from "@/context/app.context";
 
 function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
     type SPDData = {
@@ -126,35 +128,13 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
 
 export default withLayout(ArchiveSPD);
 
-export async function getServerSideProps() {
-    const apiUrl = API.managementCompany.singlePaymentDocument.get;
-    const postData = {
-        managementCompanyId: 1 // ИСПРАВИТЬ!!!!
-    };
-
-    try {
-        const { data } = await api.post<{ singlePaymentDocuments: IArchieveSPDData[] }>(apiUrl, postData);
-        if (!data) {
-            return {
-                notFound: true
-            };
-        }
-        return {
-            props: {
-                data
-            }
-        };
-    } catch {
-        return {
-            notFound: true
-        };
-    }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const apiUrl = API.singlePaymentDocument.get;
+    return await fetchReferenceData<{ singlePaymentDocuments: IArchieveSPDData[] }>(context, apiUrl, undefined);
 }
 
-interface IArchieveSPDProps extends Record<string, unknown> {
+interface IArchieveSPDProps extends Record<string, unknown>, IAppContext {
     data: { singlePaymentDocuments: IArchieveSPDData[] };
-    userRole: UserRole;
-    userId: number;
 }
 
 interface IArchieveSPDData {

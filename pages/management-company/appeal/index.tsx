@@ -1,11 +1,10 @@
 import { API } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
 import { withLayout } from "@/layout/Layout";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
 import { AppealPageComponent } from "@/page-components";
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData } from "@/helpers/reference-constants";
-import { AppContext } from "@/context/app.context";
+import { AppContext, IAppContext } from "@/context/app.context";
 import { useContext } from "react";
 
 function Appeal({ data }: AppealProps): JSX.Element {
@@ -40,8 +39,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
 }
 
-interface AppealProps extends Record<string, unknown> {
+interface AppealProps extends Record<string, unknown>, IAppContext {
     data: { appeals: IGetAppeal[] };
-    userRole: UserRole;
-    userId: number;
 }

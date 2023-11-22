@@ -1,8 +1,10 @@
-import { API, api } from "@/helpers/api";
-import { UserRole } from "@/interfaces/account/user.interface";
+import { IAppContext } from "@/context/app.context";
+import { API } from "@/helpers/api";
+import { fetchReferenceData } from "@/helpers/reference-constants";
 import { withLayout } from "@/layout/Layout";
 import { ChargePageComponent } from "@/page-components";
 import { ISpdData } from "@/page-components/ChargePageComponent/ChargePageComponent.props";
+import { GetServerSidePropsContext } from "next";
 import { useState } from "react";
 
 function Charge({ data }: IChargeProps): JSX.Element {
@@ -22,35 +24,13 @@ function Charge({ data }: IChargeProps): JSX.Element {
     );
 }
 
-export async function getServerSideProps() {
-    const apiUrl = API.subscriber.singlePaymentDocument.get;
-    const postData = {
-        subscriberIds: [1] // ИСПРАВИТЬ!!!!
-    };
-
-    try {
-        const { data } = await api.post<{ singlePaymentDocuments: ISpdData[] }>(apiUrl, postData);
-        if (!data) {
-            return {
-                notFound: true
-            };
-        }
-        return {
-            props: {
-                data
-            }
-        };
-    } catch {
-        return {
-            notFound: true
-        };
-    }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const apiUrl = API.singlePaymentDocument.get;
+    return await fetchReferenceData<{ singlePaymentDocuments: ISpdData[] }>(context, apiUrl, undefined);
 }
 
-interface IChargeProps extends Record<string, unknown> {
+interface IChargeProps extends Record<string, unknown>, IAppContext {
     data: { singlePaymentDocuments: ISpdData[] };
-    userRole: UserRole;
-    userId: number;
 }
 
 export default withLayout(Charge);

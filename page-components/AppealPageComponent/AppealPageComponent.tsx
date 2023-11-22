@@ -38,7 +38,6 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
             case UserRole.ManagementCompany:
                 return (
                     <AppealManagementCompanyPageComponent
-                        user={user}
                         selectedId={selectedId} setSelectedId={setSelectedId}
                         isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
                         appeals={appeals}
@@ -48,7 +47,6 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
             case UserRole.Owner:
                 return (
                     <AppealOwnerPageComponent
-                        user={user}
                         users={users}
                         selectedId={selectedId} setSelectedId={setSelectedId}
                         isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
@@ -80,7 +78,6 @@ export const AppealOwnerPageComponent = ({
     selectedId, setSelectedId,
     setError,
     isInfoWindowOpen, setIsInfoWindowOpen,
-    user
 }: AppealDetailPageComponentProps): JSX.Element => {
     const [activeTab, setActiveTab] = useState<number>(1);
     const useFormData = useForm<IAppeal>();
@@ -190,8 +187,6 @@ export const AppealOwnerPageComponent = ({
                     if (!meters) {
                         const { data } = await api.post<{ meters: IGetIndividualMeter[] }>(
                             API.reference.meter.get, { // ИСПРАВИТЬ!!!
-                            userId: user.userId,
-                            userRole: user.userRole,
                             meterType: MeterType.Individual,
                             isNotAllInfo: true
                         });
@@ -221,8 +216,6 @@ export const AppealOwnerPageComponent = ({
                     if (!apartments) {
                         const { data } = await api.post<{ apartments: IApartmentAllInfo[] }>(
                             API.subscriber.apartment.get, {
-                            userId: user.userId,
-                            userRole: user.userRole,
                             isAllInfo: true
                         });
                         if (!data) {

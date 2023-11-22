@@ -29,13 +29,12 @@ export const API: {
     subscriber: {
         appeal: { add: string };
         apartment: { get: string };
-        singlePaymentDocument: { get: string };
         voting: { update: string };
     },
     managementCompany: {
         reference: IDataWithoutGet;
         correction: IData;
-        singlePaymentDocument: { get: string; calculate: string };
+        singlePaymentDocument: { calculate: string };
         voting: { add: string };
         houseNotification: { add: string };
         appeal: { add: string; update: string; };
@@ -43,6 +42,7 @@ export const API: {
     admin: {
         correction: { penaltyCalculationRule: { add: string; get: string } };
     };
+    singlePaymentDocument: { get: string };
     reference: IDataGet;
     common: { user: { [key: string]: string } };
     auth: { [key: string]: string };
@@ -63,9 +63,6 @@ export const API: {
         },
         appeal: { add: `appeal/add-appeal` },
         voting: { update: `voting/update-voting` },
-        singlePaymentDocument: {
-            get: `single-payment-document/get-single-payment-documents-by-sid`,
-        }
     },
     managementCompany: {
         reference: {
@@ -103,7 +100,6 @@ export const API: {
             }
         },
         singlePaymentDocument: {
-            get: `single-payment-document/get-single-payment-documents-by-mcid`,
             calculate: `single-payment-document/get-single-payment-document`,
         },
         voting: {
@@ -158,6 +154,9 @@ export const API: {
             add: 'auth/register',
             addMany: 'auth/register-many'
         }
+    },
+    singlePaymentDocument: {
+        get: `single-payment-document/get-single-payment-documents-by-user`,
     },
     auth: {
         login: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/login`,

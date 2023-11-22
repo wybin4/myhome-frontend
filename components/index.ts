@@ -14,6 +14,7 @@ export * from "./primitive/DatePicker/components/DatePickerRange";
 export * from "./primitive/Pdf/Pdf";
 export * from "./primitive/Voting/Voting";
 export * from "./primitive/Histogram/Histogram";
+export * from "./primitive/InputVote/InputVote";
 
 export * from "./composite/PopUp/PopUp";
 export * from "./composite/Menu/Menu";

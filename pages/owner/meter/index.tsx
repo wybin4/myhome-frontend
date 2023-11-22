@@ -6,7 +6,6 @@ import ElectricityIcon from "./icons/electricity.svg";
 import ArrowIcon from "./icons/arrow.svg";
 import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
-import { UserRole } from "@/interfaces/account/user.interface";
 import { API } from "@/helpers/api";
 import { useState } from "react";
 import cn from "classnames";
@@ -14,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { ISubscriberAddMeterForm, MeterType } from "@/interfaces/reference/meter.interface";
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData } from "@/helpers/reference-constants";
+import { IAppContext } from "@/context/app.context";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
@@ -168,10 +168,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return await fetchReferenceData<IGetMeterByAIDs>(context, apiUrl, postData);
 }
 
-interface MeterPageProps extends Record<string, unknown> {
+interface MeterPageProps extends Record<string, unknown>, IAppContext {
     data: { meters: IGetMeterByAIDs[] };
-    userRole: UserRole;
-    userId: number;
 }
 
 export interface IGetMeterByAIDs {
