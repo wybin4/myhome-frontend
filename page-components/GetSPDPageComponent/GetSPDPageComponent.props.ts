@@ -1,3 +1,4 @@
+import { PdfProps } from "@/components/primitive/Pdf/Pdf.props";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, SetStateAction } from "react";
 
@@ -20,5 +21,5 @@ export interface GetSPDPageComponentProps extends DetailedHTMLProps<HTMLAttribut
     setIsHouses: Dispatch<SetStateAction<boolean>>;
 
     spdError: string | undefined;
-    downloadUrl: string | undefined;
+    pdf: PdfProps;
 }

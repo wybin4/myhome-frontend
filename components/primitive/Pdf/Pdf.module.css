@@ -1,0 +1,109 @@
+.wrapper {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    max-width: 900px;
+    min-height: 80vh;
+
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.page {
+    height: 80vh;
+    max-height: 80vh;
+    min-height: 80vh;
+}
+
+.page {
+    background: var(--grey-light) !important;
+}
+
+.zoom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+
+    grid-area: zoom;
+}
+
+.scaleInput {
+    height: 2rem;
+    width: 3.4rem;
+    text-align: center;
+
+    border: solid 1px var(--grey-light);
+    border-radius: 0.6rem;
+}
+
+.scaleInput:focus {
+    border: solid 1px var(--primary);
+    outline: none;
+}
+
+.foo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.7rem;
+
+    grid-area: foo;
+
+    margin-right: 1rem;
+}
+
+.zoom button {
+    font-size: 1.2rem;
+    font-weight: 600;
+
+    border-radius: 100%;
+    width: 3rem;
+    height: 3rem;
+}
+
+.zoom button:hover {
+    background-color: var(--white-hover);
+}
+
+.download {
+    border-radius: 1rem;
+}
+
+.print {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 100%;
+    width: 3rem;
+    height: 3rem;
+
+    cursor: pointer;
+}
+
+.print:hover {
+    background-color: var(--white-hover);
+}
+
+.print svg {
+    fill: var(--black);
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.topWrapper {
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-areas: '. zoom foo';
+    grid-template-columns: 1fr 1fr 1fr;
+
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.06);
+
+    height: 3rem;
+
+    background-color: var(--white);
+
+    z-index: 5;
+}

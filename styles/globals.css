@@ -5,6 +5,7 @@
 :root {
     --black: #3B434E;
     --white: white;
+    --white-hover: rgba(246, 244, 255, 0.91);
     --grey: #858585;
     --grey-light: #D3D3D3;
     --voting: rgb(118, 83, 252, 10%);

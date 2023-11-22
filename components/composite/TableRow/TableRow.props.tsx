@@ -68,4 +68,4 @@ export interface TableTagProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivE
     appearance?: "primary" | "primary-border";
 }
 
-export type ITypeOfAction = "editAndSave" | "delete" | "addComment" | "download" | "view";
+export type ITypeOfAction = "open" | "editAndSave" | "delete" | "addComment" | "download" | "view";

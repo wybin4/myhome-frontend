@@ -1,3 +1,4 @@
+import { IPdfUrl } from "@/components/primitive/Pdf/Pdf.props";
 import { IAppContext } from "@/context/app.context";
 import { API, api } from "@/helpers/api";
 import { fetchReferenceData } from "@/helpers/reference-constants";
@@ -14,7 +15,27 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
     const [keyRate, setKeyRate] = useState<number | undefined>(undefined);
     const [cantGetKeyRate, setCantGetKeyRate] = useState<boolean>(false);
     const [spdError, setSpdError] = useState<string | undefined>(undefined);
-    const [downloadUrl, setDownloadUrl] = useState<string | undefined>(undefined);
+    const [downloadUrlDate, setDownloadUrlDate] = useState<IPdfUrl>(
+        { url: "", date: new Date(0), id: 0 }
+    );
+
+    const print = () => {
+        if (downloadUrlDate.url !== "") {
+            const iframe = document.createElement('iframe');
+            document.body.appendChild(iframe);
+
+            iframe.style.display = 'none';
+            iframe.src = downloadUrlDate.url;
+            iframe.onload = function () {
+                setTimeout(function () {
+                    iframe.focus();
+                    if (iframe.contentWindow) {
+                        iframe.contentWindow.print();
+                    }
+                }, 1);
+            };
+        }
+    };
 
     const fetchSPD = async (keyRate: number) => {
         const formData: IGetSPDData = {
@@ -34,7 +55,7 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
             if (response.status === 200) {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
-                setDownloadUrl(url);
+                setDownloadUrlDate({ url, date: new Date(), id: 0 }); // ИСПРАВИТЬ РОУТ И NEW DATE()
             } else {
                 setSpdError("Что-то пошло не так");
             }
@@ -67,7 +88,8 @@ function GetSPD({ data }: IGetSPDProps): JSX.Element {
         <>
             <GetSPDPageComponent
                 data={data}
-                fetchSPD={fetchSPD} spdError={spdError} downloadUrl={downloadUrl}
+                fetchSPD={fetchSPD} spdError={spdError}
+                pdf={{ pdfUrl: downloadUrlDate, print }}
                 keyRate={keyRate} setKeyRate={setKeyRate} fetchKeyRate={fetchKeyRate}
                 cantGetKeyRate={cantGetKeyRate} setCantGetKeyRate={setCantGetKeyRate}
                 formCheckedIds={formCheckedIds} setFormCheckedIds={setFormCheckedIds}

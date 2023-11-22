@@ -45,6 +45,28 @@ export const downloadPdf = (pdfBuffer: string, date: string) => {
     window.URL.revokeObjectURL(url);
 };
 
+export const printPdf = (pdfBuffer: string) => {
+    const base64Data = pdfBuffer;
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    const blob = new Blob([buffer], { type: 'application/pdf' });
+    const blobURL = URL.createObjectURL(blob);
+
+    const iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+
+    iframe.style.display = 'none';
+    iframe.src = blobURL;
+    iframe.onload = function () {
+        setTimeout(function () {
+            iframe.focus();
+            if (iframe.contentWindow) {
+                iframe.contentWindow.print();
+            }
+        }, 1);
+    };
+};
+
 export const downloadImage = (image: string, date: string) => {
     const base64Data = image;
     const buffer = Buffer.from(base64Data, 'base64');

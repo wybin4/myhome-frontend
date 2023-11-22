@@ -15,7 +15,7 @@ type GroupedSubscriber = {
 export const GetSPDPageComponent = ({
     data, fetchSPD,
     fetchKeyRate, keyRate, setKeyRate, cantGetKeyRate, setCantGetKeyRate,
-    spdError, downloadUrl,
+    spdError, pdf,
     formCheckedIds, setFormCheckedIds,
     isHouses, setIsHouses
 }: GetSPDPageComponentProps): JSX.Element => {
@@ -223,13 +223,13 @@ export const GetSPDPageComponent = ({
                     buttons={[
                         {
                             name: "Скачать", onClick: () => {
-                                if (downloadUrl) {
+                                if (pdf.pdfUrl.url !== "") {
                                     const a = document.createElement('a');
-                                    a.href = downloadUrl;
+                                    a.href = pdf.pdfUrl.url;
                                     a.download = String(Date.now());
                                     document.body.appendChild(a);
                                     a.click();
-                                    window.URL.revokeObjectURL(downloadUrl);
+                                    window.URL.revokeObjectURL(pdf.pdfUrl.url);
                                 }
                             }
                         },
@@ -244,82 +244,86 @@ export const GetSPDPageComponent = ({
                 {...selectionFormData()}
             />
             <>
-                {downloadUrl && <Pdf pdfUrl={downloadUrl} />}
-                <div className={styles.topPart}>
-                    <Htag size="h1" className={styles.title}>Единый платёжный документ</Htag>
-                    <TableButton
-                        buttons={[{
-                            type: "add",
-                            title: "Выбрать", appearance: "ghost",
-                            onClick: () => setIsCheckboxFormOpened(!isCheckboxFormOpened)
-                        },
-                        {
-                            type: "calculate",
-                            title: "Сформировать", appearance: "primary",
-                            onClick: () => setActiveForm(1)
-                        }]}
-                        filterAppearance="ghost"
-                        isFiltersExist={true}
-                        isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
-                        filterButtonRef={filterButtonRef} />
-                </div>
-                <div className={styles.bottomPart}>
-                    <div className="w-full">
-                        <TableRow
-                            keyElements={{ first: [0], second: 1, isSecondNoNeedTitle: true }}
-                            items={isHouses ? [{
-                                title: "Дома",
-                                type: "text",
-                                items: (filter() as ISubscriberReferenceDataItem[]).
-                                    map(subscriber => {
-                                        return subscriber.houseName;
-                                    })
-                            }] : [
-                                {
-                                    title: "ФИО",
-                                    type: "text",
-                                    items: ungroup(filter() as GroupedSubscriber[]).
-                                        map(subscriber => subscriber.ownerName)
+                {pdf.pdfUrl.url !== "" && <Pdf {...pdf} />}
+                {pdf.pdfUrl.url === "" &&
+                    <>
+                        <div className={styles.topPart}>
+                            <Htag size="h1" className={styles.title}>Единый платёжный документ</Htag>
+                            <TableButton
+                                buttons={[{
+                                    type: "add",
+                                    title: "Выбрать", appearance: "ghost",
+                                    onClick: () => setIsCheckboxFormOpened(!isCheckboxFormOpened)
                                 },
                                 {
-                                    title: "Лицевой счет",
-                                    type: "text",
-                                    items: ungroup(filter() as GroupedSubscriber[]).
-                                        map(subscriber => subscriber.personalAccount)
+                                    type: "calculate",
+                                    title: "Сформировать", appearance: "primary",
+                                    onClick: () => setActiveForm(1)
+                                }]}
+                                filterAppearance="ghost"
+                                isFiltersExist={true}
+                                isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
+                                filterButtonRef={filterButtonRef} />
+                        </div>
+                        <div className={styles.bottomPart}>
+                            <div className="w-full">
+                                <TableRow
+                                    keyElements={{ first: [0], second: 1, isSecondNoNeedTitle: true }}
+                                    items={isHouses ? [{
+                                        title: "Дома",
+                                        type: "text",
+                                        items: (filter() as ISubscriberReferenceDataItem[]).
+                                            map(subscriber => {
+                                                return subscriber.houseName;
+                                            })
+                                    }] : [
+                                        {
+                                            title: "ФИО",
+                                            type: "text",
+                                            items: ungroup(filter() as GroupedSubscriber[]).
+                                                map(subscriber => subscriber.ownerName)
+                                        },
+                                        {
+                                            title: "Лицевой счет",
+                                            type: "text",
+                                            items: ungroup(filter() as GroupedSubscriber[]).
+                                                map(subscriber => subscriber.personalAccount)
+                                        },
+                                    ]} ids={[]} />
+                            </div>
+                            <TableFilter title="Параметры" items={[
+                                {
+                                    title: "Способ начисления",
+                                    titleEng: "accrualMethod",
+                                    type: "checkboxWithoutSearch",
+                                    isRadio: true,
+                                    items: ["По домам", "По лицевым счетам"],
+                                    onClick: () => setIsHouses(!isHouses),
                                 },
-                            ]} ids={[]} />
-                    </div>
-                    <TableFilter title="Параметры" items={[
-                        {
-                            title: "Способ начисления",
-                            titleEng: "accrualMethod",
-                            type: "checkboxWithoutSearch",
-                            isRadio: true,
-                            items: ["По домам", "По лицевым счетам"],
-                            onClick: () => setIsHouses(!isHouses),
-                        },
-                        {
-                            title: "Начисление пени",
-                            titleEng: "isPenalty",
-                            type: "checkboxWithoutSearch",
-                            isRadio: true,
-                            items: ["Выполнять", "Не выполнять"]
-                        },
-                        {
-                            title: "Штрих-код",
-                            titleEng: "isBarcode",
-                            type: "checkboxWithoutSearch",
-                            isRadio: true,
-                            items: ["Формировать", "Не формировать"]
-                        },
-                        {
-                            title: "Поверка",
-                            titleEng: "issue",
-                            type: "number",
-                            numberText: "Предупреждать за (в мес)"
-                        },
-                    ]} isOpen={isFilterOpened} setIsOpen={setIsFilterOpened} filterButtonRef={filterButtonRef} />
-                </div>
+                                {
+                                    title: "Начисление пени",
+                                    titleEng: "isPenalty",
+                                    type: "checkboxWithoutSearch",
+                                    isRadio: true,
+                                    items: ["Выполнять", "Не выполнять"]
+                                },
+                                {
+                                    title: "Штрих-код",
+                                    titleEng: "isBarcode",
+                                    type: "checkboxWithoutSearch",
+                                    isRadio: true,
+                                    items: ["Формировать", "Не формировать"]
+                                },
+                                {
+                                    title: "Поверка",
+                                    titleEng: "issue",
+                                    type: "number",
+                                    numberText: "Предупреждать за (в мес)"
+                                },
+                            ]} isOpen={isFilterOpened} setIsOpen={setIsFilterOpened} filterButtonRef={filterButtonRef} />
+                        </div>
+                    </>
+                }
             </>
         </>
     );

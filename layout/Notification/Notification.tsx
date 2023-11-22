@@ -53,19 +53,28 @@ export const Notification = ({ user, notifications, className, ...props }: Notif
     }, []);
 
     const getUrl = (type: ServiceNotificationType) => {
+        let route = "";
+        switch (user.userRole) {
+            case UserRole.ManagementCompany:
+                route = "management-company";
+                break;
+            case UserRole.Owner:
+                route = "owner";
+                break;
+        }
         switch (type) {
             case ServiceNotificationType.Appeal:
-                return `/${user.userRole}/appeal`;
+                return `/${route}/appeal`;
             case ServiceNotificationType.HouseNotification:
                 if (user.userRole === UserRole.Owner) {
-                    return `/${user.userRole}/event`;
+                    return `/${route}/event`;
                 }
                 return "#";
             case ServiceNotificationType.Meter:
                 if (user.userRole === UserRole.Owner) {
-                    return `/${user.userRole}/meter`;
+                    return `/${route}/meter`;
                 } else if (user.userRole === UserRole.ManagementCompany) {
-                    return `/${user.userRole}/reference/meter`;
+                    return `/${route}/reference/meter`;
                 }
                 return "#";
             default: return "#";

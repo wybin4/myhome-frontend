@@ -3,6 +3,7 @@ import DownloadIcon from "../icons/download.svg";
 import ArrowIcon from "../icons/arrow.svg";
 import CommentIcon from "../icons/comment.svg";
 import ViewIcon from "../icons/view.svg";
+import EyeIcon from "../icons/eye.svg";
 import DeleteIcon from "../icons/delete.svg";
 import EditIcon from "../icons/edit.svg";
 import styles from "./Action.module.css";
@@ -26,8 +27,9 @@ export const Action = ({ actions, isMobile = false, ...props }: ActionProps): JS
                         return (
                             <ViewAction
                                 key={index}
-                                item={isMobile ? <ArrowIcon /> : isOnlyView ?
-                                    "Просмотр" : <ViewIcon />
+                                item={
+                                    isMobile ? <ArrowIcon /> : isOnlyView ?
+                                        "Просмотр" : <ViewIcon />
                                 }
                                 onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                                     action.onClick(e);
@@ -37,6 +39,8 @@ export const Action = ({ actions, isMobile = false, ...props }: ActionProps): JS
                                 }}
                             />
                         );
+                    case "open":
+                        return <div key={index} className={styles.eye} id={String(action.id)} {...props} {...props} onClick={action.onClick}><EyeIcon /></div>;
                 }
             })}
         </div>

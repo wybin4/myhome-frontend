@@ -169,14 +169,14 @@ export const Chat = ({
                             </Icon>
                             <div className={styles.mobileText}>Чаты</div>
                             {chats && chats
-                                .sort((a, b) => {
+                                .sort((b, a) => {
                                     const lastMessageA = a.messages?.[a.messages.length - 1];
                                     const lastMessageB = b.messages?.[b.messages.length - 1];
 
                                     const dateA = lastMessageA?.createdAt || a.createdAt;
                                     const dateB = lastMessageB?.createdAt || b.createdAt;
 
-                                    return new Date(dateB).getTime() - new Date(dateA).getTime();
+                                    return new Date(dateA).getTime() - new Date(dateB).getTime();
                                 })
                                 .map((chat, key) => {
                                     const lastMessage = chat.messages?.[chat.messages.length - 1];
@@ -293,7 +293,7 @@ const ChatItem = ({ chat, user, children, innerRef, className, ...props }: ChatI
             messages: groupedMessages[dateKey],
         }));
 
-        result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        result.sort((b, a) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         return result;
     };
 

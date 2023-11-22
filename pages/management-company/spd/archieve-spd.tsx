@@ -1,14 +1,20 @@
-import { Table } from "@/components";
+import { Pdf, Table } from "@/components";
 import { API } from "@/helpers/api";
 import { withLayout } from "@/layout/Layout";
 import PdfIcon from "./icons/pdf.svg";
-import { MouseEventHandler } from "react";
-import { bytesToSize, downloadPdf, monthNamesInNominativeCase } from "@/helpers/constants";
+import { MouseEventHandler, useState } from "react";
+import { bytesToSize, downloadPdf, monthNamesInNominativeCase, printPdf } from "@/helpers/constants";
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { IAppContext } from "@/context/app.context";
+import { IPdfUrl } from "@/components/primitive/Pdf/Pdf.props";
 
 function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
+    const [isOneSPD, setIsOneSPD] = useState<boolean>(false);
+    const [downloadUrlDate, setDownloadUrlDate] = useState<IPdfUrl>(
+        { url: "", date: new Date(0), id: 0 }
+    );
+
     type SPDData = {
         cities: string[];
         streets: string[];
@@ -75,53 +81,89 @@ function ArchiveSPD({ data }: IArchieveSPDProps): JSX.Element {
         }
     };
 
+    const print = () => {
+        const spd = data.singlePaymentDocuments.find(s => s.id === downloadUrlDate.id);
+        if (spd && spd.pdfBuffer) {
+            printPdf(spd.pdfBuffer);
+        }
+    };
+
+    const back = () => {
+        setDownloadUrlDate({ url: "", date: new Date(0), id: 0 });
+        setIsOneSPD(false);
+    };
+
+    const open: MouseEventHandler<HTMLDivElement> = (event) => {
+        const spd = data.singlePaymentDocuments.find(s => s.id === parseInt(event.currentTarget.id));
+        if (spd && spd.pdfBuffer) {
+            const base64Data = spd.pdfBuffer;
+            const buffer = Buffer.from(base64Data, 'base64');
+            const blob = new Blob([buffer]);
+            const url = window.URL.createObjectURL(blob);
+            setDownloadUrlDate({ url, date: spd.createdAt, id: spd.id });
+            setIsOneSPD(true);
+        }
+    };
+
     return (
         <>
-            <Table title="Архив"
-                filters={[
-                    {
-                        title: "Город",
-                        titleEng: "city",
-                        type: "checkbox",
-                        items: uniqueCities
-                    },
-                    {
-                        title: "Улица",
-                        titleEng: "street",
-                        type: "checkbox",
-                        items: uniqueStreets
-                    },
-                    {
-                        title: "Дом",
-                        titleEng: "houseName",
-                        type: "checkbox",
-                        items: uniqueHouseNames
-                    },
-                    // ИСПРАВИТЬ!!! ДОБАВИТЬ ВЫБОР ПЕРИОДА
-                ]} rows={{
-                    startIcon: <PdfIcon />,
-                    actions: {
-                        actions: [{
-                            type: "download",
-                            onClick: download,
-                            id: 0
-                        }]
-                    },
-                    ids: spdIds,
-                    items: [
+            {!isOneSPD &&
+                <Table title="Архив"
+                    filters={[
                         {
-                            title: "ЕПД",
-                            type: "text",
-                            items: spdNames
+                            title: "Город",
+                            titleEng: "city",
+                            type: "checkbox",
+                            items: uniqueCities
                         },
                         {
-                            title: "Размер",
-                            type: "text",
-                            items: fileSizes
-                        }
-                    ],
-                    keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true }
-                }} />
+                            title: "Улица",
+                            titleEng: "street",
+                            type: "checkbox",
+                            items: uniqueStreets
+                        },
+                        {
+                            title: "Дом",
+                            titleEng: "houseName",
+                            type: "checkbox",
+                            items: uniqueHouseNames
+                        },
+                        // ИСПРАВИТЬ!!! ДОБАВИТЬ ВЫБОР ПЕРИОДА
+                    ]} rows={{
+                        startIcon: <PdfIcon />,
+                        actions: {
+                            actions: [{
+                                type: "download",
+                                onClick: download,
+                                id: 0
+                            },
+                            {
+                                type: "open",
+                                onClick: open,
+                                id: 0,
+                            }]
+                        },
+                        ids: spdIds,
+                        items: [
+                            {
+                                title: "ЕПД",
+                                type: "text",
+                                items: spdNames
+                            },
+                            {
+                                title: "Размер",
+                                type: "text",
+                                items: fileSizes
+                            }
+                        ],
+                        keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true }
+                    }} />
+            }
+            {isOneSPD &&
+                <div>
+                    <Pdf back={back} print={print} pdfUrl={downloadUrlDate} />
+                </div>
+            }
         </>
     );
 }
