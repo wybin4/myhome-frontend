@@ -60,6 +60,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 inputs={[
                     {
                         id: "previousReading", type: "input", title: "Предыдущее показание", numberInOrder: 4,
+                        inputType: "number",
                         error: { value: true, message: "Заполните предыдущее показание" }
                     }
                 ]} urlToPost={""} successCode={200} successMessage={""}            >

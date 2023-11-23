@@ -15,7 +15,14 @@
     border: solid 1px var(--grey-light);
     border-radius: 0.9375rem;
 
-    z-index: 3;
+    z-index: 6;
+
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.wrapper::-webkit-scrollbar {
+    width: 0;
 }
 
 .oneRow {

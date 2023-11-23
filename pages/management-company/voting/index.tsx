@@ -90,6 +90,7 @@ function Voting({ data }: IVotingProps): JSX.Element {
                         }
                     }
                 ]}
+                oneRow={true}
                 inputVotes={[{
                     title: "Варианты ответа",
                     id: "options",

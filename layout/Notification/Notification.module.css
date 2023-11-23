@@ -26,6 +26,8 @@
     gap: 2rem;
 
     margin-top: 1rem;
+
+    min-height: 22.3rem;
 }
 
 .buttonWrapper {
@@ -98,12 +100,6 @@
     font-size: 1.08rem;
 }
 
-.notificationIcon {
-    position: absolute;
-    top: 0.7rem;
-    right: 2.2rem;
-    cursor: pointer;
-}
 
 .notificationIcon svg {
     width: 1.61rem;
@@ -157,7 +153,17 @@
     background: transparent;
 }
 
+.notificationIcon {
+    cursor: pointer;
+}
+
 @media (max-width: 900px) {
+    .notificationIcon {
+        position: absolute;
+        top: 0.7rem;
+        right: 2.2rem;
+    }
+
     .notificationWrapper {
         position: fixed;
         top: 0;

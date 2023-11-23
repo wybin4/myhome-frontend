@@ -17,17 +17,10 @@ export const Input = forwardRef(({
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (inputType === "number") {
             const inputValue = event.target.value;
-            if (inputValue === "" || /^\d+(\.\d*)?$/.test(inputValue)) {
-                if (inputValue === "") {
-                    // Если введена пустая строка, сохраняем как строку
-                    setValue && setValue(inputValue);
-                } else if (inputValue.includes('.') && inputValue.split('.')[1].length === 0) {
-                    // Если введено число и точка, но после точки нет других символов, сохраняем как строку
-                    setValue && setValue(inputValue);
-                } else {
-                    // В противном случае, парсим как число
-                    setValue && setValue(parseFloat(inputValue));
-                }
+            if (/^\d+(\.\d*)?$/.test(inputValue)) {
+                setValue && setValue(inputValue);
+            } else if (inputValue === "") {
+                setValue && setValue("");
             }
         } else {
             setValue && setValue(event.target.value);

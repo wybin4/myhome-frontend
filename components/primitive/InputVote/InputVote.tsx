@@ -21,8 +21,10 @@ export const InputVote = forwardRef(({
     };
 
     const addValue = () => {
-        setInternalValues((prevValues) => [...prevValues, ""]);
-        setValue && setValue([...internalValues, ""]);
+        if (internalValues.length < 5) {
+            setInternalValues((prevValues) => [...prevValues, ""]);
+            setValue && setValue([...internalValues, ""]);
+        }
     };
 
     return (
@@ -54,7 +56,7 @@ export const InputVote = forwardRef(({
                     type="button"
                 >
                     Добавить вариант</button>
-                {inputError && <span className={styles.error}>{inputError}</span>}
+                {inputError && <div className={styles.error}>{inputError}</div>}
             </div>
         </>
     );

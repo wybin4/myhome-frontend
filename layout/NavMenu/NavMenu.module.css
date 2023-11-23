@@ -1,43 +1,29 @@
-   .desktop {
-       display: flex;
-   }
+.exitIcon svg {
+    stroke: var(--black);
+    stroke-width: 2px;
+}
 
-   .mobile {
-       display: none;
-   }
+.exitIcon {
+    cursor: pointer;
+}
 
-   .exitIcon {
-       display: none;
-   }
+@media (max-width: 900px) {
+    .wrapper {
+        top: 0;
+        left: 0;
 
-   @media (max-width: 900px) {
-       .desktop {
-           display: none !important;
-       }
+        display: block;
+        width: 100%;
+    }
 
-       .mobile {
-           top: 0;
-           left: 0;
+    .exitIcon {
+        position: absolute;
+        top: 1.9rem;
+        right: 2.5rem;
 
-           display: block;
-           width: 100%;
-       }
+        width: 1.61rem;
 
-       .exitIcon {
-           display: block;
-           position: absolute;
-           top: 1.9rem;
-           right: 2.5rem;
 
-           width: 1.61rem;
-
-           cursor: pointer;
-
-           z-index: 2;
-       }
-
-       .exitIcon svg {
-           stroke: var(--black);
-           stroke-width: 2px;
-       }
-   }
+        z-index: 2;
+    }
+}

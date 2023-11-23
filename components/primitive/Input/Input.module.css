@@ -80,6 +80,10 @@
     border: solid 1px var(--primary);
 }
 
+.readonly:focus {
+    border: solid 1px var(--grey-light) !important;
+}
+
 .datepicker {
     border: solid 1px var(--grey-light) !important;
 }

@@ -360,12 +360,8 @@
         margin: auto;
     }
 
+    .writeIcon,
     .icon {
-        right: 2.6rem;
-        bottom: 12rem;
-    }
-
-    .writeIcon {
         right: 2.6rem;
         bottom: 3.3rem;
     }
