@@ -161,7 +161,8 @@ export const API: {
     auth: {
         login: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/login`,
         refresh: `auth/refresh`,
-        logout: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/logout`
+        logout: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/logout`,
+        setPassword: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/set-password`,
     }
 };
 
