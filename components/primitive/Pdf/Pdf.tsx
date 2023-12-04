@@ -10,7 +10,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/l
 
 export const Pdf = ({ pdfUrl, print, back, ...props }: PdfProps) => {
     const [numPages, setNumPages] = useState(1);
-    // const [pageNumber, setPageNumber] = useState(1); // ИСПРАВИТЬ
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [pageNumber, setPageNumber] = useState(1); // ИСПРАВИТЬ
     const [width, setWidth] = useState<number>(0);
     const pdfWrapperRef = useRef<HTMLDivElement | null>(null);
     const [scale, setScale] = useState(1);

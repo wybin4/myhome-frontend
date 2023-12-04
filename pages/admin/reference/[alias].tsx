@@ -54,8 +54,8 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                     setPostData={setPostData}
                     key={managementCompanyPageComponent.engName}
                     item={enrichReferenceComponent(data, managementCompanyPageComponent, engName)}
-                    uriToAdd={API.admin.reference["managementCompany"].add} // ИСПРАВИТЬ
-                    uriToAddMany={API.admin.reference["managementCompany"].addMany}
+                    uriToAdd={API.common.user.add} // ИСПРАВИТЬ
+                    uriToAddMany={API.common.user.addMany}
                 />
             }
         </>

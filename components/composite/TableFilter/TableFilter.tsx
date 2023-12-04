@@ -4,6 +4,7 @@ import ArrowIcon from './arrow.svg';
 import { useEffect, useRef, useState } from "react";
 import styles from "./TableFilter.module.css";
 import cn from 'classnames';
+import { IDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 export const TableFilter = ({
     filterButtonRef,
@@ -78,6 +79,10 @@ export const TableFilterItem = ({
 }: TableFilterItemProps): JSX.Element => {
     const [hidden, setHidden] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number>(0);
+    const [choosedDate, setChoosedDate] = useState<Omit<IDateRange, "focusedInput"> | undefined>({
+        startDate: new Date(),
+        endDate: new Date()
+    });
     const [searchValue, setSearchValue] = useState<string | number | undefined>();
 
     const handleItemClick = (index: number) => {
@@ -161,7 +166,7 @@ export const TableFilterItem = ({
                                 }
                             })
                     }</div>}
-                    {type === "date" && <DatePickerRange />}
+                    {type === "date" && <DatePickerRange choosedDates={choosedDate} setChoosedDates={setChoosedDate} />}
                 </div>
             </div>
         </>

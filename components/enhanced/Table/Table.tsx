@@ -11,6 +11,7 @@ export const Table = ({
     className, ...props
 }: TableProps): JSX.Element => {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
+    const [value, setValue] = useState<string | number>();
     const filterButtonRef = useRef(null);
 
     return (
@@ -26,7 +27,7 @@ export const Table = ({
                 </div>
                 <div className={styles.bottomPart}>
                     <div className="w-full">
-                        {isSearch && <TableSearch size="l" className={cn("mb-8", styles.searchBar)} />}
+                        {isSearch && <TableSearch size="l" className={cn("mb-8", styles.searchBar)} value={value} setValue={setValue} />}
                         <TableRow {...rows} className={styles.rows} />
                     </div>
                     {filters && filters.length !== 0 &&
