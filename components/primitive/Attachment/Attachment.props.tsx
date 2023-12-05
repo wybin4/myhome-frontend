@@ -3,14 +3,22 @@ import { DetailedHTMLProps, HTMLAttributes } from "react";
 export interface AttachmentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     text: string;
     fileFormat: FileType[];
+    fileType?: "image" | "file";
 
-    file: File;
-    setFile: React.Dispatch<React.SetStateAction<File | undefined>>;
+    inputType?: "l" | "s";
+
+    file: File | undefined;
 
     inputError?: string;
+    setInputError?: React.Dispatch<React.SetStateAction<string>>;
+
+    handleFile: (file?: File) => void;
 }
 
 export enum FileType {
-    PNG = "image/png",
-    JPEG = "image/jpeg"
+    PNG = "png",
+    JPEG = "jpeg",
+    CSV = "csv",
+    TXT = "txt",
+    XLSX = "xlsx",
 }

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps, InfoFormProps, CardFormProps } from "./Form.props";
+import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProps, SerialFormProps, SelectionDataItem, SelectionFormCheckboxProps, SelectionFormProps, InfoFormProps, CardFormProps, FileFormProps } from "./Form.props";
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePickerInput, Icon, Input, InputVote, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
+import { Button, Checkbox, DatePickerInput, Excel, Icon, Input, InputVote, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
 import ArrowIcon from "./arrow.svg";
 import SuccessIcon from "./success.svg";
@@ -12,6 +12,8 @@ import CloseIcon from "./close.svg";
 import { Attachment } from "@/components/primitive/Attachment/Attachment";
 import { api } from "@/helpers/api";
 import { AxiosError } from "axios";
+import { FileType } from "@/components/primitive/Attachment/Attachment.props";
+import { capFirstLetter } from "@/helpers/constants";
 
 export const BaseForm = <T extends FieldValues>({
     isOpened, setIsOpened,
@@ -384,7 +386,7 @@ export const Form = <T extends FieldValues>({
                                                 render={({ field }) => (
                                                     <Attachment
                                                         file={field.value}
-                                                        setFile={field.onChange}
+                                                        handleFile={field.onChange}
                                                         ref={field.ref}
                                                         className="mb-4 mt-6"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
@@ -731,6 +733,125 @@ export const InfoForm = ({
                                 >{button.name}</Button>;
                             }
                         })}
+                    </div>
+                </div>
+            </BaseForm>
+        </>
+    );
+};
+
+export const FileForm = ({
+    title, headers,
+    isOpened, setIsOpened,
+    urlToPost, successCode, successMessage,
+    additionalFormData, setPostData,
+    entityName,
+    ...props
+}: FileFormProps) => {
+    const formRef = useRef<HTMLDivElement | null>(null);
+    const [table, setTable] = useState<Record<string, any>[]>([]);
+    const [clear, setClear] = useState<boolean>(false);
+    const [isSuccess, setIsSuccess] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+    useEffect(() => {
+        setIsPopupVisible(true);
+
+        const timer = setTimeout(() => {
+            setIsPopupVisible(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [error, isSuccess]);
+
+    const onSubmit = async () => {
+        try {
+            const formData = table.map((row) => {
+                const updatedRow: Record<string, any> = {};
+                headers.forEach(({ name, value }) => {
+                    updatedRow[name] = row[value.toLowerCase()] ? row[value.toLowerCase()] : row[capFirstLetter(value)];
+                });
+                return updatedRow;
+            });
+
+            const response = await api.post(urlToPost, {
+                [entityName + "s"]: formData,
+                ...additionalFormData
+            });
+
+            if (response.status === successCode) {
+                setIsSuccess(true);
+                setError("");
+                if (setIsOpened) {
+                    setIsOpened(false);
+                }
+                if (setPostData) {
+                    setPostData(response.data);
+                }
+                setClear(true);
+            } else {
+                setError("Что-то пошло не так");
+            }
+        } catch (e: unknown) {
+            if (e instanceof AxiosError) {
+                setError(e.response?.data.message);
+            } else {
+                setError("Что-то пошло не так");
+            }
+        }
+    };
+
+    return (
+        <>
+            {isPopupVisible &&
+                <>
+                    <PopUp
+                        isOpen={isSuccess}
+                        setIsOpen={setIsSuccess}
+                        type="success" className={styles.popup}>
+                        {successMessage}
+                    </PopUp>
+                    <PopUp
+                        isOpen={error !== ""}
+                        setIsOpen={() => setError("")}
+                        type="failure" className={styles.popup}>
+                        {error}
+                    </PopUp>
+                </>
+            }
+            <BaseForm
+                isOpened={isOpened}
+                setIsOpened={setIsOpened}
+                formRef={formRef}
+                reset={() => setClear(true)}
+            >
+                <div ref={formRef} className={cn(styles.wrapper, styles.fileWrapper, {
+                    "hidden": !isOpened
+                })} {...props}>
+                    <Paragraph size="l" className={styles.title}>{title}</Paragraph>
+                    <Paragraph size="s" className={styles.description}>
+                        Обязательно включите поля {headers.map(h => `"${h.value}"`).join(`, `)}
+                    </Paragraph>
+                    <Excel
+                        clear={clear}
+                        setClear={setClear}
+                        matchHeaders={headers}
+                        table={table} setTable={setTable}
+                        text="Перетащите или загрузите" fileFormat={[FileType.XLSX, FileType.CSV, FileType.TXT]}
+                    />
+                    <div className={styles.buttonWrapper}>
+                        <Button appearance="ghost" size="m" type="button" onClick={() => {
+                            setClear(true);
+                            setIsOpened && setIsOpened(!isOpened);
+                        }}>Отмена</Button>
+                        {table.length > 0 &&
+                            <Button
+                                appearance="primary" size="m"
+                                onClick={onSubmit}
+                            >
+                                Добавить
+                            </Button>}
                     </div>
                 </div>
             </BaseForm>

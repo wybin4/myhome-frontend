@@ -150,3 +150,7 @@ export const getUserCookie = (
         setUserId(parseInt(newId));
     }
 };
+
+export function capFirstLetter(word: string) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}

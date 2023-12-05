@@ -47,14 +47,16 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
             } */}
             {engName === "profile" &&
                 <ReferencePageComponent<IUserReferenceDataItem>
-                    // additionalFormData={[{
-                    //     userRole: UserRole.ManagementCompany,
-                    //     registerRole: UserRole.Admin // ИСПРАВИТЬ!!!
-                    // }]}
+                    additionalFormData={[{
+                        userRole: UserRole.ManagementCompany
+                    }]}
+                    additionalFileFormData={{
+                        userRole: UserRole.ManagementCompany
+                    }}
                     setPostData={setPostData}
                     key={managementCompanyPageComponent.engName}
                     item={enrichReferenceComponent(data, managementCompanyPageComponent, engName)}
-                    uriToAdd={API.common.user.add} // ИСПРАВИТЬ
+                    uriToAdd={API.common.user.add}
                     uriToAddMany={API.common.user.addMany}
                 />
             }

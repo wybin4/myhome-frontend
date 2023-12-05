@@ -1,0 +1,50 @@
+.detailedPricing {
+    width: 100%;
+    overflow-x: auto;
+
+    padding-bottom: 1rem;
+}
+
+.container {
+    overflow: hidden;
+    min-width: max-content;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: var(--black);
+    gap: 1rem;
+    margin-left: -1rem;
+}
+
+.textGray {
+    color: var(--grey);
+}
+
+.cell {
+    grid-column: span 1;
+}
+
+.detailedPricing::-webkit-scrollbar {
+    height: 0.375rem;
+}
+
+.detailedPricing::-webkit-scrollbar-track {
+    background-color: var(--white);
+    border-radius: 0.375rem;
+}
+
+.detailedPricing::-webkit-scrollbar-thumb {
+    border-radius: 0.375rem;
+
+    background: var(--primary);
+}
+
+.viewText {
+    font-weight: 500;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}

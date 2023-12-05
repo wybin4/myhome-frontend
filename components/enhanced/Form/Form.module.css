@@ -199,6 +199,20 @@
     text-align: center;
 }
 
+.fileWrapper {
+    max-width: 34rem;
+}
+
+.fileWrapper .title {
+    margin-bottom: 0.5rem;
+}
+
+.fileWrapper .description {
+    color: var(--grey);
+    text-align: center;
+    margin-bottom: 2.6rem;
+}
+
 @media (max-width: 900px) {
     .wrapper {
         width: 50%;

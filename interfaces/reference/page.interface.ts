@@ -20,6 +20,7 @@ export interface IReferencePageComponent<T extends FieldValues> {
     components: IReferencePageItem<T>[];
     tableActions?: ActionProps;
     keyElements?: RowKeyElements;
+    entityName?: string;
 }
 
 export interface IReferencePageItem<T extends FieldValues> {

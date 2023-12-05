@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FileType } from "@/components/primitive/Attachment/Attachment.props";
+import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, MutableRefObject, ReactNode, SetStateAction } from "react";
 import { FieldValues, Path, UseFormReset, UseFormReturn } from "react-hook-form";
@@ -57,6 +58,22 @@ export interface SelectionFormProps extends DetailedHTMLProps<HTMLAttributes<HTM
 
     checkedIds?: number[];
     setCheckedIds?: Dispatch<SetStateAction<number[]>>;
+}
+
+export interface FileFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    title: string;
+
+    isOpened: boolean;
+    setIsOpened?: (newFormOpened: boolean) => void;
+
+    headers: ExcelHeader[];
+
+    urlToPost: string;
+    successCode: FormSuccess;
+    setPostData?: (newData: any) => void;
+    successMessage: string;
+    entityName: string;
+    additionalFormData?: Record<string | number, any>;
 }
 
 export interface InfoFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

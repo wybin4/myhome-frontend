@@ -1,4 +1,4 @@
-.attachmentWrapper,
+.s,
 .fileWrapper {
     width: 100%;
     position: relative;
@@ -11,10 +11,24 @@
     background-color: var(--white);
 }
 
-.attachmentWrapper {
+.s {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.l {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    border-radius: 16px;
+    border: 2px dashed var(--input-border, var(--grey-light));
+
+    padding: 2.4rem;
+
+    background-color: var(--white);
 }
 
 .text {
@@ -41,37 +55,74 @@
     display: none;
 }
 
+.l .wrapperText {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 0;
+}
+
+.s .wrapperText,
 .wrapperText {
     display: flex;
     align-items: center;
     gap: 0.7rem;
 }
 
-.description {
+.s .description {
     font-size: 0.93rem;
     color: var(--grey);
 
     margin-top: -0.2rem;
 }
 
-.uploadIcon {
+.l .description {
+    font-size: 0.93rem;
+    color: var(--grey);
+
+    margin-top: 0.3rem;
+}
+
+.s .uploadIcon {
     display: flex;
     justify-content: center;
     align-items: center;
 
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3rem;
+    height: 3rem;
 
     background-color: var(--primary);
 
     border-radius: 0.7rem;
+
+    padding: 0;
 }
 
-.uploadIcon svg {
-    width: 2rem;
+.l .uploadIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 6rem;
+    height: 5rem;
+}
+
+.l .uploadIcon svg {
+    width: 8rem;
+    height: 8rem;
+
+    stroke: var(--primary);
+
+    stroke-width: 1.4;
+}
+
+.s .uploadIcon svg {
+    width: 5rem;
+    height: 5rem;
 
     stroke: var(--white);
-    stroke-width: 1.3px;
+    stroke-width: 1.6;
 }
 
 .pictureIcon svg {
@@ -111,6 +162,10 @@
     border: solid 1px var(--red);
 }
 
-.inputError .uploadIcon {
+.inputError:not(.l) .uploadIcon {
     background-color: var(--red);
+}
+
+.inputError:not(.s) .uploadIcon svg {
+    stroke: var(--red) !important;
 }

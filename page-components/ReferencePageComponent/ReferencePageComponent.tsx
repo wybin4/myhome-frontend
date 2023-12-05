@@ -1,6 +1,6 @@
 import { ReferencePageComponentProps } from "./ReferencePageComponent.props";
 // import styles from "./ReferencePageComponent.module.css";
-import { Form, Table } from "@/components";
+import { FileForm, Form, Table } from "@/components";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import RussianNounsJS from "russian-nouns-js";
@@ -8,22 +8,25 @@ import { Gender } from "russian-nouns-js/src/Gender";
 import { IReferenceTitle } from "@/interfaces/reference/page.interface";
 import { DatePickerFormProps, InputFormProps, SelectorFormProps } from "@/components/enhanced/Form/Form.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
+import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
 // import cn from 'classnames';
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
     uriToAdd, additionalSelectorOptions,
-    setPostData, additionalFormData
-    // uriToAddMany
+    setPostData, additionalFormData, additionalFileFormData,
+    uriToAddMany
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+    const [isFileFormOpened, setIsFileFormOpened] = useState<boolean>(false);
 
     const rne = new RussianNounsJS.Engine();
 
     const noun = item.rusName;
     const gender = item.gender;
+
     const pluralNominative = (
         title: IReferenceTitle[], gender: Gender[keyof Gender]
     ) => {
@@ -31,6 +34,19 @@ export const ReferencePageComponent = <T extends FieldValues>({
             if (word.isChangeable) {
                 const pluralized = rne.pluralize({ text: word.word, gender })[0];
                 const replaced = replaceLettersInDeclinedWord(pluralized, word.replace);
+                return replaced;
+            } else return word.word;
+        }).join(" ");
+    };
+
+    const pluralNominativeWithCase = (
+        title: IReferenceTitle[], gender: Gender[keyof Gender], caseName: string
+    ) => {
+        return title.map(word => {
+            if (word.isChangeable) {
+                const pluralForm = rne.pluralize({ text: word.word, gender })[0];
+                const declined = rne.decline({ text: word.word, gender }, caseName, pluralForm)[0];
+                const replaced = replaceLettersInDeclinedWord(declined, word.replace);
                 return replaced;
             } else return word.word;
         }).join(" ");
@@ -141,8 +157,34 @@ export const ReferencePageComponent = <T extends FieldValues>({
             };
         });
 
+    const getHeaders = (): ExcelHeader[] => {
+        return item.components.map(c => {
+            return {
+                name: String(c.id),
+                value: c.title.map(t => t.word).join(" ")
+            };
+        });
+    };
+
     return (
         <>
+            {uriToAddMany &&
+                <FileForm
+                    headers={getHeaders()}
+                    title={`Добавление ${pluralNominativeWithCase(noun, gender, "родительный")}`}
+                    isOpened={isFileFormOpened}
+                    setIsOpened={setIsFileFormOpened}
+                    urlToPost={uriToAddMany}
+                    successCode={201}
+                    successMessage={`Данные о ${pluralNominativeWithCase(
+                        noun,
+                        gender,
+                        "предложный"
+                    )} добавлены`}
+                    entityName={item.entityName ? item.entityName : ""}
+                    additionalFormData={additionalFileFormData}
+                />
+            }
             <Form<T>
                 successMessage={`Данные о ${getCase(
                     noun, gender, "предложный"
@@ -163,7 +205,11 @@ export const ReferencePageComponent = <T extends FieldValues>({
             </Form>
             <Table
                 title={capFirstLetter(pluralNominative(noun, gender))}
-                buttons={[{ type: "download" }, { type: "upload" }, { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }]}
+                buttons={[
+                    { type: "download" },
+                    { type: "upload", onClick: () => setIsFileFormOpened(!isFileFormOpened) },
+                    { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
+                ]}
                 filters={...item.components
                     .filter(component => component.isFilter)
                     .flatMap(component => {
