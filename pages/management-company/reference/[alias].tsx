@@ -208,9 +208,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     return {
                         props: {
                             data: {
-                                apartments: apartmentProps.data.apartments,
+                                apartments: ('apartments' in apartmentProps.data) ? apartmentProps.data.apartments : [],
                                 additionalData: [{
-                                    data: houseProps.data.houses,
+                                    data: ('houses' in houseProps.data) ? houseProps.data.houses : [],
                                     id: 'houseId'
                                 }]
                             }
@@ -236,13 +236,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     return {
                         props: {
                             data: {
-                                subscribers: subscriberProps.data.subscribers,
+                                subscribers: ('subscribers' in subscriberProps.data) ? subscriberProps.data.subscribers : [],
                                 additionalData: [{
-                                    data: apartmentProps.data.apartments,
+                                    data: ('apartments' in apartmentProps.data) ? apartmentProps.data.apartments : [],
                                     id: 'apartmentId'
                                 },
                                 {
-                                    data: ownerProps.data.profiles,
+                                    data: ('profiles' in ownerProps.data) ? ownerProps.data.profiles : [],
                                     id: 'ownerId'
                                 }]
                             }
@@ -272,13 +272,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     return {
                         props: {
                             data: {
-                                meters: meterProps.data.meters,
+                                meters: ('meters' in meterProps.data) ? meterProps.data.meters : [],
                                 additionalData: [{
-                                    data: typeOfServiceProps.data.typesOfService,
+                                    data: ('typesOfService' in typeOfServiceProps.data) ? typeOfServiceProps.data.typesOfService : [],
                                     id: 'typeOfServiceId'
                                 },
                                 {
-                                    data: apartmentProps.data.apartments,
+                                    data: ('apartments' in apartmentProps.data) ? apartmentProps.data.apartments : [],
                                     id: 'apartmentId'
                                 }]
                             }
@@ -306,13 +306,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     return {
                         props: {
                             data: {
-                                meters: meterProps.data.meters,
+                                meters: ('meters' in meterProps.data) ? meterProps.data.meters : [],
                                 additionalData: [{
-                                    data: typeOfServiceProps.data.typesOfService,
+                                    data: ('typesOfService' in typeOfServiceProps.data) ? typeOfServiceProps.data.typesOfService : [],
                                     id: 'typeOfServiceId'
                                 },
                                 {
-                                    data: houseProps.data.houses,
+                                    data: ('houses' in houseProps.data) ? houseProps.data.houses : [],
                                     id: 'houseId'
                                 }]
                             }
@@ -373,10 +373,12 @@ const fetchTariffAndNormData = async (
                 { isAllInfo: true }
             );
 
-            additionalData.push({
-                data: houseProps?.data.houses || [],
-                id: 'houseId',
-            });
+            if (houseProps) {
+                additionalData.push({
+                    data: ('houses' in houseProps.data) ? houseProps.data.houses : [],
+                    id: 'houseId',
+                });
+            }
         }
         if (!isNotUnit) {
             const { props: commonProps } = await fetchReferenceData<IGetCommon>(
@@ -385,14 +387,16 @@ const fetchTariffAndNormData = async (
                 undefined
             );
 
-            additionalData.push({
-                data: commonProps?.data.typesOfService || [],
-                id: 'typeOfServiceId',
-            });
-            additionalData.push({
-                data: commonProps?.data.units || [],
-                id: 'unitId',
-            });
+            if (commonProps) {
+                additionalData.push({
+                    data: ('typesOfService' in commonProps.data) ? commonProps.data.typesOfService : [],
+                    id: 'typeOfServiceId',
+                });
+                additionalData.push({
+                    data: ('units' in commonProps.data) ? commonProps.data.units : [],
+                    id: 'unitId',
+                });
+            }
         } else {
             const { props: typeOfServiceProps } = await fetchReferenceData<{ typesOfService: ITypeOfService[] }>(
                 context,
@@ -400,10 +404,12 @@ const fetchTariffAndNormData = async (
                 undefined
             );
 
-            additionalData.push({
-                data: typeOfServiceProps?.data.typesOfService || [],
-                id: 'typeOfServiceId',
-            });
+            if (typeOfServiceProps) {
+                additionalData.push({
+                    data: ('typesOfService' in typeOfServiceProps.data) ? typeOfServiceProps.data.typesOfService : [],
+                    id: 'typeOfServiceId',
+                });
+            }
         }
 
         if (!tariffAndNormProps) {
@@ -415,7 +421,7 @@ const fetchTariffAndNormData = async (
         return {
             props: {
                 data: {
-                    tariffAndNorms: tariffAndNormProps.data.tariffAndNorms,
+                    tariffAndNorms: ('tariffAndNorms' in tariffAndNormProps.data) ? tariffAndNormProps.data.tariffAndNorms : [],
                     additionalData,
                 },
             },

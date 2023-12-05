@@ -1,6 +1,6 @@
 import { ReferencePageComponentProps } from "./ReferencePageComponent.props";
-// import styles from "./ReferencePageComponent.module.css";
-import { FileForm, Form, Table } from "@/components";
+import styles from "./ReferencePageComponent.module.css";
+import { FileForm, Form, Htag, Table } from "@/components";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import RussianNounsJS from "russian-nouns-js";
@@ -9,7 +9,7 @@ import { IReferenceTitle } from "@/interfaces/reference/page.interface";
 import { DatePickerFormProps, InputFormProps, SelectorFormProps } from "@/components/enhanced/Form/Form.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
-// import cn from 'classnames';
+import NoDataIcon from "./nodata.svg";
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
@@ -166,6 +166,11 @@ export const ReferencePageComponent = <T extends FieldValues>({
         });
     };
 
+
+    const isData = () => {
+        return item.components.filter(component => component.rows.length > 0).length > 0;
+    };
+
     return (
         <>
             {uriToAddMany &&
@@ -203,40 +208,56 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 additionalFormData={additionalFormData}
             >
             </Form>
-            <Table
-                title={capFirstLetter(pluralNominative(noun, gender))}
-                buttons={[
-                    { type: "download" },
-                    { type: "upload", onClick: () => setIsFileFormOpened(!isFileFormOpened) },
-                    { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
-                ]}
-                filters={...item.components
-                    .filter(component => component.isFilter)
-                    .flatMap(component => {
-                        if (component.filterItems) {
-                            return component.filterItems?.map(item => {
-                                return {
-                                    title: item.name ? capFirstLetter(phraseByArr(item.name))
-                                        : capFirstLetter(phraseByArr(component.title)),
-                                    titleEng: String(component.id),
-                                    type: "checkbox",
-                                    items: item.items,
-                                };
-                            });
-                        }
-                        return [];
-                    })}
-                rows={{
-                    actions: item.tableActions,
-                    ids: [], // ИСПРАВИТЬ
-                    items: item.components.sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
-                        title: capFirstLetter(phraseByArr(component.title)),
-                        type: "text",
-                        items: component.rows
-                    })),
-                    keyElements: item.keyElements
-                }}
-            />
+            <div className={styles.tableWrapper}>
+                {!isData() &&
+                    <span className={styles.noDataIcon}><NoDataIcon /></span>
+                }
+                <div className={styles.titleWrapper}>
+                    {!isData() &&
+                        <Htag size="h1" className={styles.noDataTitle}>{
+                            `Данные о ${pluralNominativeWithCase(
+                                noun, gender, "предложный"
+                            )
+                            } ещё не добавлены`
+                        }</Htag>
+                    }
+                    <Table
+                        title={capFirstLetter(pluralNominative(noun, gender))}
+                        buttons={[
+                            { type: "download" },
+                            { type: "upload", onClick: () => setIsFileFormOpened(!isFileFormOpened) },
+                            { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
+                        ]}
+                        filters={...item.components
+                            .filter(component => component.isFilter)
+                            .flatMap(component => {
+                                if (component.filterItems) {
+                                    return component.filterItems?.map(item => {
+                                        return {
+                                            title: item.name ? capFirstLetter(phraseByArr(item.name))
+                                                : capFirstLetter(phraseByArr(component.title)),
+                                            titleEng: String(component.id),
+                                            type: "checkbox",
+                                            items: item.items,
+                                        };
+                                    });
+                                }
+                                return [];
+                            })}
+                        rows={{
+                            actions: item.tableActions,
+                            ids: [],
+                            items: item.components.sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
+                                title: capFirstLetter(phraseByArr(component.title)),
+                                type: "text",
+                                items: component.rows
+                            })),
+                            keyElements: item.keyElements
+                        }}
+                        isData={isData()}
+                    />
+                </div>
+            </div>
         </>
     );
 };

@@ -7,7 +7,9 @@ export interface TableFilterProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
 
-    filterButtonRef: MutableRefObject<null>
+    filterButtonRef: MutableRefObject<null>;
+
+    isOne: boolean;
 }
 
 export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

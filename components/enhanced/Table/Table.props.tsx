@@ -12,5 +12,6 @@ export interface TableProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElem
     buttons?: TableButtonType[];
 
     isSearch?: boolean;
+    isData: boolean;
 }
 

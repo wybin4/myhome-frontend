@@ -37,7 +37,7 @@ export const TableButton = ({
                                     symbol="upload" size="m" appearance={button.appearance ? button.appearance : "ghost"}
                                     onClick={button.onClick}
                                     key={key}
-                                >Скачать</Button>
+                                >Загрузить</Button>
                             );
                         case "calculate":
                             return (

@@ -110,7 +110,7 @@
 .logoFormPageWrapper {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding: 0 4rem;
+    padding: 0 4rem 0 10rem;
     height: 100vh;
 }
 
@@ -184,15 +184,14 @@
 .logoWrapperIcon svg {
     fill: var(--primary);
 
-    width: 19vw;
-    height: 12.6vw;
+    width: 11rem;
+    height: 7.3rem;
 }
 
 .formLogo {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0.9rem;
+    left: 2rem;
 
     z-index: 5;
 
@@ -200,8 +199,8 @@
 }
 
 .formLogo svg {
-    width: 4vw;
-    height: 4vw;
+    width: 4rem;
+    height: 4rem;
 
     fill: var(--white);
 }
@@ -260,6 +259,10 @@
 
     .logoFormPageWrapper {
         padding: 0 2.5rem;
+    }
+
+    .formLogo, .logoWrapperIcon {
+        display: none;
     }
 
     .ownerLogoIcon,

@@ -1,0 +1,55 @@
+.noDataIcon svg {
+    fill: var(--primary);
+
+    width: 30rem;
+    height: 34rem;
+}
+
+.tableWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+}
+
+.titleWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.6rem;
+}
+
+.noDataTitle {
+    text-align: center;
+}
+
+.noDataWrapper {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+@media (max-width: 1200px) {
+    .noDataIcon svg {
+        width: 26rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .tableWrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+
+    .noDataWrapper {
+        flex-direction: column;
+        align-items: center;
+
+        text-align: center;
+    }
+
+    .noDataIcon svg {
+        width: 26rem;
+        height: 26rem;
+    }
+}

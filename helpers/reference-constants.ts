@@ -70,7 +70,9 @@ export async function fetchReferenceData<T extends Record<string, string | numbe
         }
     }
     return {
-        notFound: true
+        props: {
+            data: {}
+        }
     };
 }
 

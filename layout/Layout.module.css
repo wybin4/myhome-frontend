@@ -41,7 +41,7 @@
 .body {
     grid-area: body;
 
-    /* margin-top: 2rem; */
+    margin-top: 2rem;
 
     padding: 0 2.5rem;
 }

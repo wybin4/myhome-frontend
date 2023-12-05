@@ -10,6 +10,7 @@ export const TableFilter = ({
     filterButtonRef,
     isOpen, setIsOpen,
     title, items,
+    isOne,
     className, ...props
 }: TableFilterProps): JSX.Element => {
     const filterRef = useRef(null);
@@ -36,36 +37,40 @@ export const TableFilter = ({
 
     return (
         <>
-            {<div {...props}
-                className={cn(
-                    styles.filterWrapper,
-                    "lg:hidden md:hidden sm:hidden", className
-                )}
-                ref={filterRef}>
-                <div className={styles.titleWrapper}>
-                    <ArrowIcon
-                        className={styles.closeFiltersArrow}
-                        onClick={() => setIsOpen(!isOpen)}
-                    />
-                    <p className={styles.mainTitle}>{title}</p>
-                </div>
-                {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
-            </div>}
-            <div {...props} className={cn(
-                styles.filterWrapper,
-                "3xl:hidden 2xl:hidden xl:hidden",
-                { [styles.hidden]: !isOpen },
-                className
-            )} ref={filterRef}>
-                <div className={styles.titleWrapper}>
-                    <ArrowIcon
-                        className={styles.closeFiltersArrow}
-                        onClick={() => setIsOpen(!isOpen)}
-                    />
-                    <p className={styles.mainTitle}>{title}</p>
-                </div>
-                {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
-            </div >
+            {isOne &&
+                <>
+                    {<div {...props}
+                        className={cn(
+                            styles.filterWrapper,
+                            "lg:hidden md:hidden sm:hidden", className
+                        )}
+                        ref={filterRef}>
+                        <div className={styles.titleWrapper}>
+                            <ArrowIcon
+                                className={styles.closeFiltersArrow}
+                                onClick={() => setIsOpen(!isOpen)}
+                            />
+                            <p className={styles.mainTitle}>{title}</p>
+                        </div>
+                        {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
+                    </div>}
+                    <div {...props} className={cn(
+                        styles.filterWrapper,
+                        "3xl:hidden 2xl:hidden xl:hidden",
+                        { [styles.hidden]: !isOpen },
+                        className
+                    )} ref={filterRef}>
+                        <div className={styles.titleWrapper}>
+                            <ArrowIcon
+                                className={styles.closeFiltersArrow}
+                                onClick={() => setIsOpen(!isOpen)}
+                            />
+                            <p className={styles.mainTitle}>{title}</p>
+                        </div>
+                        {items && items.map((item, key) => <TableFilterItem key={key}{...item} />)}
+                    </div>
+                </>
+            }
         </>
     );
 };
@@ -95,80 +100,83 @@ export const TableFilterItem = ({
 
     return (
         <>
-            <div {...props}>
-                <div className="flex items-baseline justify-between">
-                    <p className="text-[0.9375rem] leading-5 font-medium mb-4">{title}</p>
-                    <ArrowIcon className={cn(
-                        "justify-end cursor-pointer", {
-                        [styles.arrowDown]: hidden,
-                        [styles.arrowUp]: !hidden
-                    })} onClick={() => setHidden(!hidden)} />
+            {
+                items && items.length > 0 &&
+                <div {...props}>
+                    <div className="flex items-baseline justify-between">
+                        <p className="text-[0.9375rem] leading-5 font-medium mb-4">{title}</p>
+                        <ArrowIcon className={cn(
+                            "justify-end cursor-pointer", {
+                            [styles.arrowDown]: hidden,
+                            [styles.arrowUp]: !hidden
+                        })} onClick={() => setHidden(!hidden)} />
+                    </div>
+                    <div className={cn({
+                        [styles.hidden]: hidden,
+                        [styles.visible]: !hidden
+                    })}>
+                        {type === "number" &&
+                            <div className="flex items-center gap-3">
+                                <p className={styles.numberInputText}>{numberText}</p>
+                                <input type="number" min="10" max="30"
+                                    className={cn(styles.numberInput, "focus:ring-4 focus:ring-violet-200")}
+                                />
+                            </div>
+                        }
+                        {type !== "checkboxWithoutSearch" && type !== "date" && type !== "number" &&
+                            <div className="mb-3">
+                                <TableSearch
+                                    size="s"
+                                    value={searchValue} setValue={setSearchValue}
+                                />
+                            </div>
+                        }
+                        {items && <div className="flex flex-col gap-1">{
+                            items
+                                .filter(item => {
+                                    if (searchValue) {
+                                        return item.toLowerCase().includes(String(searchValue).toLowerCase());
+                                    }
+                                    return true;
+                                })
+                                .map((item, index) => {
+                                    if (isRadio) {
+                                        return (
+                                            <Radio
+                                                checked={selectedItem === index}
+                                                onClick={() => {
+                                                    if (onClick) {
+                                                        onClick();
+                                                    }
+                                                    handleItemClick(index);
+                                                }}
+                                                forString={`${titleEng}_${index}`}
+                                                key={index}
+                                            >
+                                                {item}
+                                            </Radio>
+                                        );
+                                    } else {
+                                        return (
+                                            <Checkbox
+                                                onClick={() => {
+                                                    if (onClick) {
+                                                        onClick();
+                                                    }
+                                                }}
+                                                forString={`${titleEng}_${index}`}
+                                                key={index}
+                                            >
+                                                {item}
+                                            </Checkbox>
+                                        );
+                                    }
+                                })
+                        }</div>}
+                        {type === "date" && <DatePickerRange choosedDates={choosedDate} setChoosedDates={setChoosedDate} />}
+                    </div>
                 </div>
-                <div className={cn({
-                    [styles.hidden]: hidden,
-                    [styles.visible]: !hidden
-                })}>
-                    {type === "number" &&
-                        <div className="flex items-center gap-3">
-                            <p className={styles.numberInputText}>{numberText}</p>
-                            <input type="number" min="10" max="30"
-                                className={cn(styles.numberInput, "focus:ring-4 focus:ring-violet-200")}
-                            />
-                        </div>
-                    }
-                    {type !== "checkboxWithoutSearch" && type !== "date" && type !== "number" &&
-                        <div className="mb-3">
-                            <TableSearch
-                                size="s"
-                                value={searchValue} setValue={setSearchValue}
-                            />
-                        </div>
-                    }
-                    {items && <div className="flex flex-col gap-1">{
-                        items
-                            .filter(item => {
-                                if (searchValue) {
-                                    return item.toLowerCase().includes(String(searchValue).toLowerCase());
-                                }
-                                return true;
-                            })
-                            .map((item, index) => {
-                                if (isRadio) {
-                                    return (
-                                        <Radio
-                                            checked={selectedItem === index}
-                                            onClick={() => {
-                                                if (onClick) {
-                                                    onClick();
-                                                }
-                                                handleItemClick(index);
-                                            }}
-                                            forString={`${titleEng}_${index}`}
-                                            key={index}
-                                        >
-                                            {item}
-                                        </Radio>
-                                    );
-                                } else {
-                                    return (
-                                        <Checkbox
-                                            onClick={() => {
-                                                if (onClick) {
-                                                    onClick();
-                                                }
-                                            }}
-                                            forString={`${titleEng}_${index}`}
-                                            key={index}
-                                        >
-                                            {item}
-                                        </Checkbox>
-                                    );
-                                }
-                            })
-                    }</div>}
-                    {type === "date" && <DatePickerRange choosedDates={choosedDate} setChoosedDates={setChoosedDate} />}
-                </div>
-            </div>
+            }
         </>
     );
 };
