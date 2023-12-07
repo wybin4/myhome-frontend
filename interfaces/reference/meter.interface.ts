@@ -115,7 +115,7 @@ const meterPageComponents: IReferencePageItem<
         },
         {
             type: "datepicker",
-            title: [{ word: "дата", isChangeable: true }, { word: "предыдущего" }, { word: "показания" }],
+            title: [{ word: "дата", isChangeable: true }, { word: "пред." }, { word: "показания" }],
             numberInOrder: 7, id: "previousReadAt", gender: "средний",
             rows: []
         },
@@ -132,10 +132,10 @@ export const individualMeterPageComponent:
             type: "select", selectorOptions: [],
             title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", sendId: "apartmentId", gender: "мужской",
             isFilter: true, filterItems: [
-                { name: [{ word: "город" }], items: ["Ростов-на-Дону"] },
-                { name: [{ word: "улица" }], items: ["ул. Малюгина", "пер. Соборный"] },
-                { name: [{ word: "дом" }], items: ["д. 98", "д. 99"] },
-                { name: [{ word: "квартира" }], items: ["кв. 12", "кв. 14"] }
+                { name: [{ word: "город" }], items: [] },
+                { name: [{ word: "улица" }], items: [] },
+                { name: [{ word: "дом" }], items: [] },
+                { name: [{ word: "квартира" }], items: [] }
             ],
             rows: []
         },
@@ -148,10 +148,17 @@ export const generalMeterPageComponent:
     engName: "generalMeter",
     rusName: [{ word: "общедомовой", isChangeable: true }, { word: "прибор", isChangeable: true }, { word: "учёта" }],
     gender: "мужской",
+    keyElements: { first: [3], second: 2, isSecondNoNeedTitle: true },
     components: [
         {
             type: "select", selectorOptions: [],
             title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", sendId: "houseId", gender: "мужской",
+            isFilter: true, filterItems: [
+                { name: [{ word: "город" }], items: [] },
+                { name: [{ word: "улица" }], items: [] },
+                { name: [{ word: "дом" }], items: [] },
+                { name: [{ word: "квартира" }], items: [] }
+            ],
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IGeneralMeterReferenceDataItem>[]

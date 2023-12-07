@@ -10,12 +10,13 @@ import { DatePickerFormProps, InputFormProps, SelectorFormProps } from "@/compon
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
 import NoDataIcon from "./nodata.svg";
+import cn from "classnames";
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
-    uriToAdd, additionalSelectorOptions,
-    setPostData, additionalFormData, additionalFileFormData,
-    uriToAddMany
+    additionalSelectorOptions,
+    setPostData, additionalFormData,
+    entityName, uriToAdd
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
@@ -158,14 +159,13 @@ export const ReferencePageComponent = <T extends FieldValues>({
         });
 
     const getHeaders = (): ExcelHeader[] => {
-        return item.components.map(c => {
+        return item.components.filter(c => c.type !== "none").map(c => {
             return {
-                name: String(c.id),
+                name: String(c.sendId ? c.sendId : c.id),
                 value: c.title.map(t => t.word).join(" ")
             };
         });
     };
-
 
     const isData = () => {
         return item.components.filter(component => component.rows.length > 0).length > 0;
@@ -173,21 +173,28 @@ export const ReferencePageComponent = <T extends FieldValues>({
 
     return (
         <>
-            {uriToAddMany &&
+            {uriToAdd &&
                 <FileForm
                     headers={getHeaders()}
                     title={`Добавление ${pluralNominativeWithCase(noun, gender, "родительный")}`}
                     isOpened={isFileFormOpened}
                     setIsOpened={setIsFileFormOpened}
-                    urlToPost={uriToAddMany}
+                    urlToPost={uriToAdd}
                     successCode={201}
                     successMessage={`Данные о ${pluralNominativeWithCase(
                         noun,
                         gender,
                         "предложный"
                     )} добавлены`}
-                    entityName={item.entityName ? item.entityName : ""}
-                    additionalFormData={additionalFileFormData}
+                    entityName={entityName || ""}
+                    setPostData={setPostData}
+                    additionalFormData={additionalFormData}
+                    selectors={selectors.map(s => {
+                        return {
+                            values: s.options,
+                            id: s.id
+                        };
+                    })}
                 />
             }
             <Form<T>
@@ -206,9 +213,12 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 datePickers={datePickers}
                 setPostData={setPostData}
                 additionalFormData={additionalFormData}
+                entityName={entityName}
             >
             </Form>
-            <div className={styles.tableWrapper}>
+            <div className={cn(styles.tableWrapper, {
+                [styles.noData]: !isData()
+            })}>
                 {!isData() &&
                     <span className={styles.noDataIcon}><NoDataIcon /></span>
                 }

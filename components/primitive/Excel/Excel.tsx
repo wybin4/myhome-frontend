@@ -5,9 +5,11 @@ import styles from "./Excel.module.css";
 import readXlsxFile from 'read-excel-file';
 import { Attachment } from "../Attachment/Attachment";
 import { capFirstLetter } from "@/helpers/constants";
+import { isDate } from "date-fns";
+import { formatDate } from "@/helpers/translators";
 
 export const Excel = ({
-    matchHeaders,
+    matchHeaders, selectors,
     table, setTable,
     text, fileFormat,
     clear, setClear,
@@ -44,15 +46,30 @@ export const Excel = ({
                         headers.forEach((header, index) => {
                             obj[header.toString()] = row[index];
                         });
+
+                        if (selectors) {
+                            selectors.map(({ id, values }) => {
+                                const currVal = values.find(v => {
+                                    const currHeader = matchHeaders.find(h => h.name === id)?.value;
+                                    return v.text === obj[capFirstLetter(currHeader || "")];
+                                });
+
+                                if (!currVal) {
+                                    const currHeader = matchHeaders.find(mh => mh.name === id)?.value;
+                                    err = `Неверно заданы значения для поля "${currHeader}"`;
+                                }
+                            });
+                        }
+
                         return obj;
                     });
-
-                    setFile(file);
-                    setTable(newData);
-                    setInputError("");
-                } else {
-                    setInputError(err);
+                    if (!err) {
+                        setFile(file);
+                        setTable(newData);
+                        setInputError("");
+                    }
                 }
+                setInputError(err);
             } catch (error: any) {
                 setInputError(`Ошибка при чтении файла: ${error.message}`);
                 setTable([]);
@@ -79,13 +96,21 @@ export const Excel = ({
                     <div className={styles.detailedPricing}>
                         <div className={styles.container}>
                             {Object.keys(table[0]).map((key) => (
-                                <div key={key} className={styles.gridContainer}>
+                                <div
+                                    key={key}
+                                    className={styles.gridContainer}
+                                    style={{ gridTemplateColumns: `100px repeat(${table.length ? table.length : 3}, minmax(0, 1fr))` }}
+                                >
                                     <div className={styles.textGray}>{capFirstLetter(key)}</div>
                                     {table.map((data, index) => (
                                         <div key={index} className={styles.cell}>
                                             {Object.keys(data).map((key1, innerIndex) => {
                                                 if (key1 === key) {
-                                                    return <div key={innerIndex}>{data[key1]}</div>;
+                                                    if (isDate(data[key1])) {
+                                                        return <div key={innerIndex}>{formatDate(data[key1])}</div>;
+                                                    } else {
+                                                        return <div key={innerIndex}>{data[key1]}</div>;
+                                                    }
                                                 } else {
                                                     return null;
                                                 }

@@ -24,24 +24,26 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [baseEngName, setBaseEngName] = useState<string>("");
     const router = useRouter();
 
-    const getAdditionalFormData = () => {
+    const getAdditionalFormData = (): { additionalFormData: Record<string, string | number> } | undefined => {
         switch (engName) {
             case "individualMeter":
-                return { additionalFormData: [{ "meterType": MeterType.Individual }] };
+                return { additionalFormData: { "meterType": MeterType.Individual } };
             case "generalMeter":
-                return { additionalFormData: [{ "meterType": MeterType.General }] };
+                return { additionalFormData: { "meterType": MeterType.General } };
             case "socialNorm":
-                return { additionalFormData: [{ "type": TariffAndNormType.SocialNorm }] };
+                return { additionalFormData: { "type": TariffAndNormType.SocialNorm } };
             case "norm":
-                return { additionalFormData: [{ "type": TariffAndNormType.Norm }] };
+                return { additionalFormData: { "type": TariffAndNormType.Norm } };
             case "seasonalityFactor":
-                return { additionalFormData: [{ "type": TariffAndNormType.SeasonalityFactor }] };
+                return { additionalFormData: { "type": TariffAndNormType.SeasonalityFactor } };
             case "municipalTariff":
-                return { additionalFormData: [{ "type": TariffAndNormType.MunicipalTariff }] };
+                return { additionalFormData: { "type": TariffAndNormType.MunicipalTariff } };
             case "commonHouseNeedTariff":
-                return { additionalFormData: [{ "type": TariffAndNormType.CommonHouseNeedTariff }] };
+                return { additionalFormData: { "type": TariffAndNormType.CommonHouseNeedTariff } };
+            case "profile":
+                return { additionalFormData: { "userRole": UserRole.Owner } };
         }
-        return;
+        return undefined;
     };
 
     const getEngName = () => {
@@ -57,8 +59,8 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                 engName = "generalMeter";
                 break;
             case "owner":
-                baseEngName = "user";
-                engName = "user";
+                baseEngName = "profile";
+                engName = "profile";
                 break;
             case "norm":
                 engName = "norm";
@@ -100,15 +102,19 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
 
     const setPostData = (newData: any) => {
         setData(prevData => {
-            const newDataArray = [...prevData[baseEngName + "s"], newData[baseEngName]];
-            return { ...prevData, [baseEngName + "s"]: newDataArray };
+            if (baseEngName + "s" in prevData) {
+                const newDataArray = [...prevData[baseEngName + "s"], ...newData[baseEngName + "s"]];
+                return { ...prevData, [baseEngName + "s"]: newDataArray };
+            } else {
+                const newDataArray = [...newData[baseEngName + "s"]];
+                return { ...prevData, [baseEngName + "s"]: newDataArray };
+            }
         });
     };
 
     const createComponent = <T extends FieldValues>(
         item: IReferencePageComponent<T>,
-        uriToAdd?: string,
-        uriToAddMany?: string
+        uriToAdd?: string
     ) => {
         const newItem = enrichReferenceComponent(data, item, baseEngName);
         return (
@@ -116,9 +122,9 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                 setPostData={setPostData}
                 key={newItem.engName}
                 item={newItem}
-                uriToAdd={uriToAdd ? uriToAdd : API.managementCompany.reference[baseEngName].add}
-                uriToAddMany={uriToAddMany ? uriToAddMany : API.managementCompany.reference[baseEngName].addMany}
+                uriToAdd={uriToAdd ? uriToAdd : API.managementCompany.reference[baseEngName].addMany}
                 additionalSelectorOptions={data.additionalData}
+                entityName={baseEngName}
                 {...getAdditionalFormData()}
             />
         );
@@ -138,12 +144,10 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
             {engName === "commonHouseNeedTariff" && createComponent<ICommonHouseNeedTariffReferenceDataItem>(сommonHouseNeedTariffPageComponent)}
             {engName === "penaltyRule" && createComponent<IPenaltyCalculationRuleReferenceDataItem>(
                 penaltyCalcRulePageComponent,
-                API.managementCompany.correction.penaltyRule.add,
                 API.managementCompany.correction.penaltyRule.addMany
             )}
-            {engName === "user" && createComponent<IUserReferenceDataItem>(
+            {engName === "profile" && createComponent<IUserReferenceDataItem>(
                 ownerPageComponent,
-                API.common.user.add,
                 API.common.user.addMany
             )}
         </>
@@ -161,7 +165,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         let additionalData: Record<string, string | number> = {};
         switch (engName) {
             case "owner":
-                apiUrl = API.common.user.get;
+                additionalData = {
+                    "userRole": UserRole.Owner
+                };
+                apiUrl = API.common.user.getAll;
                 break;
             case "individual-meter":
                 additionalData = {
@@ -254,7 +261,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     };
                 }
             case "owner":
-                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, undefined);
+                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, additionalData);
             case "individual-meter":
                 try {
                     const { props: meterProps } = await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl, additionalData);

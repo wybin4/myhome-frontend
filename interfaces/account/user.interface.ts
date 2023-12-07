@@ -48,7 +48,6 @@ export const ownerPageComponent:
     rusName: [{ word: "собственник", isChangeable: true }],
     gender: "мужской",
     keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true },
-    entityName: "user",
     components: [
         {
             type: "input",
@@ -69,7 +68,6 @@ export const managementCompanyPageComponent:
     rusName: [{ word: "управляюшая", isChangeable: true, replace: ["ш", "щ"] }, { word: "компания", isChangeable: true }],
     gender: "женский",
     keyElements: { first: [0], second: 1, isSecondNoNeedTitle: true },
-    entityName: "user",
     components: [
         {
             type: "input",

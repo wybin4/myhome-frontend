@@ -15,13 +15,6 @@ interface IDataGet {
     };
 }
 
-interface IDataWithoutGet {
-    [key: string]: {
-        add: string;
-        addMany: string;
-    };
-}
-
 export const API: {
     chat: { addChat: string; sendMessage: string; readMessages: string; getReceivers: string; };
     serviceNotification: { read: string; readAll: string; };
@@ -32,7 +25,7 @@ export const API: {
         voting: { update: string };
     },
     managementCompany: {
-        reference: IDataWithoutGet;
+        reference: { [key: string]: { addMany: string; }; };
         correction: IData;
         singlePaymentDocument: { calculate: string };
         voting: { add: string };
@@ -67,24 +60,19 @@ export const API: {
     managementCompany: {
         reference: {
             house: {
-                add: `house/add-house`,
-                addMany: ``,
+                addMany: `house/add-houses`,
             },
             apartment: {
-                add: `apartment/add-apartment`,
-                addMany: ``,
+                addMany: `apartment/add-apartments`,
             },
             subscriber: {
-                add: `subscriber/add-subscriber`,
-                addMany: ``,
+                addMany: `subscriber/add-subscribers`,
             },
             meter: {
-                add: `meter/add-meter`,
-                addMany: ``,
+                addMany: `meter/add-meters`,
             },
             tariffAndNorm: {
-                add: `tariff-and-norm/add-tariff-and-norm`,
-                addMany: ``,
+                addMany: `tariff-and-norm/add-tariffs-and-norms`,
             },
         },
         correction: {

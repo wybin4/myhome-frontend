@@ -23,7 +23,7 @@ export const Table = ({
     };
 
     return (
-        <>
+        <div className={className} {...props}>
             {!isData &&
                 <div>
                     {(buttons || filters) && <TableButton
@@ -35,7 +35,7 @@ export const Table = ({
                 </div>
             }
             {isData &&
-                <div className={className} {...props}>
+                <div>
                     <div>
                         <div className={styles.topPart}>
                             {title && <Htag size="h1" className={styles.title}>{title}</Htag>}
@@ -64,6 +64,6 @@ export const Table = ({
                     </div>
                 </div>
             }
-        </>
+        </div>
     );
 };

@@ -1,17 +1,17 @@
-.noDataIcon svg {
+.noData .noDataIcon svg {
     fill: var(--primary);
 
     width: 30rem;
     height: 34rem;
 }
 
-.tableWrapper {
+.noData {
     display: flex;
     flex-direction: row;
     gap: 4rem;
 }
 
-.titleWrapper {
+.noData .titleWrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,37 +19,38 @@
     gap: 2.6rem;
 }
 
-.noDataTitle {
+.noData .noDataTitle {
     text-align: center;
 }
 
-.noDataWrapper {
+.noData .noDataWrapper {
     display: flex;
     flex-direction: row-reverse;
 }
 
 @media (max-width: 1200px) {
-    .noDataIcon svg {
+    .noData .noDataIcon svg {
         width: 26rem;
     }
 }
 
 @media (max-width: 900px) {
-    .tableWrapper {
+    .noData {
         flex-direction: column;
         align-items: center;
         gap: 3rem;
     }
 
-    .noDataWrapper {
+    .noData .noDataWrapper {
         flex-direction: column;
         align-items: center;
 
         text-align: center;
     }
 
-    .noDataIcon svg {
+    .noData .noDataIcon svg {
         width: 26rem;
         height: 26rem;
+        max-width: 100%;
     }
 }

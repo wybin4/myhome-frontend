@@ -3,7 +3,7 @@ import { BaseFormProps, FormElementProps, FormProps, NestedSelectionFormItemProp
 import styles from "./Form.module.css";
 import cn from "classnames";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePickerInput, Excel, Icon, Input, InputVote, LittleSelect, Paragraph, PopUp, Select, Textarea } from "@/components";
+import { Button, Checkbox, DatePickerInput, Excel, Icon, Input, InputVote, LittleSelect, Paragraph, PopUp, Select, Textarea, Ul } from "@/components";
 import { FieldValues, Controller, useForm } from "react-hook-form";
 import ArrowIcon from "./arrow.svg";
 import SuccessIcon from "./success.svg";
@@ -67,7 +67,7 @@ export const Form = <T extends FieldValues>({
     className, useFormData,
     isOpened, setIsOpened,
     urlToPost, additionalFormData,
-    successCode, successMessage, setPostData,
+    successCode, successMessage, setPostData, entityName,
     oneRow = false, dataList, buttonsText,
     ...props
 }: FormProps<T>): JSX.Element => {
@@ -109,7 +109,7 @@ export const Form = <T extends FieldValues>({
             if (additionalFormData) {
                 flatObject = {
                     ...formData,
-                    ...Object.assign({}, ...additionalFormData),
+                    ...Object.assign({}, additionalFormData),
                 };
             } else {
                 flatObject = { ...formData };
@@ -147,7 +147,12 @@ export const Form = <T extends FieldValues>({
                         }
                     })
                     :
-                    await api.post(urlToPost, flatObjectWithData);
+                    entityName ?
+                        await api.post(urlToPost, {
+                            [entityName + "s"]: [flatObject],
+                            ...additionalFormData
+                        })
+                        : await api.post(urlToPost, flatObjectWithData);
 
             if (response.status === successCode) {
                 setIsSuccess(true);
@@ -741,7 +746,7 @@ export const InfoForm = ({
 };
 
 export const FileForm = ({
-    title, headers,
+    title, headers, selectors,
     isOpened, setIsOpened,
     urlToPost, successCode, successMessage,
     additionalFormData, setPostData,
@@ -772,6 +777,16 @@ export const FileForm = ({
                 headers.forEach(({ name, value }) => {
                     updatedRow[name] = row[value.toLowerCase()] ? row[value.toLowerCase()] : row[capFirstLetter(value)];
                 });
+                if (selectors) {
+                    selectors.map(({ id, values }) => {
+                        const currVal = values.find(v => v.text === updatedRow[id]);
+                        if (currVal) {
+                            updatedRow[id] = currVal.value;
+                        } else {
+                            updatedRow[id] = undefined;
+                        }
+                    });
+                }
                 return updatedRow;
             });
 
@@ -827,31 +842,49 @@ export const FileForm = ({
                 reset={() => setClear(true)}
             >
                 <div ref={formRef} className={cn(styles.wrapper, styles.fileWrapper, {
-                    "hidden": !isOpened
+                    "!hidden": !isOpened,
                 })} {...props}>
-                    <Paragraph size="l" className={styles.title}>{title}</Paragraph>
-                    <Paragraph size="s" className={styles.description}>
-                        Обязательно включите поля {headers.map(h => `"${h.value}"`).join(`, `)}
-                    </Paragraph>
-                    <Excel
-                        clear={clear}
-                        setClear={setClear}
-                        matchHeaders={headers}
-                        table={table} setTable={setTable}
-                        text="Перетащите или загрузите" fileFormat={[FileType.XLSX, FileType.CSV, FileType.TXT]}
-                    />
-                    <div className={styles.buttonWrapper}>
-                        <Button appearance="ghost" size="m" type="button" onClick={() => {
-                            setClear(true);
-                            setIsOpened && setIsOpened(!isOpened);
-                        }}>Отмена</Button>
-                        {table.length > 0 &&
-                            <Button
-                                appearance="primary" size="m"
-                                onClick={onSubmit}
-                            >
-                                Добавить
-                            </Button>}
+                    <div className={styles.fileSelectorWrapper}>
+                        {(selectors && selectors.length > 0) &&
+                            <div className={cn(styles.title)}>
+                                <Paragraph size="l" className={styles.title}>Поля из других справочников</Paragraph>
+                                {selectors.map((s, j) => {
+                                    return <Ul
+                                        key={j}
+                                        className="text-left pt-2"
+                                        title={capFirstLetter(headers.find(h => h.name === s.id)?.value || "")}
+                                        li={s.values.map(v => v.text)}
+                                    />;
+                                })}
+                            </div>
+                        }
+                    </div>
+                    <div className={styles.fileFormWrapper}>
+                        <Paragraph size="l" className={styles.title}>{title}</Paragraph>
+                        <Paragraph size="s" className={styles.description}>
+                            Обязательно включите поля {headers.map(h => `"${capFirstLetter(h.value)}"`).join(`, `)}
+                        </Paragraph>
+                        <Excel
+                            clear={clear}
+                            setClear={setClear}
+                            selectors={selectors}
+                            matchHeaders={headers}
+                            table={table} setTable={setTable}
+                            text="Перетащите или загрузите" fileFormat={[FileType.XLSX, FileType.CSV, FileType.TXT]}
+                        />
+                        <div className={styles.buttonWrapper}>
+                            <Button appearance="ghost" size="m" type="button" onClick={() => {
+                                setClear(true);
+                                setIsOpened && setIsOpened(!isOpened);
+                            }}>Отмена</Button>
+                            {table.length > 0 &&
+                                <Button
+                                    appearance="primary" size="m"
+                                    onClick={onSubmit}
+                                >
+                                    Добавить
+                                </Button>}
+                        </div>
                     </div>
                 </div>
             </BaseForm>

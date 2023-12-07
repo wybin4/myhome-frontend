@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FileType } from "@/components/primitive/Attachment/Attachment.props";
-import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
+import { ExcelHeader, ExcelSelector } from "@/components/primitive/Excel/Excel.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, MutableRefObject, ReactNode, SetStateAction } from "react";
 import { FieldValues, Path, UseFormReset, UseFormReturn } from "react-hook-form";
@@ -67,6 +67,7 @@ export interface FileFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivE
     setIsOpened?: (newFormOpened: boolean) => void;
 
     headers: ExcelHeader[];
+    selectors?: ExcelSelector[];
 
     urlToPost: string;
     successCode: FormSuccess;
@@ -158,7 +159,7 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     setIsOpened?: (newFormOpened: boolean) => void;
 
     urlToPost: string;
-    additionalFormData?: Record<string | number, any>[];
+    additionalFormData?: Record<string | number, any>;
     successCode: FormSuccess;
     // errorCode?: FormErrors[];
     successMessage: string;
@@ -168,6 +169,7 @@ export interface FormProps<T extends FieldValues> extends DetailedHTMLProps<HTML
     dataList?: string[];
 
     setPostData?: (newData: any) => void;
+    entityName?: string;
 
     buttonsText?: {
         add: string;

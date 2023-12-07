@@ -8,12 +8,11 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     item: IReferencePageComponent<T>;
 
     uriToAdd: string;
-    uriToAddMany?: string;
 
     additionalSelectorOptions?: { data: Record<string, string | number>[]; id: string }[];
 
-    additionalFormData?: Record<string, string | number>[];
-    additionalFileFormData?: Record<string, string | number>;
+    additionalFormData?: Record<string, string | number>;
     headers?: ExcelHeader[];
     setPostData: (newData: any) => void;
+    entityName?: string;
 }

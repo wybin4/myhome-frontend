@@ -200,7 +200,22 @@
 }
 
 .fileWrapper {
-    max-width: 34rem;
+    display: flex;
+    flex-direction: row-reverse;
+
+    width: fit-content !important;
+    max-width: 100% !important;
+}
+
+.fileFormWrapper {
+    width: 30rem;
+
+    border-right: solid 1.5px var(--grey-light);
+    padding-right: 4rem;
+}
+
+.fileSelectorWrapper {
+    padding-left: 4rem;
 }
 
 .fileWrapper .title {
@@ -217,7 +232,6 @@
     .wrapper {
         width: 50%;
     }
-
 }
 
 @media (max-width: 800px) {
@@ -235,6 +249,28 @@
         margin: auto;
         right: 0;
         left: 0;
+    }
+
+    .fileWrapper {
+        flex-direction: column;
+        width: 100% !important;
+    }
+
+    .fileFormWrapper {
+        max-width: 100%;
+
+        border-right: none;
+        border-top: solid 1.5px var(--grey-light);
+        padding-right: 0;
+        padding-top: 2rem;
+    }
+
+    .fileSelectorWrapper {
+        padding-left: 0;
+        padding-bottom: 2rem;
+
+        max-width: 18rem;
+        margin: 0 auto;
     }
 }
 

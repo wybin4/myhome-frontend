@@ -287,11 +287,7 @@ const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...p
                         }
                         {firstItem && (
                             <span className={cn(styles.firstItem, "flex gap-1")}>
-                                {firstItem.map((obj, index) => (
-                                    <React.Fragment key={index}>
-                                        {getElement(obj, index)}
-                                    </React.Fragment>
-                                ))}
+                                {firstItem.map(i => i.item).join(", ")}
                             </span>
                         )}
                     </div>
