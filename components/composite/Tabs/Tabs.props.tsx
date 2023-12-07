@@ -13,4 +13,5 @@ export interface TabsProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEleme
     setActiveTab: Dispatch<SetStateAction<number>>;
     
     children: ReactNode;
+    isData: boolean;
 }

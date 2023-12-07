@@ -5,18 +5,19 @@ import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import RussianNounsJS from "russian-nouns-js";
 import { Gender } from "russian-nouns-js/src/Gender";
-import { IReferenceTitle } from "@/interfaces/reference/page.interface";
-import { DatePickerFormProps, InputFormProps, SelectorFormProps } from "@/components/enhanced/Form/Form.props";
+import { IReferencePageItem, IReferenceTitle } from "@/interfaces/reference/page.interface";
+import { DatePickerFormProps, InputFormProps, InputVoteFormProps, SelectorFormProps, TextAreaFormProps } from "@/components/enhanced/Form/Form.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
 import NoDataIcon from "./nodata.svg";
 import cn from "classnames";
+import { TableButtonType } from "@/components/composite/TableButton/TableButton.props";
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
     additionalSelectorOptions,
     setPostData, additionalFormData,
-    entityName, uriToAdd
+    entityName, uriToAdd, addMany = true
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
@@ -90,73 +91,68 @@ export const ReferencePageComponent = <T extends FieldValues>({
         return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
-    const inputs: InputFormProps<T>[] =
-        item.components.filter(c => c.type === "input")
-            .map(component => {
-                return {
-                    title: capFirstLetter(phraseByArr(component.title)),
-                    size: "m",
-                    inputType: component.inputType ? component.inputType : "string",
-                    numberInOrder: component.numberInOrder,
-                    id: component.sendId ? component.sendId : component.id,
-                    type: "input",
-                    error: {
-                        value: true, message: `Заполните ${getCase(
-                            component.title, component.gender, "винительный"
-                        )}`
-                    }
-                };
-            });
+    const getComponent = (component: IReferencePageItem<T>) => {
+        return ({
+            title: capFirstLetter(phraseByArr(component.title)),
+            size: "m",
 
-    const selectors: SelectorFormProps<T>[] = item.components
-        .filter(c => c.type === "select")
-        .map(component => {
-            let selectorOptions: SelectorOption[] = [];
-            if (additionalSelectorOptions) {
-                const data = additionalSelectorOptions.find(ad => ad.id === component.sendId);
-                if (data) {
-                    selectorOptions = data.data.map(d => {
-                        return {
-                            value: d.id,
-                            text: String(d.name)
-                        };
-                    });
-                }
+            id: component.sendId ? component.sendId : component.id,
+            type: component.type,
+            numberInOrder: component.numberInOrder,
+            error: {
+                value: true, message: `Выберите ${getCase(
+                    component.title, component.gender, "винительный"
+                )}`
             }
-
-            return {
-                size: "m",
-                inputTitle: capFirstLetter(phraseByArr(component.title)),
-                options: [...selectorOptions, ...component.selectorOptions || []],
-
-                id: component.sendId ? component.sendId : component.id,
-                type: "select",
-                numberInOrder: component.numberInOrder,
-                error: {
-                    value: true, message: `Выберите ${getCase(
-                        component.title, component.gender, "винительный"
-                    )}`
-                }
-            };
         });
+    };
 
-    const datePickers: DatePickerFormProps<T>[] = item.components
-        .filter(c => c.type === "datepicker")
-        .map(component => {
-            return {
-                inputTitle: capFirstLetter(phraseByArr(component.title)),
-                inputSize: "m",
+    const getComponents = (): {
+        inputs: InputFormProps<T>[],
+        inputVotes: InputVoteFormProps<T>[],
+        datePickers: DatePickerFormProps<T>[],
+        textAreas: TextAreaFormProps<T>[]
+    } => {
+        const components = item.components
+            .filter(c => !c.isInvisibleInForm)
+            .map(component => getComponent(component));
 
-                id: component.sendId ? component.sendId : component.id,
-                type: "datepicker",
-                numberInOrder: component.numberInOrder,
-                error: {
-                    value: true, message: `Выберите ${getCase(
-                        component.title, component.gender, "винительный"
-                    )}`
-                }
-            };
-        });
+        const inputs = components.filter(c => c && c.type === "input") as InputFormProps<T>[];
+        const datePickers = components.filter(c => c && c.type === "datepicker") as DatePickerFormProps<T>[];
+        const inputVotes = components.filter(c => c && c.type === "input-vote") as InputVoteFormProps<T>[];
+        const textAreas = components.filter(c => c && c.type === "textarea") as TextAreaFormProps<T>[];
+
+        return { inputs, datePickers, inputVotes, textAreas };
+    };
+
+    const getSelectors = (): { selectors: SelectorFormProps<T>[] } => {
+        return {
+            selectors: item.components
+                .filter(c => c.type === "select")
+                .map(component => {
+                    let selectorOptions: SelectorOption[] = [];
+                    if (additionalSelectorOptions) {
+                        const data = additionalSelectorOptions.find(ad => {
+                            return ad.id === component.sendId;
+                        });
+                        if (data) {
+                            selectorOptions = data.data.map(d => {
+                                return {
+                                    value: d.id,
+                                    text: String(d[component.id])
+                                };
+                            });
+                        }
+                    }
+                    return {
+                        ...getComponent(component),
+                        options: [...selectorOptions, ...component.selectorOptions || []]
+                    } as SelectorFormProps<T>;
+                })
+        };
+    };
+
+    const { selectors } = getSelectors();
 
     const getHeaders = (): ExcelHeader[] => {
         return item.components.filter(c => c.type !== "none").map(c => {
@@ -171,9 +167,24 @@ export const ReferencePageComponent = <T extends FieldValues>({
         return item.components.filter(component => component.rows.length > 0).length > 0;
     };
 
+    const getButtons = (): TableButtonType[] => {
+        if (addMany) {
+            return [
+                { type: "download" },
+                { type: "upload", onClick: () => setIsFileFormOpened(!isFileFormOpened) },
+                { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
+            ];
+        } else {
+            return [
+                { type: "download" },
+                { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
+            ];
+        }
+    };
+
     return (
         <>
-            {uriToAdd &&
+            {addMany &&
                 <FileForm
                     headers={getHeaders()}
                     title={`Добавление ${pluralNominativeWithCase(noun, gender, "родительный")}`}
@@ -208,9 +219,8 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 title={`Добавление ${getCase(
                     noun, gender, "родительный"
                 )}`}
-                inputs={inputs}
+                {...getComponents()}
                 selectors={selectors}
-                datePickers={datePickers}
                 setPostData={setPostData}
                 additionalFormData={additionalFormData}
                 entityName={entityName}
@@ -233,11 +243,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     }
                     <Table
                         title={capFirstLetter(pluralNominative(noun, gender))}
-                        buttons={[
-                            { type: "download" },
-                            { type: "upload", onClick: () => setIsFileFormOpened(!isFileFormOpened) },
-                            { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
-                        ]}
+                        buttons={...getButtons()}
                         filters={...item.components
                             .filter(component => component.isFilter)
                             .flatMap(component => {
@@ -257,11 +263,13 @@ export const ReferencePageComponent = <T extends FieldValues>({
                         rows={{
                             actions: item.tableActions,
                             ids: [],
-                            items: item.components.sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
-                                title: capFirstLetter(phraseByArr(component.title)),
-                                type: "text",
-                                items: component.rows
-                            })),
+                            items: item.components
+                                .filter(i => !i.isInvisibleInTable)
+                                .sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
+                                    title: capFirstLetter(phraseByArr(component.title)),
+                                    type: "text",
+                                    items: component.rows
+                                })),
                             keyElements: item.keyElements
                         }}
                         isData={isData()}

@@ -17,6 +17,20 @@ import { UserRole } from "@/interfaces/account/user.interface";
 import styles from "./AppealPageComponent.module.css";
 import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
+import NoDataIcon from "./nodata.svg";
+import cn from "classnames";
+
+const isOne = (filters: TableFilterItemProps[]) => {
+    if (filters) {
+        return filters.filter(item => item.items && item.items.length > 0).length > 0;
+    } else {
+        return false;
+    }
+};
+
+const isData = (appeals: IGetAppeal[]) => {
+    return appeals.length > 0;
+};
 
 export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
@@ -70,8 +84,6 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
         </>
     );
 };
-
-
 
 export const AppealOwnerPageComponent = ({
     appeals, users,
@@ -246,7 +258,7 @@ export const AppealOwnerPageComponent = ({
                 return {
                     selectors:
                         [{
-                            inputTitle: "Управляющая компания",
+                            title: "Управляющая компания",
                             options: users ? users?.map(u => {
                                 return {
                                     value: u.user.id ? u.user.id : 0,
@@ -264,7 +276,7 @@ export const AppealOwnerPageComponent = ({
                             }
                         },
                         {
-                            inputTitle: "Квартира",
+                            title: "Квартира",
                             options: subscribers ? subscribers.map(s => {
                                 return {
                                     value: s.id,
@@ -297,7 +309,7 @@ export const AppealOwnerPageComponent = ({
                 return {
                     selectors:
                         [{
-                            inputTitle: "Счётчик",
+                            title: "Счётчик",
                             options: meters ? meters.map(m => {
                                 return {
                                     value: m.id,
@@ -315,7 +327,7 @@ export const AppealOwnerPageComponent = ({
                             }
                         }],
                     datePickers: [{
-                        inputTitle: "Дата поверки",
+                        title: "Дата поверки",
                         id: "verifiedAt",
                         type: "datepicker",
                         numberInOrder: 2,
@@ -325,7 +337,7 @@ export const AppealOwnerPageComponent = ({
                     }],
                     attachments: [{
                         text: "Акт поверки",
-                        fileFormat: [FileType.JPEG, FileType.PNG],
+                        fileFormat: [FileType.JPEG, FileType.JPG, FileType.PNG],
                         id: "attachment",
                         type: "attachment",
                         numberInOrder: 3,
@@ -339,7 +351,7 @@ export const AppealOwnerPageComponent = ({
                 return {
                     selectors:
                         [{
-                            inputTitle: "Тип услуги",
+                            title: "Тип услуги",
                             options: typesOfService ? typesOfService.map(tos => {
                                 return {
                                     value: tos.id,
@@ -354,7 +366,7 @@ export const AppealOwnerPageComponent = ({
                             },
                         },
                         {
-                            inputTitle: "Квартира",
+                            title: "Квартира",
                             options: apartments ? apartments.map(a => {
                                 return {
                                     value: a.id,
@@ -372,7 +384,7 @@ export const AppealOwnerPageComponent = ({
                             }
                         }],
                     datePickers: [{
-                        inputTitle: "Дата поверки",
+                        title: "Дата поверки",
                         id: "verifiedAt",
                         type: "datepicker",
                         numberInOrder: 4,
@@ -381,7 +393,7 @@ export const AppealOwnerPageComponent = ({
                         },
                     },
                     {
-                        inputTitle: "Дата истечения поверки",
+                        title: "Дата истечения поверки",
                         id: "issuedAt",
                         type: "datepicker",
                         numberInOrder: 5,
@@ -401,7 +413,7 @@ export const AppealOwnerPageComponent = ({
                     }],
                     attachments: [{
                         text: "Паспорт счётчика",
-                        fileFormat: [FileType.JPEG, FileType.PNG],
+                        fileFormat: [FileType.JPEG, FileType.JPG, FileType.PNG],
                         id: "attachment",
                         type: "attachment",
                         numberInOrder: 6,
@@ -433,6 +445,8 @@ export const AppealOwnerPageComponent = ({
         }
     };
 
+    const isDataVal = isData(appeals);
+
     return (
         <>
             {selectedId !== 0 && getInfoWindow(appeals, selectedId, isInfoWindowOpen, setIsInfoWindowOpen)}
@@ -463,11 +477,11 @@ export const AppealOwnerPageComponent = ({
                     successMessage={"Обращение отправлено"}
                     successCode={201}
                     additionalFormData={
-                        [{
+                        {
                             managementCompanyId: selectedMCId,
                             typeOfAppeal: selectedAppealType,
                             subscriberId: selectedSubscriberId
-                        }]
+                        }
                     }
                     urlToPost={API.subscriber.appeal.add}
                     useFormData={useFormData}
@@ -481,23 +495,40 @@ export const AppealOwnerPageComponent = ({
                     {...getForm(selectedAppealType as AppealType)}
                 />
             }
-            <Tabs
-                title="Обращения"
-                tabs={[
-                    { id: 1, name: "Все" },
-                    { id: 2, name: "В обработке" },
-                    { id: 3, name: "Обработанные" },
-                    { id: 4, name: "Отклоненные" },
-                ]}
-                activeTab={activeTab} setActiveTab={setActiveTab}
-                addButtonText="обращение"
-                onAddButtonClick={() => setIsCardFormOpened(!isCardFormOpened)}
-            >
-                {activeTab === 1 && getAppeals("all")}
-                {activeTab === 2 && getAppeals(AppealStatus.Processing)}
-                {activeTab === 3 && getAppeals(AppealStatus.Closed)}
-                {activeTab === 4 && getAppeals(AppealStatus.Rejected)}
-            </Tabs>
+            <div className={cn(styles.ownerWrapper, {
+                [styles.noData]: !isDataVal
+            })}>
+                {!isDataVal &&
+                    <span className={styles.noDataIcon}><NoDataIcon /></span>
+                }
+                <div className={styles.titleWrapper}>
+                    {!isDataVal &&
+                        <Htag size="h1" className={styles.noDataTitle}>{
+                            "Данные об обращениях ещё не добавлены"
+                        }</Htag>
+                    }
+                    <>
+                        <Tabs
+                            isData={isDataVal}
+                            title="Обращения"
+                            tabs={[
+                                { id: 1, name: "Все" },
+                                { id: 2, name: "В обработке" },
+                                { id: 3, name: "Обработанные" },
+                                { id: 4, name: "Отклоненные" },
+                            ]}
+                            activeTab={activeTab} setActiveTab={setActiveTab}
+                            addButtonText="обращение"
+                            onAddButtonClick={() => setIsCardFormOpened(!isCardFormOpened)}
+                        >
+                            {activeTab === 1 && getAppeals("all")}
+                            {activeTab === 2 && getAppeals(AppealStatus.Processing)}
+                            {activeTab === 3 && getAppeals(AppealStatus.Closed)}
+                            {activeTab === 4 && getAppeals(AppealStatus.Rejected)}
+                        </Tabs>
+                    </>
+                </div>
+            </div>
         </>
     );
 };
@@ -658,6 +689,8 @@ export const AppealManagementCompanyPageComponent = ({
         setIsInfoWindowOpen(false);
     };
 
+    const isDataVal = isData(appeals);
+
     return (
         <>
             <div>
@@ -673,7 +706,7 @@ export const AppealManagementCompanyPageComponent = ({
                     title="Обработка обращения"
                     selectors={
                         [{
-                            inputTitle: "Статус",
+                            title: "Статус",
                             options: getStatusOptions(),
                             id: "status",
                             type: "select",
@@ -695,26 +728,45 @@ export const AppealManagementCompanyPageComponent = ({
                     }}
                     buttonsText={{ add: "Сохранить", cancell: "Отмена" }}
                 />
-                <div className={styles.topPart}>
-                    <Htag size="h1" className={styles.title}>Обращения</Htag>
-                    <TableButton buttons={[]}
-                        isFiltersExist={filters !== undefined}
-                        filterButtonRef={filterButtonRef}
-                        isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
-                    />
-                </div>
-                <div className={styles.bottomPart}>
-                    {filters &&
-                        <TableFilter
-                            isOpen={isFilterOpened}
-                            setIsOpen={setIsFilterOpened}
-                            title="Фильтры"
-                            items={filters}
-                            className={styles.filter}
-                            filterButtonRef={filterButtonRef}
-                        />}
-                    {selectedId !== 0 && getInfoWindow(appeals, selectedId, isInfoWindowOpen, setIsInfoWindowOpen, handleAppeal)}
-                    {getAppeals()}
+                <div className={cn({
+                    [styles.noData]: !isDataVal
+                })}>
+                    {!isDataVal &&
+                        <span className={styles.noDataIcon}><NoDataIcon /></span>
+                    }
+                    <div className={styles.titleWrapper}>
+                        {!isDataVal &&
+                            <Htag size="h1" className={styles.noDataTitle}>{
+                                "Данные об обращениях ещё не добавлены"
+                            }</Htag>
+                        }
+                        {isDataVal &&
+                            <>
+                                <div className={styles.topPart}>
+                                    <Htag size="h1" className={styles.title}>Обращения</Htag>
+                                    <TableButton buttons={[]}
+                                        isFiltersExist={filters !== undefined}
+                                        filterButtonRef={filterButtonRef}
+                                        isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
+                                    />
+                                </div>
+                                <div className={styles.bottomPart}>
+                                    {filters &&
+                                        <TableFilter
+                                            isOpen={isFilterOpened}
+                                            setIsOpen={setIsFilterOpened}
+                                            title="Фильтры"
+                                            items={filters}
+                                            className={styles.filter}
+                                            filterButtonRef={filterButtonRef}
+                                            isOne={isOne(filters)}
+                                        />}
+                                    {selectedId !== 0 && getInfoWindow(appeals, selectedId, isInfoWindowOpen, setIsInfoWindowOpen, handleAppeal)}
+                                    {getAppeals()}
+                                </div>
+                            </>
+                        }
+                    </div>
                 </div>
             </div>
         </>

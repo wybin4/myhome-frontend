@@ -32,7 +32,7 @@ export const InputVote = forwardRef(({
             <div className={cn(className, styles.wrapper, {
                 [styles.inputError]: inputError
             })} ref={ref} {...props}>
-                {title && <div className={styles.inputTitle}>{title}</div>}
+                {title && <div className={styles.title}>{title}</div>}
                 <div className={styles.inputsWrapper}>
                     {internalValues.map((v, i) => (
                         <input

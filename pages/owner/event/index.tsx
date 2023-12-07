@@ -84,7 +84,7 @@ function Event({ data }: EventProps): JSX.Element {
                     {groupEventsByDate().map((events, key1) => (
                         <div className="mt-4" key={key1}>
                             <Htag size="h3" className="mb-4">{getHumanDate(events.createdAt)}</Htag>
-                            <div className="my-6">
+                            <div className="flex flex-col gap-8 my-6">
                                 {events.events.map((e, key2) => {
                                     let date1: string, options: IOption[] | undefined, active: IOption | undefined;
                                     const date2 = format(new Date(e.event.createdAt), "hh:mm d MMMM yyyy", { locale: ru });
@@ -153,11 +153,9 @@ function Event({ data }: EventProps): JSX.Element {
                         type: "date"
                     }
                     ]}
-
                     isOpen={isFilterOpened}
                     setIsOpen={setIsFilterOpened}
-
-                    filterButtonRef={filterButtonRef}
+                    filterButtonRef={filterButtonRef} isOne={true}
                 />
             </div>
         </>

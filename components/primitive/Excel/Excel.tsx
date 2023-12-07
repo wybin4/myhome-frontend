@@ -44,7 +44,7 @@ export const Excel = ({
                     const newData = dataArray.slice(1).map((row) => {
                         const obj: Record<string, any> = {};
                         headers.forEach((header, index) => {
-                            obj[header.toString()] = row[index];
+                            obj[capFirstLetter(header.toString())] = row[index];
                         });
 
                         if (selectors) {
@@ -53,6 +53,7 @@ export const Excel = ({
                                     const currHeader = matchHeaders.find(h => h.name === id)?.value;
                                     return v.text === obj[capFirstLetter(currHeader || "")];
                                 });
+
 
                                 if (!currVal) {
                                     const currHeader = matchHeaders.find(mh => mh.name === id)?.value;

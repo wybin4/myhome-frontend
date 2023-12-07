@@ -20,7 +20,14 @@ export const Ul = ({
                 value={searchValue} setValue={setSearchValue}
             />
             <div className={styles.liWrapper}>
-                {li.map((l, i) => <div className={styles.li} key={i}>{l}</div>)}
+                {
+                    li.filter(item => {
+                        if (searchValue) {
+                            return item.toLowerCase().includes(String(searchValue).toLowerCase());
+                        }
+                        return true;
+                    }).map((l, i) => <div className={styles.li} key={i}>{l}</div>)
+                }
             </div>
         </div>
     );

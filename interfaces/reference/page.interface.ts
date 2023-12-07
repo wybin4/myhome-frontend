@@ -36,10 +36,12 @@ export interface IReferencePageItem<T extends FieldValues> {
     isFilter?: boolean;
     filterItems?: { name?: IReferenceTitle[]; items: string[] }[];
 
-    type: "input" | "select" | "datepicker" | "none";
+    type: "input" | "select" | "datepicker" | "input-vote" | "none" | "textarea";
     inputType?: "number" | "string";
 
     selectorOptions?: SelectorOption[];
+    isInvisibleInTable?: boolean;
+    isInvisibleInForm?: boolean;
 }
 
 export interface IReferenceTitle {

@@ -17,6 +17,45 @@
     display: none;
 }
 
+.noData .noDataIcon svg {
+    fill: var(--primary);
+
+    width: 30rem;
+    height: 34rem;
+}
+
+.noData {
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+}
+
+.noData .titleWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.6rem;
+
+    margin-top: 2rem;
+}
+
+
+.noData .noDataTitle {
+    text-align: center;
+}
+
+.noData .noDataWrapper {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+@media (max-width: 1200px) {
+    .noData .noDataIcon svg {
+        width: 26rem;
+    }
+}
+
 @media (max-width: 900px) {
     .topPart {
         flex-direction: column;
@@ -25,6 +64,29 @@
 
     .title {
         margin-bottom: 2rem;
+    }
+
+    .noData {
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+
+    .noData .noDataWrapper {
+        flex-direction: column;
+        align-items: center;
+
+        text-align: center;
+    }
+
+    .noData .noDataIcon svg {
+        width: 26rem;
+        height: 26rem;
+        max-width: 100%;
+    }
+
+    .noData:not(.ownerWrapper) {
+        margin-top: 2rem;
     }
 }
 

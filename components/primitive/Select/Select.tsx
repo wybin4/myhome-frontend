@@ -9,7 +9,7 @@ import UnCheckedIcon from "./unchecked.svg";
 export const Select = forwardRef(({
     id,
     selected, setSelected, handleSelect,
-    inputTitle, inputError,
+    title, inputError,
     options,
     size = "s",
     className
@@ -37,14 +37,14 @@ export const Select = forwardRef(({
             setIsOpen(false);
         }
     };
-    
+
     return (
         <div className={cn(styles.select, className, {
             [styles.s]: size === "s",
             [styles.m]: size === "m",
             [styles.inputError]: inputError
         })} ref={ref}>
-            {inputTitle && <div className={styles.inputTitle}>{inputTitle}</div>}
+            {title && <div className={styles.title}>{title}</div>}
             <button
                 className={cn(styles.button, {
                     "focus:ring-4 focus:ring-violet-200": !inputError,
@@ -84,7 +84,7 @@ export const Select = forwardRef(({
 
 export const LittleSelect = forwardRef(({
     selected, setSelected,
-    inputTitle, inputError,
+    title, inputError,
     options,
     className
 }: LittleSelectProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
@@ -93,7 +93,7 @@ export const LittleSelect = forwardRef(({
             <div className={cn(styles.select, className, {
                 [styles.inputError]: inputError
             })} ref={ref}>
-                {inputTitle && <div className={styles.inputTitle}>{inputTitle}</div>}
+                {title && <div className={styles.title}>{title}</div>}
                 <div className={cn(styles.littleOptions, {
                     [styles.errorOptions]: inputError
                 })}>

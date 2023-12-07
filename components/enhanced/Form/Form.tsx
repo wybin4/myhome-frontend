@@ -88,6 +88,7 @@ export const Form = <T extends FieldValues>({
         ...attachments || [],
         ...inputVotes || []
     ];
+
     formComponents.sort((a, b) => a.numberInOrder - b.numberInOrder);
     const elementCount = Math.max(...formComponents.map(component => component.numberInOrder));
     const newFormComponents = formComponents.map(component => {
@@ -298,7 +299,7 @@ export const Form = <T extends FieldValues>({
                                                         choosedDate={field.value}
                                                         setChoosedDate={field.onChange}
                                                         ref={field.ref}
-                                                        inputSize="m"
+                                                        size="m"
                                                         className="mb-4"
                                                         inputError={errors[component.id] ? String(errors[component.id]?.message) : ""}
                                                         {...component} />

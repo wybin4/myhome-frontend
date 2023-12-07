@@ -15,4 +15,5 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     headers?: ExcelHeader[];
     setPostData: (newData: any) => void;
     entityName?: string;
+    addMany?: boolean;
 }

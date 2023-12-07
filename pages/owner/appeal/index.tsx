@@ -28,7 +28,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     try {
         const { props: eventProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataEvents);
         const { props: userProps } = await fetchReferenceData<{ users: IGetUserWithSubscriber[] }>(context, API.common.user.get, undefined);
-
         if (!eventProps || !userProps) {
             return {
                 notFound: true
@@ -37,8 +36,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return {
             props: {
                 data: {
-                    appeals: eventProps.data.events.appeals,
-                    users: userProps.data.users
+                    appeals: ('events' in eventProps.data) ? eventProps.data.events.appeals : [],
+                    users: ('users' in userProps.data) ? userProps.data.users : []
                 }
             }
         };

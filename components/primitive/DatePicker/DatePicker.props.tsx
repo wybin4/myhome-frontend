@@ -5,8 +5,8 @@ export interface DatePickerInputProps extends DetailedHTMLProps<HTMLAttributes<H
     choosedDate: Date | undefined;
     setChoosedDate: Dispatch<SetStateAction<Date | undefined>>;
 
-    inputTitle?: string;
-    inputSize?: "l" | "m" | "s";
+    title?: string;
+    size?: "l" | "m" | "s";
 
     inputError?: string;
 
@@ -17,8 +17,8 @@ export interface DatePickerRangeProps extends DetailedHTMLProps<HTMLAttributes<H
     choosedDates: Omit<IDateRange, "focusedInput"> | undefined;
     setChoosedDates: Dispatch<SetStateAction<Omit<IDateRange, "focusedInput"> | undefined>>;
 
-    inputTitle?: string;
-    inputSize?: "l" | "m" | "s";
+    title?: string;
+    size?: "l" | "m" | "s";
 
     inputError?: string;
 }

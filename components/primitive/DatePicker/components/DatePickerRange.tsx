@@ -14,7 +14,7 @@ import cn from "classnames";
 
 export const DatePickerRange = forwardRef(({
     choosedDates, setChoosedDates,
-    inputTitle, inputSize = "s", inputError,
+    title, size = "s", inputError,
     ...props
 }: DatePickerRangeProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
     const [isPickerOpened, setIsPickerOpened] = useState<boolean>(false);
@@ -105,10 +105,10 @@ export const DatePickerRange = forwardRef(({
     return (
         <div {...props} ref={pickerRef}>
             <Input
-                title={inputTitle}
+                title={title}
                 placeholder=""
                 onClick={() => setIsPickerOpened(!isPickerOpened)}
-                size={inputSize}
+                size={size}
                 sizeOfIcon="big"
                 icon={<CalendarIcon />}
                 alignOfIcon="right"

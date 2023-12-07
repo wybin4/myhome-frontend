@@ -33,7 +33,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
         props: {
             data: {
-                appeals: props.data.events.appeals
+                appeals: ('events' in props.data) ? props.data.events.appeals : []
             }
         }
     };

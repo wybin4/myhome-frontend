@@ -8,7 +8,7 @@ export interface SelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLSelect
 
     handleSelect?: (option: string | number) => void;
 
-    inputTitle?: string;
+    title?: string;
 
     options: SelectorOption[];
 
@@ -21,7 +21,7 @@ export interface LittleSelectProps extends DetailedHTMLProps<HTMLAttributes<HTML
     selected: SelectorOption | undefined;
     setSelected: React.Dispatch<React.SetStateAction<SelectorOption | undefined>>;
 
-    inputTitle?: string;
+    title?: string;
 
     options: SelectorOption[];
 

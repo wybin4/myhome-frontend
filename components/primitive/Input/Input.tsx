@@ -32,7 +32,7 @@ export const Input = forwardRef(({
             <div className={cn(className, styles.inputWrapper, {
                 [styles.inputError]: inputError
             })}>
-                {title && <div className={styles.inputTitle}>{title}</div>}
+                {title && <div className={styles.title}>{title}</div>}
                 <div className={cn("relative", {
                     [styles.l]: size === "l",
                     [styles.m]: size === "m",

@@ -7,7 +7,7 @@ export interface TableButtonProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
     isFiltersExist: boolean;
     isFilterOpened: boolean;
     setIsFilterOpened: Dispatch<SetStateAction<boolean>>;
-    filterButtonRef: MutableRefObject<null>;
+    filterButtonRef?: MutableRefObject<null>;
 }
 
 export type TableButtonType = {

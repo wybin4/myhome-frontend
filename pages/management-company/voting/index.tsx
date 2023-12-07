@@ -1,191 +1,59 @@
-import { Form, Table } from "@/components";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/helpers/api";
-import { IAddVoting, VotingStatus } from "@/interfaces/event/voting.interface";
+import { IVotingReferenceData, IVotingReferenceDataItem, votingPageComponent } from "@/interfaces/event/voting.interface";
 import { withLayout } from "@/layout/Layout";
-import { format } from "date-fns";
-import CloseIcon from "./close.svg";
-import OpenIcon from "./open.svg";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
-import { EventType, IGetEvents, IGetVoting } from "@/interfaces/event.interface";
-import { fetchReferenceData } from "@/helpers/reference-constants";
+import { EventType, IGetEvents } from "@/interfaces/event.interface";
+import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
+import { ReferencePageComponent } from "@/page-components";
+import { useState } from "react";
 
-function Voting({ data }: IVotingProps): JSX.Element {
-    const useFormData = useForm<IAddVoting>();
-    const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+function Voting({ data: initialData }: IVotingProps): JSX.Element {
+    const [data, setData] = useState(initialData);
 
-    type VotingData = {
-        id: number[];
-        title: string[];
-        createdAt: string[];
-        expiredAt: string[];
-        status: string[];
-        houseName: string[];
-        result: string[];
+    const getItem = () => {
+        const votings = data.votings.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        const newItem = enrichReferenceComponent({ votings }, votingPageComponent, "voting");
+        return (
+            <ReferencePageComponent<IVotingReferenceDataItem>
+                item={newItem}
+                uriToAdd={API.managementCompany.voting.add}
+                additionalSelectorOptions={data.additionalData}
+                setPostData={setPostData}
+                addMany={false}
+            />
+
+        );
     };
 
-    const initialData: VotingData = {
-        id: [],
-        title: [],
-        createdAt: [],
-        expiredAt: [],
-        status: [],
-        houseName: [],
-        result: []
-    };
-
-    const votings: VotingData = data.votings.reduce(
-        (accumulator, voting) => {
-            accumulator.id.push(voting.id);
-            accumulator.title.push(voting.title);
-            const statusArr = Object.entries(VotingStatus).find(([key]) => key === voting.status);
-            let status: string;
-            if (statusArr) {
-                status = statusArr[1];
+    const setPostData = (newData: any) => {
+        setData(prevData => {
+            const { votings, ...rest } = prevData;
+            if (votings.length) {
+                const votings = [...prevData.votings, newData.voting];
+                return { votings, ...rest } as IVotingReferenceData & {
+                    additionalData: {
+                        data: Record<string, string | number>[];
+                        id: string;
+                    }[]
+                };
             } else {
-                status = "";
+                const votings = [newData.voting];
+                return { votings, ...rest } as IVotingReferenceData & {
+                    additionalData: {
+                        data: Record<string, string | number>[];
+                        id: string;
+                    }[]
+                };
             }
-            accumulator.status.push(status);
-            accumulator.houseName.push(voting.name);
-            accumulator.result.push(voting.result ? voting.result : "—");
-            accumulator.createdAt.push(format(new Date(voting.createdAt), "dd.MM.yyyy"));
-            accumulator.expiredAt.push(format(new Date(voting.expiredAt), "dd.MM.yyyy"));
-            return accumulator;
-        },
-        initialData
-    );
-
-    const houses = data.houses.map(house => {
-        return {
-            value: house.id,
-            text: `${house.city}, ${house.street} ${house.houseNumber}`
-        };
-    });
-
-    const {
-        id, title, status, result, houseName, createdAt, expiredAt
-    } = votings;
+        });
+    };
 
     return (
         <>
-            <Form<IAddVoting>
-                successMessage={"Опрос добавлен"}
-                successCode={201}
-                urlToPost={API.managementCompany.voting.add}
-                useFormData={useFormData}
-                isOpened={isFormOpened} setIsOpened={setIsFormOpened}
-                title={"Добавление опроса"}
-                inputs={[
-                    {
-                        title: "Тема опроса",
-                        inputType: "string",
-                        id: "title",
-                        type: "input",
-                        numberInOrder: 2,
-                        error: {
-                            value: true, message: "Введите тему опроса"
-                        }
-                    }
-                ]}
-                oneRow={true}
-                inputVotes={[{
-                    title: "Варианты ответа",
-                    id: "options",
-                    type: "input-vote",
-                    numberInOrder: 3,
-                    error: {
-                        value: true, message: "Введите варианты ответов"
-                    }
-                }]}
-                selectors={[{
-                    inputTitle: "Дом",
-                    options: houses,
-                    id: "houseId",
-                    type: "select",
-                    numberInOrder: 1,
-                    error: {
-                        value: true, message: "Выберите дом"
-                    }
-                }]}
-                datePickers={[{
-                    inputTitle: "Дата окончания",
-                    id: "expiredAt",
-                    type: "datepicker",
-                    numberInOrder: 4,
-                    error: {
-                        value: true, message: "Введите дату окончания"
-                    }
-                }]}
-                setPostData={(newData: { voting: IGetVoting }) => {
-                    const response = newData.voting;
-                    data.votings.unshift(response);
-                }}
-            />
-            <Table
-                title="Опросы"
-                filters={[
-                    {
-                        title: "Дата",
-                        titleEng: "createdAt",
-                        type: "date"
-                    }
-                ]}
-                buttons={[{
-                    type: "add",
-                    title: "Добавить",
-                    appearance: "primary",
-                    onClick: () => setIsFormOpened(true)
-                }]}
-                rows={{
-                    actions: {
-                        actions: [{ id: 0, type: "view", onClick: () => { } }]
-                    },
-                    ids: id,
-                    items: [
-                        {
-                            title: "Тема",
-                            type: "text",
-                            items: title
-                        },
-                        {
-                            title: "Статус",
-                            type: "icon",
-                            items: status,
-                            icons: [{
-                                key: String(VotingStatus.Close),
-                                icon: <CloseIcon />
-                            },
-                            {
-                                key: String(VotingStatus.Open),
-                                icon: <OpenIcon />
-                            }]
-                        },
-                        {
-                            title: "Дом",
-                            type: "text",
-                            items: houseName
-                        },
-                        {
-                            title: "Результат",
-                            type: "text",
-                            items: result
-                        },
-                        {
-                            title: "Дата начала",
-                            type: "text",
-                            items: createdAt
-                        },
-                        {
-                            title: "Дата окончания",
-                            type: "text",
-                            items: expiredAt
-                        }
-                    ],
-                    keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true }
-                }} />
+            {getItem()}
         </>
     );
 }
@@ -199,7 +67,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     try {
         const { props: votingProps } = await fetchReferenceData<{ events: IGetEvents }>(context, API.event.get, postDataVotings);
-        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, { "isAllInfo": false });
+        const { props: houseProps } = await fetchReferenceData<{ houses: IHouse[] }>(context, API.reference.house.get, { "isAllInfo": true });
         if (!votingProps || !houseProps) {
             return {
                 notFound: true
@@ -208,8 +76,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return {
             props: {
                 data: {
-                    votings: votingProps.data.events.votings,
-                    houses: houseProps.data.houses
+                    votings: ('events' in votingProps.data) ? votingProps.data.events.votings : [],
+                    additionalData: [
+                        {
+                            data: ('houses' in houseProps.data) ? houseProps.data.houses : [],
+                            id: 'houseId'
+                        }
+                    ]
                 }
             }
         };
@@ -221,5 +94,5 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 interface IVotingProps extends Record<string, unknown>, IAppContext {
-    data: { votings: IGetVoting[]; houses: IHouse[] };
+    data: IVotingReferenceData & { additionalData: { data: Record<string, string | number>[]; id: string }[] };
 }

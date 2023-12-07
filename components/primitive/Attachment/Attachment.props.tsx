@@ -18,6 +18,7 @@ export interface AttachmentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 export enum FileType {
     PNG = "png",
     JPEG = "jpeg",
+    JPG = "jpg",
     CSV = "csv",
     TXT = "txt",
     XLSX = "xlsx",

@@ -14,7 +14,7 @@ import cn from "classnames";
 
 export const DatePickerInput = forwardRef(({
     choosedDate, setChoosedDate, numberInOrder,
-    inputTitle, inputSize = "s", inputError,
+    title, size = "s", inputError,
     className,
     ...props
 }: DatePickerInputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
@@ -70,10 +70,10 @@ export const DatePickerInput = forwardRef(({
     return (
         <div className={cn(styles.pickerWrapper, className)} {...props} ref={pickerRef}>
             <Input
-                title={inputTitle}
+                title={title}
                 placeholder=""
                 onClick={() => setIsPickerOpened(!isPickerOpened)}
-                size={inputSize}
+                size={size}
                 sizeOfIcon="big"
                 icon={<CalendarIcon />}
                 alignOfIcon="right"

@@ -187,7 +187,7 @@ export interface FormError {
 }
 
 export interface SelectorFormProps<T extends FieldValues> {
-    inputTitle: string;
+    title: string;
     options: SelectorOption[];
 
     id: Path<T>;
@@ -201,7 +201,7 @@ export interface SelectorFormProps<T extends FieldValues> {
 }
 
 export interface DatePickerFormProps<T extends FieldValues> {
-    inputTitle: string;
+    title: string;
 
     id: Path<T>;
     type: "datepicker";
