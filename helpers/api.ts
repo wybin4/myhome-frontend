@@ -30,7 +30,7 @@ export const API: {
         singlePaymentDocument: { calculate: string };
         voting: { add: string };
         houseNotification: { add: string };
-        appeal: { add: string; update: string; };
+        appeal: { update: string; };
     };
     admin: {
         correction: { penaltyCalculationRule: { add: string; get: string } };
@@ -97,7 +97,6 @@ export const API: {
             add: `house-notification/add-house-notification`
         },
         appeal: {
-            add: `appeal/add-appeal`,
             update: `appeal/update-appeal`,
         }
     },

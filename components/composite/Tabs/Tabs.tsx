@@ -1,30 +1,27 @@
 import { TabsProps } from "./Tabs.props";
 import styles from "./Tabs.module.css";
 import cn from 'classnames';
-import { Button, Htag, TableButton, Tag } from "@/components";
+import { Button, Htag, Tag } from "@/components";
 
 export const Tabs = ({
     title,
     tabs,
     tagTexts, descriptionText,
-    addButtonText, onAddButtonClick,
+    onAddButtonClick,
     activeTab, setActiveTab, isData,
     className, children, ...props
 }: TabsProps): JSX.Element => {
+
     return (
         <>
             {!isData && onAddButtonClick &&
-                <TableButton
-                    buttons={[{
-                        type: "add",
-                        title: `Добавить ${{ addButtonText }}`,
-                        appearance: "primary",
-                        onClick: onAddButtonClick
-                    }]}
-                    isFiltersExist={false}
-                    isFilterOpened={false}
-                    setIsFilterOpened={() => { }}
-                />
+                <Button
+                    appearance="primary"
+                    symbol="add"
+                    typeOfButton="ordinary"
+                    size="m"
+                    onClick={onAddButtonClick}
+                >Добавить</Button>
             }
             {isData &&
                 <>
@@ -65,7 +62,7 @@ export const Tabs = ({
                                         typeOfButton="rounded"
                                         size="s"
                                         onClick={onAddButtonClick}
-                                    >Добавить {addButtonText}</Button>
+                                    >Добавить</Button>
                                 </div>
                             }
                         </div>

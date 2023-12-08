@@ -55,6 +55,7 @@ export interface ChargeCardBottomProps extends DetailedHTMLProps<HTMLAttributes<
 
 export interface BaseCardProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     maxWidth?: string;
+    width?: string;
     bottom?: CardBottomProps;
 }
 

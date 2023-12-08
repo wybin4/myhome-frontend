@@ -10,14 +10,17 @@ export const Card = ({
     titlePart, description,
     text, isMobileText = true,
     input, bottom, voting,
-    maxWidth,
+    maxWidth, width,
     className, ...props
 }: CardProps): JSX.Element => {
     const [inputValue, setInputValue] = useState<string | number | undefined>(input?.value);
 
     return (
         <div
-            style={{ maxWidth: maxWidth ? maxWidth : "100%" }}
+            style={{
+                maxWidth: maxWidth ? maxWidth : "100%",
+                width: width ? width : "100%"
+            }}
             className={cn(styles.cardWrapper, className)}
             {...props}>
             <CardTitle  {...titlePart} />

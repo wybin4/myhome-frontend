@@ -6,7 +6,6 @@ export interface TabsProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEleme
     tagTexts?: string[];
     descriptionText?: string;
 
-    addButtonText?: string;
     onAddButtonClick?: () => void;
 
     activeTab: number;

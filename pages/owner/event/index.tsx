@@ -146,7 +146,13 @@ function Event({ data }: EventProps): JSX.Element {
                         title: "Тип",
                         titleEng: "type",
                         type: "checkbox",
-                        items: ["Опрос", "Уведомление"]
+                        items: [{
+                            value: "Voting",
+                            text: "Опрос"
+                        }, {
+                            value: "Notification",
+                            text: "Уведомление"
+                        }]
                     }, {
                         title: "Дата",
                         titleEng: "createdAt",

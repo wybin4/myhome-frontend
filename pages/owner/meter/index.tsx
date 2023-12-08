@@ -10,16 +10,24 @@ import { API } from "@/helpers/api";
 import { useState } from "react";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
-import { ISubscriberAddMeterForm, MeterType } from "@/interfaces/reference/meter.interface";
+import { MeterType } from "@/interfaces/reference/meter.interface";
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { IAppContext } from "@/context/app.context";
 import NoDataIcon from "./icons/nodata.svg";
+import { FileType } from "@/components/primitive/Attachment/Attachment.props";
+import { AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
+import { ITypeOfService } from "@/interfaces/common.interface";
+import { IApartmentAllInfo, IGetApartment } from "@/interfaces/reference/subscriber/apartment.interface";
+import { getEnumKeyByValue } from "@/helpers/constants";
+import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
-    const useFormData = useForm<ISubscriberAddMeterForm>();
+    const [selectedSubscriberId, setSelectedSubscriberId] = useState<number>(0);
+    const [selectedMCId, setSelectedMCId] = useState<number>(0);
+    const useFormData = useForm<IAppeal>();
 
     const tabs = data.meters.map(obj => {
         return {
@@ -35,56 +43,129 @@ function Meter({ data }: MeterPageProps): JSX.Element {
     };
     const isDataVal = isData(data.meters);
 
+    const handleSelectClick = (option: string | number) => {
+        const apartmentId = parseInt(String(option));
+        if (data.apartments) {
+            const apartment = data.apartments.find(a => a.id === apartmentId);
+            if (apartment) {
+                const subscriberId = apartment.subscriberId;
+                if (data.users) {
+                    const userWithSubscribers = data.users.find(user => user.subscribers.some(s => s.id === subscriberId));
+                    if (userWithSubscribers) {
+                        const mcId = userWithSubscribers.user.id;
+                        setSelectedMCId(mcId ? mcId : 0);
+                        setSelectedSubscriberId(subscriberId);
+                    }
+                }
+            }
+        }
+    };
+
     return (
         <>
             <Form
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
                 title="Добавление счётчика"
-                selectors={[
+                additionalFormData={
                     {
-                        title: "Тип услуги", id: "typeOfService",
-                        options: [
-                            { value: 1, text: "Газ" },
-                            { value: 2, text: "Электричество" },
-                            { value: 3, text: "ХВС" },
-                        ],
-                        numberInOrder: 1, type: "select",
-                        error: { value: true, message: "Заполните тип услуги" }
+                        managementCompanyId: selectedMCId,
+                        typeOfAppeal: getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter),
+                        subscriberId: selectedSubscriberId
                     }
-                ]}
-                datePickers={[
-                    {
-                        id: "verificationDate", type: "datepicker", title: "Дата поверки", numberInOrder: 2,
-                        error: { value: true, message: "Заполните дату поверки" }
+                }
+                dataList={["typeOfServiceId", "apartmentId", "verifiedAt", "issuedAt", "factoryNumber", "attachment"]}
+                selectors=
+                {[{
+                    title: "Тип услуги",
+                    options: data.typesOfService ? data.typesOfService.map(tos => {
+                        return {
+                            value: tos.id,
+                            text: tos.name
+                        };
+                    }) : [],
+                    id: "typeOfServiceId",
+                    type: "select",
+                    numberInOrder: 1,
+                    error: {
+                        value: true, message: "Выберите тип услуги"
                     },
-                    {
-                        id: "dateOfPreviousReading", type: "datepicker", title: "Дата предыдущего показания", numberInOrder: 3,
-                        error: { value: true, message: "Заполните дату предыдущего показания" }
+                },
+                {
+                    title: "Квартира",
+                    options: data.apartments ? data.apartments.map(a => {
+                        return {
+                            value: a.id,
+                            text: a.address
+                        };
+                    }) : [],
+                    id: "apartmentId",
+                    type: "select",
+                    numberInOrder: 2,
+                    error: {
+                        value: true, message: "Выберите квартиру"
                     },
-                ]}
-                inputs={[
-                    {
-                        id: "previousReading", type: "input", title: "Предыдущее показание", numberInOrder: 4,
-                        inputType: "number",
-                        error: { value: true, message: "Заполните предыдущее показание" }
+                    handleSelect: (option: string | number) => {
+                        handleSelectClick(option);
                     }
-                ]} urlToPost={""} successCode={200} successMessage={""}            >
+                }
+                ]}
+                datePickers={[{
+                    title: "Дата поверки",
+                    id: "verifiedAt",
+                    type: "datepicker",
+                    numberInOrder: 4,
+                    error: {
+                        value: true, message: "Выберите дату поверки"
+                    },
+                },
+                {
+                    title: "Дата истечения поверки",
+                    id: "issuedAt",
+                    type: "datepicker",
+                    numberInOrder: 5,
+                    error: {
+                        value: true, message: "Выберите дату истечения поверки"
+                    },
+                }]}
+                inputs={[{
+                    title: "Заводской номер",
+                    inputType: "string",
+                    id: "factoryNumber",
+                    type: "input",
+                    numberInOrder: 3,
+                    error: {
+                        value: true, message: "Введите заводской номер"
+                    }
+                }]}
+                attachments={[{
+                    text: "Паспорт счётчика",
+                    fileFormat: [FileType.JPEG, FileType.JPG, FileType.PNG],
+                    id: "attachment",
+                    type: "attachment",
+                    numberInOrder: 6,
+                    error: {
+                        value: true, message: "Добавьте вложение"
+                    },
+                }]}
+                urlToPost={API.subscriber.appeal.add}
+                successCode={201}
+                successMessage="Обращение на добавление счётчика успешно добавлено"            >
             </Form>
             <div className={cn({
-                "flex flex-col items-center justify-center gap-2.6 md:gap-3 mt-2 flex-col": !isDataVal
+                "flex flex-col xl:flex-row 2xl:flex-row 3xl:flex-row items-center justify-center gap-2.6 md:gap-3 mt-2 flex-col": !isDataVal
             })}>
                 {!isDataVal && (
-                    <span className="w-30 h-34">
-                        <NoDataIcon />
+                    <span>
+                        <NoDataIcon className="xl:w-[26rem] lg:w-[26rem] lg:h-[26rem] md:w-[26rem] md:h-[26rem] sm:w-[26rem] sm:h-[26rem] w-[30rem] h-[34rem] fill-[var(--primary)]" />
                     </span>
                 )}
                 <div className={cn({
-                    "flex flex-col items-center justify-center": !isDataVal
+                    "flex 3xl:flex-col 2xl:flex-col xl:flex-col md:flex-col sm:flex-col lg:flex-col 2xl:flex-row items-center justify-center": !isDataVal
                 })}>
                     {!isDataVal && (
-                        <Htag size="h1" className="text-center">
-                            Данные об обращениях ещё не добавлены
+                        <Htag size="h1" className="text-center mt-[4rem] mb-[2.6rem]">
+                            Данные о счётчиках ещё не добавлены
                         </Htag>
                     )}
                     <>
@@ -94,7 +175,6 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                             tabs={tabs}
                             tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
                             descriptionText="Срок передачи показаний — с 20 по 25 число"
-                            addButtonText="счётчик"
                             onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
                             activeTab={apartmentId}
                             setActiveTab={setApartmentId}
@@ -155,7 +235,8 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
 
     return (
         <Card
-            maxWidth="26rem"
+            maxWidth="38.375rem"
+            width="100%"
             key={key}
             titlePart={{
                 text: titlePartText(meter.typeOfServiceName, meter.unitName),
@@ -192,11 +273,41 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         "meterType": MeterType.Individual,
         "isNotAllInfo": false
     };
-    return await fetchReferenceData<IGetMeterByAIDs>(context, apiUrl, postData);
+    const { props: meterProps } = await fetchReferenceData<IGetMeterByAIDs>(context, apiUrl, postData);
+    const { props: typeOfServiceProps } = await fetchReferenceData<{ typesOfService: ITypeOfService[] }>(
+        context,
+        API.reference.typeOfService.get,
+        undefined
+    );
+    const { props: apartmentProps } = await fetchReferenceData<{ apartments: IGetApartment[] }>(context, API.reference.apartment.get,
+        { "isAllInfo": true }
+    );
+    const { props: userProps } = await fetchReferenceData<{ users: IGetUserWithSubscriber[] }>(context, API.common.user.get, undefined);
+
+    if (!meterProps || !typeOfServiceProps || !apartmentProps || !userProps) {
+        return {
+            notFound: true
+        };
+    }
+    return {
+        props: {
+            data: {
+                meters: ('meters' in meterProps.data) ? meterProps.data.meters : [],
+                typesOfService: ('typesOfService' in typeOfServiceProps.data) ? typeOfServiceProps.data.typesOfService : [],
+                apartments: ('apartments' in apartmentProps.data) ? apartmentProps.data.apartments : [],
+                users: ('users' in userProps.data) ? userProps.data.users : []
+            }
+        }
+    };
 }
 
 interface MeterPageProps extends Record<string, unknown>, IAppContext {
-    data: { meters: IGetMeterByAIDs[] };
+    data: {
+        meters: IGetMeterByAIDs[];
+        apartments: IApartmentAllInfo[];
+        typesOfService: ITypeOfService[];
+        users: IGetUserWithSubscriber[];
+    };
 }
 
 export interface IGetMeterByAIDs {

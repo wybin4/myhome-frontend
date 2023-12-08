@@ -122,7 +122,7 @@ export const AppealOwnerPageComponent = ({
                     return (
                         <Card
                             key={key}
-                            maxWidth="38.375rem"
+                            width="38.375rem"
                             titlePart={{
                                 text: `№${appeal.id}`,
                                 tag: {
@@ -542,7 +542,6 @@ export const AppealOwnerPageComponent = ({
                                 { id: 4, name: "Отклоненные" },
                             ]}
                             activeTab={activeTab} setActiveTab={setActiveTab}
-                            addButtonText="обращение"
                             onAddButtonClick={() => setIsCardFormOpened(!isCardFormOpened)}
                         >
                             {activeTab === 1 && getAppeals("all")}
@@ -615,7 +614,7 @@ export const AppealManagementCompanyPageComponent = ({
                     return (
                         <div key={key}>
                             <Card
-                                maxWidth="38.375rem"
+                                width="38.375rem"
                                 titlePart={{
                                     text: `№${appeal.id}`,
                                     description: `${appeal.name} · ${createdAt}`,

@@ -1,12 +1,5 @@
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent, IReferencePageItem } from "./page.interface";
 
-export interface ISubscriberAddMeterForm {
-    typeOfService: number;
-    verificationDate: Date;
-    dateOfPreviousReading: Date;
-    previousReading: number;
-}
-
 export interface IGetIndividualMeter {
     id: number;
     typeOfServiceId: number;
