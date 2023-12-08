@@ -198,6 +198,10 @@ export interface SelectorFormProps<T extends FieldValues> {
     handleSelect?: (option: string | number) => void;
 
     selectorType?: "little" | "ordinary";
+    canIOpenFlag?: {
+        flag: boolean,
+        error: string;
+    };
 }
 
 export interface DatePickerFormProps<T extends FieldValues> {

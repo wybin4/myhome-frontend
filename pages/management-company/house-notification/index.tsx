@@ -23,7 +23,7 @@ function HouseNotification({ data: initialData }: IHouseNotificationProps): JSX.
                 item={newItem}
                 uriToAdd={API.managementCompany.houseNotification.add}
                 additionalSelectorOptions={[...data.additionalData, {
-                    data: Object.values(HouseNotificationType).map(h => { return { type: String(h), id: getEnumKeyByValue(HouseNotificationType, h) }; }),
+                    data: Object.values(HouseNotificationType).map(h => { return { name: String(h), id: getEnumKeyByValue(HouseNotificationType, h) }; }),
                     id: 'type'
                 }]}
                 setPostData={setPostData}

@@ -9,7 +9,7 @@ import UnCheckedIcon from "./unchecked.svg";
 export const Select = forwardRef(({
     id,
     selected, setSelected, handleSelect,
-    title, inputError,
+    title, inputError, setInputError, canIOpen,
     options,
     size = "s",
     className
@@ -32,6 +32,12 @@ export const Select = forwardRef(({
         };
     }, []);
 
+    useEffect(() => {
+        if (!canIOpen?.flag && setInputError) {
+            setInputError("");
+        }
+    }, [canIOpen?.flag]);
+
     const handleDocumentClick = (e: MouseEvent) => {
         if (selectRef.current && !selectRef.current.contains(e.target as Node)) {
             setIsOpen(false);
@@ -52,7 +58,15 @@ export const Select = forwardRef(({
                 })}
                 data-value={selected?.value}
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    if (canIOpen && canIOpen.flag) {
+                        canIOpen.foo();
+                        setIsOpen(false);
+                    } else {
+                        canIOpen && canIOpen.foo();
+                        setIsOpen(!isOpen);
+                    }
+                }}
                 ref={selectRef}
             >
                 <span>{selected?.text}</span>

@@ -72,12 +72,12 @@ export const Form = <T extends FieldValues>({
     ...props
 }: FormProps<T>): JSX.Element => {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
+    const [formError, setFormError] = useState<string>("");
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [submitCount, setSubmitCount] = useState(0);
     const formRef = useRef<HTMLDivElement | null>(null);
 
-    const { handleSubmit, control, formState: { errors }, reset } = useFormData;
+    const { handleSubmit, control, setError, formState: { errors }, reset } = useFormData;
 
 
     const formComponents: FormElementProps<T>[] = [
@@ -157,7 +157,7 @@ export const Form = <T extends FieldValues>({
 
             if (response.status === successCode) {
                 setIsSuccess(true);
-                setError("");
+                setFormError("");
                 if (setIsOpened) {
                     setIsOpened(false);
                 }
@@ -166,13 +166,13 @@ export const Form = <T extends FieldValues>({
                 }
                 reset();
             } else {
-                setError("Что-то пошло не так");
+                setFormError("Что-то пошло не так");
             }
         } catch (e: unknown) {
             if (e instanceof AxiosError) {
-                setError(e.response?.data.message);
+                setFormError(e.response?.data.message);
             } else {
-                setError("Что-то пошло не так");
+                setFormError("Что-то пошло не так");
             }
         }
     };
@@ -201,10 +201,10 @@ export const Form = <T extends FieldValues>({
                         {successMessage}
                     </PopUp>
                     <PopUp
-                        isOpen={error !== ""}
-                        setIsOpen={() => setError("")}
+                        isOpen={formError !== ""}
+                        setIsOpen={() => setFormError("")}
                         type="failure" className={styles.popup}>
-                        {error}
+                        {formError}
                     </PopUp>
                 </>
             }
@@ -326,6 +326,31 @@ export const Form = <T extends FieldValues>({
                                                             {
                                                                 component.selectorType !== "little" &&
                                                                 <Select
+                                                                    canIOpen={component.canIOpenFlag &&
+                                                                    {
+                                                                        foo: () => {
+                                                                            if (component.canIOpenFlag) {
+                                                                                if (component.canIOpenFlag.flag) {
+                                                                                    setError(component.id, {
+                                                                                        type: 'manual',
+                                                                                        message: component.canIOpenFlag.error,
+                                                                                    });
+                                                                                } else {
+                                                                                    setError(component.id, {
+                                                                                        type: 'manual',
+                                                                                        message: "",
+                                                                                    });
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        flag: component.canIOpenFlag.flag
+                                                                    }}
+                                                                    setInputError={(newInputError: string) => {
+                                                                        setError(component.id, {
+                                                                            type: 'manual',
+                                                                            message: newInputError,
+                                                                        });
+                                                                    }}
                                                                     selected={field.value}
                                                                     setSelected={field.onChange}
                                                                     ref={field.ref}
@@ -758,7 +783,7 @@ export const FileForm = ({
     const [table, setTable] = useState<Record<string, any>[]>([]);
     const [clear, setClear] = useState<boolean>(false);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
+    const [formError, setFormError] = useState<string>("");
     const [isPopupVisible, setIsPopupVisible] = useState(false);
 
     useEffect(() => {
@@ -769,7 +794,7 @@ export const FileForm = ({
         }, 3000);
 
         return () => clearTimeout(timer);
-    }, [error, isSuccess]);
+    }, [formError, isSuccess]);
 
     const onSubmit = async () => {
         try {
@@ -798,7 +823,7 @@ export const FileForm = ({
 
             if (response.status === successCode) {
                 setIsSuccess(true);
-                setError("");
+                setFormError("");
                 if (setIsOpened) {
                     setIsOpened(false);
                 }
@@ -807,13 +832,13 @@ export const FileForm = ({
                 }
                 setClear(true);
             } else {
-                setError("Что-то пошло не так");
+                setFormError("Что-то пошло не так");
             }
         } catch (e: unknown) {
             if (e instanceof AxiosError) {
-                setError(e.response?.data.message);
+                setFormError(e.response?.data.message);
             } else {
-                setError("Что-то пошло не так");
+                setFormError("Что-то пошло не так");
             }
         }
     };
@@ -829,10 +854,10 @@ export const FileForm = ({
                         {successMessage}
                     </PopUp>
                     <PopUp
-                        isOpen={error !== ""}
-                        setIsOpen={() => setError("")}
+                        isOpen={formError !== ""}
+                        setIsOpen={() => setFormError("")}
                         type="failure" className={styles.popup}>
-                        {error}
+                        {formError}
                     </PopUp>
                 </>
             }

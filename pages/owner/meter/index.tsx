@@ -1,4 +1,4 @@
-import { Card, Form, Tabs } from "@/components";
+import { Card, Form, Htag, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import HeatingIcon from "./icons/heating.svg";
 import WaterIcon from "./icons/water.svg";
@@ -14,6 +14,7 @@ import { ISubscriberAddMeterForm, MeterType } from "@/interfaces/reference/meter
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { IAppContext } from "@/context/app.context";
+import NoDataIcon from "./icons/nodata.svg";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
@@ -29,6 +30,11 @@ function Meter({ data }: MeterPageProps): JSX.Element {
 
     const selectedData = data.meters.find(obj => obj.apartmentId === apartmentId);
 
+    const isData = (meters: IGetMeterByAIDs[]) => {
+        return meters.filter(apartment => apartment.meters.length > 0).length > 0;
+    };
+    const isDataVal = isData(data.meters);
+
     return (
         <>
             <Form
@@ -37,7 +43,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 title="Добавление счётчика"
                 selectors={[
                     {
-                        inputTitle: "Тип услуги", id: "typeOfService",
+                        title: "Тип услуги", id: "typeOfService",
                         options: [
                             { value: 1, text: "Газ" },
                             { value: 2, text: "Электричество" },
@@ -49,11 +55,11 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 ]}
                 datePickers={[
                     {
-                        id: "verificationDate", type: "datepicker", inputTitle: "Дата поверки", numberInOrder: 2,
+                        id: "verificationDate", type: "datepicker", title: "Дата поверки", numberInOrder: 2,
                         error: { value: true, message: "Заполните дату поверки" }
                     },
                     {
-                        id: "dateOfPreviousReading", type: "datepicker", inputTitle: "Дата предыдущего показания", numberInOrder: 3,
+                        id: "dateOfPreviousReading", type: "datepicker", title: "Дата предыдущего показания", numberInOrder: 3,
                         error: { value: true, message: "Заполните дату предыдущего показания" }
                     },
                 ]}
@@ -65,23 +71,43 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                     }
                 ]} urlToPost={""} successCode={200} successMessage={""}            >
             </Form>
-            <Tabs
-                title="Приборы учёта и показания"
-                tabs={tabs}
-                tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
-                descriptionText="Срок передачи показаний — с 20 по 25 число"
-                addButtonText="счётчик"
-                onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
-                activeTab={apartmentId} setActiveTab={setApartmentId}
-                className={cn(
-                    "grid grid-cols-3 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1",
-                    "gap-y-[3.25rem] gap-x-4 lg:gap-y-[2rem] md:gap-y-[2rem] sm:gap-y-[2rem]"
+            <div className={cn({
+                "flex flex-col items-center justify-center gap-2.6 md:gap-3 mt-2 flex-col": !isDataVal
+            })}>
+                {!isDataVal && (
+                    <span className="w-30 h-34">
+                        <NoDataIcon />
+                    </span>
                 )}
-            >
-                {selectedData?.meters && selectedData?.meters.map((meter, index) =>
-                    <MeterCard {...meter} key={index} />
-                )}
-            </Tabs>
+                <div className={cn({
+                    "flex flex-col items-center justify-center": !isDataVal
+                })}>
+                    {!isDataVal && (
+                        <Htag size="h1" className="text-center">
+                            Данные об обращениях ещё не добавлены
+                        </Htag>
+                    )}
+                    <>
+                        <Tabs
+                            isData={isDataVal}
+                            title="Приборы учёта и показания"
+                            tabs={tabs}
+                            tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
+                            descriptionText="Срок передачи показаний — с 20 по 25 число"
+                            addButtonText="счётчик"
+                            onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
+                            activeTab={apartmentId}
+                            setActiveTab={setApartmentId}
+                            className={`grid grid-cols-3 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 gap-y-3.25 gap-x-4 lg:gap-y-2 md:gap-y-2 sm:gap-y-2`}
+                        >
+                            {selectedData?.meters && selectedData?.meters.map((meter, index) => (
+                                <MeterCard {...meter} key={index} />
+                            ))}
+                        </Tabs>
+                    </>
+                </div>
+            </div>
+
         </>
     );
 }

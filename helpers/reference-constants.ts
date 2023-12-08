@@ -5,6 +5,7 @@ import { GetServerSidePropsContext } from "next";
 import axios from "axios";
 import { API } from "./api";
 import { parse } from "cookie";
+import { getEnumValueByKey } from "./constants";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function fetchReferenceData<T extends Record<string, string | number | any>>(
@@ -108,13 +109,21 @@ export const enrichReferenceComponent = <T extends FieldValues>(
     const dataFromBack = data[baseEngName + "s"];
     if (dataFromBack) {
         const enrichedComponents = enrichedComponent.components.map(component => {
-            const values = dataFromBack.map(item => item[component.id]);
+            const values = dataFromBack.map(item =>
+                component.enum ?
+                    getEnumValueByKey(component.enum, String(item[component.id]) || "")
+                    : item[component.id]);
             const rows = values.map(value => value ? valueFormat(value) : "");
             if (component.isFilter) {
                 const uniqueValues = Array.from(new Set(values));
                 const filterItems = [{
                     name: [{ word: component.title.map(t => t.word).join(" ") }],
-                    items: uniqueValues.map(value => value ? valueFormat(value) : "")
+                    items: uniqueValues.map(value => {
+                        return {
+                            value: component.id,
+                            text: value ? valueFormat(value) : ""
+                        };
+                    })
                 }];
 
                 return {

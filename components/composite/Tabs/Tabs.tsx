@@ -42,16 +42,21 @@ export const Tabs = ({
                             </div>
                         ))}
                     </div>
-                    <div className={styles.wrapper} {...props}>
-                        <div className={styles.topOfWrapper}>
-                            <div>
-                                {tagTexts &&
+                    <div className={cn(styles.wrapper, {
+                        "flex flex-row-reverse justify-between": !tagTexts,
+                        "lg:!block md:!block sm:!block": !tagTexts
+                    })} {...props}>
+                        <div className={cn(styles.topOfWrapper, {
+                            "!block": !tagTexts
+                        })}>
+                            {tagTexts &&
+                                <div>
                                     <div className={styles.tagTexts}>
                                         {tagTexts.map((tag, key) => <Tag size="l" key={key}>{tag}</Tag>)}
                                     </div>
-                                }
-                                {descriptionText && <div className={styles.description}>{descriptionText}</div>}
-                            </div>
+                                    {descriptionText && <div className={styles.description}>{descriptionText}</div>}
+                                </div>
+                            }
                             {onAddButtonClick &&
                                 <div className={styles.buttonWrapper}>
                                     <Button
@@ -64,7 +69,10 @@ export const Tabs = ({
                                 </div>
                             }
                         </div>
-                        <div className={cn(styles.content, className)}>
+                        <div className={cn(styles.content, className, {
+                            "!mt-2": !tagTexts,
+                            "lg:!mt-6 md:!mt-6 sm:!mt-6": !tagTexts
+                        })}>
                             {children}
                         </div>
                     </div>

@@ -29,8 +29,8 @@ export interface ISubscriber {
 }
 
 export enum SubscriberStatus {
-    Archieved = 'Archieved',
-    Active = 'Active'
+    Archieved = 'В архиве',
+    Active = 'Активен'
 }
 
 export const subscriberPageComponent:
@@ -66,7 +66,7 @@ export const subscriberPageComponent:
         {
             type: "none",
             title: [{ word: "статус" }],
-            numberInOrder: 4, id: "status", gender: "женский",
+            numberInOrder: 4, id: "status", gender: "женский", enum: SubscriberStatus,
             rows: []
         },
     ]

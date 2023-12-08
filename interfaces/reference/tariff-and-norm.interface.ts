@@ -1,3 +1,4 @@
+import { getEnumValueByKey } from "@/helpers/constants";
 import { IReferenceData, IReferenceDataItem, IReferencePageComponent, IReferencePageItem } from "./page.interface";
 
 export interface IBaseTariffAndNormReferenceDataItem extends IReferenceDataItem {
@@ -11,7 +12,7 @@ export interface IBaseTariffAndNormReferenceData extends IReferenceData {
     tariffAndNorms: IBaseTariffAndNormReferenceDataItem[];
 }
 
-export enum TypeOfNorm { Individual = 'Individual', General = 'General' }
+export enum TypeOfNorm { Individual = 'Индивидуальная', General = 'Общедомовая' }
 
 export enum TariffAndNormType {
     Norm = 'Norm',
@@ -61,7 +62,7 @@ const baseTariffAndNormPageComponents: IReferencePageItem<IBaseTariffAndNormRefe
         type: "select", selectorOptions: [],
         title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", sendId: "typeOfServiceId", gender: "женский",
         isFilter: true, filterItems: [
-            { items: ["ХВС", "ГВС", "Отопление"] },
+            { items: [] },
         ],
         rows: []
     },
@@ -97,12 +98,14 @@ export const normPageComponent:
             rows: []
         },
         {
-            type: "select", selectorOptions: [ // не требует исправления
-                { value: TypeOfNorm.Individual, text: "Индивидуальная" },
-                { value: TypeOfNorm.General, text: "Общедомовая" },
-            ],
+            type: "select", selectorOptions: Object.keys(TypeOfNorm).map(tn => {
+                return {
+                    value: tn,
+                    text: getEnumValueByKey(TypeOfNorm, tn)
+                };
+            }),
             title: [{ word: "тип" }, { word: "нормы" }], numberInOrder: 3, id: "typeOfNorm", gender: "мужской",
-            rows: []
+            rows: [], enum: TypeOfNorm
         },
         ...baseTariffAndNormWithUnitPageComponents as unknown as IReferencePageItem<INormReferenceDataItem>[]
     ]

@@ -178,8 +178,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
         props: {
             data: {
-                notifications: props.data.events.notifications,
-                votings: props.data.events.votings
+                notifications: ('events' in props.data) ? props.data.events.notifications : [],
+                votings: ('events' in props.data) ? props.data.events.votings : []
             }
         }
     };

@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { getStatusIcon, getAttachment, getInfoWindow, getTypeIcon, getFormattedAppealDate } from "./constants";
 import { UserRole } from "@/interfaces/account/user.interface";
 import styles from "./AppealPageComponent.module.css";
-import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
+import { ITableFilterItem, TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import NoDataIcon from "./nodata.svg";
 import cn from "classnames";
@@ -194,11 +194,31 @@ export const AppealOwnerPageComponent = ({
 
     const getData = async (type: AppealType) => {
         switch (type) {
+            case getEnumKeyByValue(AppealType, AppealType.ProblemOrQuestion):
+            case getEnumKeyByValue(AppealType, AppealType.Claim): {
+                try {
+                    if (!apartments) {
+                        const { data } = await api.post<{ apartments: IApartmentAllInfo[] }>(
+                            API.subscriber.apartment.get, {
+                            isAllInfo: true
+                        });
+                        if (!data) {
+                            setError("Невозможно получить данные о квартирах");
+                        } else {
+                            setApartments(data.apartments);
+                        }
+                    }
+                }
+                catch (e) {
+                    setError("Невозможно получить данные");
+                }
+                break;
+            }
             case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
                 try {
                     if (!meters) {
                         const { data } = await api.post<{ meters: IGetIndividualMeter[] }>(
-                            API.reference.meter.get, { // ИСПРАВИТЬ!!!
+                            API.reference.meter.get, {
                             meterType: MeterType.Individual,
                             isNotAllInfo: true
                         });
@@ -210,7 +230,7 @@ export const AppealOwnerPageComponent = ({
                     }
                 }
                 catch (e) {
-                    setError("Невозможно получить данные о счётчиках");
+                    setError("Невозможно получить данные");
                 }
                 break;
             }
@@ -238,7 +258,7 @@ export const AppealOwnerPageComponent = ({
                     }
                 }
                 catch (e) {
-                    setError("Невозможно получить данные о квартирах");
+                    setError("Невозможно получить данные");
                 }
                 break;
             }
@@ -289,9 +309,13 @@ export const AppealOwnerPageComponent = ({
                             error: {
                                 value: true, message: "Выберите квартиру"
                             },
+                            canIOpenFlag: {
+                                flag: selectedMCId === 0,
+                                error: "Выберите управляющую компанию"
+                            },
                             handleSelect: (option: string | number) => {
                                 setSelectedSubscriberId(parseInt(String(option)));
-                            }
+                            },
                         }],
                     textAreas:
                         [{
@@ -540,8 +564,8 @@ export const AppealManagementCompanyPageComponent = ({
     isInfoWindowOpen, setIsInfoWindowOpen,
 }: AppealDetailPageComponentProps): JSX.Element => {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
-    const [type, setType] = useState<string[]>();
-    const [status, setStatus] = useState<string[]>();
+    const [type, setType] = useState<ITableFilterItem[]>();
+    const [status, setStatus] = useState<ITableFilterItem[]>();
     const filterButtonRef = useRef(null);
     const useFormData = useForm<IUpdateAppeal>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
@@ -616,32 +640,24 @@ export const AppealManagementCompanyPageComponent = ({
         );
     };
 
-    type AppealData = {
-        typeArr: string[];
-        statusArr: string[];
-    };
-
     useEffect(() => {
-        const initialData: AppealData = {
-            typeArr: [],
-            statusArr: [],
-        };
+        const typeArr = appeals.map(a => a.typeOfAppeal);
+        const uniqueType = Array.from(new Set(typeArr));
 
-        const appealsData: AppealData = appeals.reduce(
-            (accumulator, appeal) => {
-                const statusItem = getEnumValueByKey(AppealStatus, appeal.status);
-                accumulator.statusArr.push(statusItem);
-                const typeItem = getEnumValueByKey(AppealType, appeal.typeOfAppeal);
-                accumulator.typeArr.push(typeItem);
-                return accumulator;
-            },
-            initialData
-        );
-
-        const { typeArr, statusArr } = appealsData;
-        setType(Array.from(new Set(typeArr)));
-        setStatus(Array.from(new Set(statusArr)));
-
+        const statusArr = appeals.map(a => a.status);
+        const uniqueStatus = Array.from(new Set(statusArr));
+        setStatus(uniqueStatus.map(s => {
+            return {
+                value: s,
+                text: getEnumValueByKey(AppealStatus, s)
+            };
+        }));
+        setType(uniqueType.map(t => {
+            return {
+                value: t,
+                text: getEnumValueByKey(AppealType, t)
+            };
+        }));
     }, [appeals]);
 
     const filters: TableFilterItemProps[] = [
@@ -698,9 +714,9 @@ export const AppealManagementCompanyPageComponent = ({
                     successMessage="Обращение обработано"
                     successCode={200}
                     urlToPost={API.managementCompany.appeal.update}
-                    additionalFormData={[{
+                    additionalFormData={{
                         "id": selectedId
-                    }]}
+                    }}
                     useFormData={useFormData}
                     isOpened={isFormOpened} setIsOpened={setIsFormOpened}
                     title="Обработка обращения"

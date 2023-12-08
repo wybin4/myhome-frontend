@@ -12,6 +12,7 @@ import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
 import NoDataIcon from "./nodata.svg";
 import cn from "classnames";
 import { TableButtonType } from "@/components/composite/TableButton/TableButton.props";
+import { capFirstLetter } from "@/helpers/constants";
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
@@ -71,6 +72,19 @@ export const ReferencePageComponent = <T extends FieldValues>({
         }).join(" ");
     };
 
+    const getPretext = (
+        title: IReferenceTitle[]
+    ) => {
+        if (title[0]) {
+            if (title[0].replace) {
+                if (title[0].replace[0] === "о") {
+                    return "об";
+                }
+            }
+        }
+        return "о";
+    };
+
     const replaceLettersInDeclinedWord = (declinedWord: string, replace?: string[]): string => {
         if (replace && replace.length === 2) {
             const replacedWord = declinedWord
@@ -86,9 +100,6 @@ export const ReferencePageComponent = <T extends FieldValues>({
 
     const phraseByArr = (arr: IReferenceTitle[]) => {
         return arr.map(i => i.word).join(" ");
-    };
-    const capFirstLetter = (word: string) => {
-        return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
     const getComponent = (component: IReferencePageItem<T>) => {
@@ -113,9 +124,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
         datePickers: DatePickerFormProps<T>[],
         textAreas: TextAreaFormProps<T>[]
     } => {
-        const components = item.components
-            .filter(c => !c.isInvisibleInForm)
-            .map(component => getComponent(component));
+        const components = item.components.map(component => getComponent(component));
 
         const inputs = components.filter(c => c && c.type === "input") as InputFormProps<T>[];
         const datePickers = components.filter(c => c && c.type === "datepicker") as DatePickerFormProps<T>[];
@@ -139,7 +148,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                             selectorOptions = data.data.map(d => {
                                 return {
                                     value: d.id,
-                                    text: String(d[component.id])
+                                    text: String(d.name)
                                 };
                             });
                         }
@@ -192,7 +201,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     setIsOpened={setIsFileFormOpened}
                     urlToPost={uriToAdd}
                     successCode={201}
-                    successMessage={`Данные о ${pluralNominativeWithCase(
+                    successMessage={`Данные ${getPretext(noun)} ${pluralNominativeWithCase(
                         noun,
                         gender,
                         "предложный"
@@ -209,7 +218,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 />
             }
             <Form<T>
-                successMessage={`Данные о ${getCase(
+                successMessage={`Данные ${getPretext(noun)} ${getCase(
                     noun, gender, "предложный"
                 )} добавлены`}
                 successCode={201}
@@ -235,7 +244,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 <div className={styles.titleWrapper}>
                     {!isData() &&
                         <Htag size="h1" className={styles.noDataTitle}>{
-                            `Данные о ${pluralNominativeWithCase(
+                            `Данные ${getPretext(noun)} ${pluralNominativeWithCase(
                                 noun, gender, "предложный"
                             )
                             } ещё не добавлены`
@@ -243,18 +252,18 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     }
                     <Table
                         title={capFirstLetter(pluralNominative(noun, gender))}
-                        buttons={...getButtons()}
-                        filters={...item.components
+                        buttons={getButtons()}
+                        filters={item.components
                             .filter(component => component.isFilter)
                             .flatMap(component => {
                                 if (component.filterItems) {
-                                    return component.filterItems?.map(item => {
+                                    return component.filterItems?.map(i => {
                                         return {
-                                            title: item.name ? capFirstLetter(phraseByArr(item.name))
+                                            title: i.name ? capFirstLetter(phraseByArr(i.name))
                                                 : capFirstLetter(phraseByArr(component.title)),
                                             titleEng: String(component.id),
                                             type: "checkbox",
-                                            items: item.items,
+                                            items: i.items,
                                         };
                                     });
                                 }
@@ -268,9 +277,10 @@ export const ReferencePageComponent = <T extends FieldValues>({
                                 .sort((a, b) => a.numberInOrder - b.numberInOrder).map(component => ({
                                     title: capFirstLetter(phraseByArr(component.title)),
                                     type: "text",
-                                    items: component.rows
+                                    items: component.rows,
+                                    enum: component.enum
                                 })),
-                            keyElements: item.keyElements
+                            keyElements: item.keyElements,
                         }}
                         isData={isData()}
                     />

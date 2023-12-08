@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ITableFilterItem } from "@/components/composite/TableFilter/TableFilter.props";
 import { ActionProps } from "@/components/composite/TableRow/Action/Action.props";
 import { RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
@@ -25,6 +27,7 @@ export interface IReferencePageComponent<T extends FieldValues> {
 export interface IReferencePageItem<T extends FieldValues> {
     id: Path<T>;
     sendId?: Path<T>;
+    enum?: any;
 
     title: IReferenceTitle[];
     gender: Gender[keyof Gender];
@@ -34,14 +37,13 @@ export interface IReferencePageItem<T extends FieldValues> {
     rows: string[];
 
     isFilter?: boolean;
-    filterItems?: { name?: IReferenceTitle[]; items: string[] }[];
+    filterItems?: { name?: IReferenceTitle[]; items: ITableFilterItem[] }[];
 
     type: "input" | "select" | "datepicker" | "input-vote" | "none" | "textarea";
     inputType?: "number" | "string";
 
     selectorOptions?: SelectorOption[];
     isInvisibleInTable?: boolean;
-    isInvisibleInForm?: boolean;
 }
 
 export interface IReferenceTitle {

@@ -17,7 +17,7 @@ export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<H
     titleEng: string;
 
     type: "date" | "checkboxWithoutSearch" | "checkbox" | "number";
-    items?: string[];
+    items?: ITableFilterItem[];
 
     numberText?: string;
 
@@ -25,3 +25,5 @@ export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<H
 
     onClick?: () => void;
 }
+
+export interface ITableFilterItem { value: string | number; text: string; }

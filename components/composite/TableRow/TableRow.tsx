@@ -29,7 +29,7 @@ const getRowItems = (items: ITableRowArr[]): (ITableRowItem[] | undefined)[] => 
                 infoItem: item.infoItems ? item.infoItems[key] : undefined,
                 item: i,
                 type: item.type,
-                icons: item.icons
+                icons: item.icons,
             };
         });
     });
@@ -188,22 +188,23 @@ const TableRowItemDesktop = ({ items, elId, startIcon, actions, ...props }: Tabl
         <tr className="align-top" {...props}>
             {startIcon && <td><span className={styles.deskIcon}>{startIcon}</span></td>}
             {items && items.map((item, key) => {
+                const text = item.item;
                 switch (item.type) {
                     case "tag":
                         return (
-                            <td key={key}><TableTag text={item.item} /></td>
+                            <td key={key}><TableTag text={text} /></td>
                         );
                     case "icon":
                         return (
-                            <td key={key}><TableTag text={item.item} appearance="primary" /></td>
+                            <td key={key}><TableTag text={text} appearance="primary" /></td>
                         );
                     case "text":
                         return (
-                            <td key={key}><TableText text={item.item} /></td>
+                            <td key={key}><TableText text={text} /></td>
                         );
                     case "attachment":
                         return (
-                            <td key={key}><TableAttachment text={item.item} /></td>
+                            <td key={key}><TableAttachment text={text} /></td>
                         );
                     default:
                         return <></>;
@@ -250,18 +251,19 @@ const TableRowMobile = ({
 
 const TableRowItemMobile = ({ items, startIcon, actions, elId, keyElements, ...props }: TableRowItemMobileProps) => {
     const getElement = (item: ITableRowItem, key?: number): JSX.Element => {
+        const text = item.item;
         switch (item.type) {
             case "tag":
                 return (
-                    <TableTag text={item.item} key={key} />
+                    <TableTag text={text} key={key} />
                 );
             case "text":
                 return (
-                    <TableText text={item.item} key={key} />
+                    <TableText text={text} key={key} />
                 );
             case "attachment":
                 return (
-                    <TableAttachment text={item.item} key={key} />
+                    <TableAttachment text={text} key={key} />
                 );
             default:
                 return <></>;

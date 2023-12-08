@@ -135,7 +135,7 @@ export const TableFilterItem = ({
                             items
                                 .filter(item => {
                                     if (searchValue) {
-                                        return item.toLowerCase().includes(String(searchValue).toLowerCase());
+                                        return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
                                     }
                                     return true;
                                 })
@@ -153,7 +153,7 @@ export const TableFilterItem = ({
                                                 forString={`${titleEng}_${index}`}
                                                 key={index}
                                             >
-                                                {item}
+                                                {item.text}
                                             </Radio>
                                         );
                                     } else {
@@ -167,7 +167,7 @@ export const TableFilterItem = ({
                                                 forString={`${titleEng}_${index}`}
                                                 key={index}
                                             >
-                                                {item}
+                                                {item.text}
                                             </Checkbox>
                                         );
                                     }

@@ -3,7 +3,7 @@
 }
 
 .datepickerWrapperBottom {
-    position: absolute;
+    position: fixed;
 }
 
 .datepickerWrapperTop {

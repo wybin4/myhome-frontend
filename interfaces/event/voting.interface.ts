@@ -28,7 +28,7 @@ export interface IOption {
     votingId: number;
     text: string;
     numberOfVotes: number;
-    votes: IVote;
+    votes: IVote[];
 }
 
 export interface IVote {
@@ -53,7 +53,7 @@ export interface IVotingReferenceDataItem extends IReferenceDataItem {
 
 export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataItem> = {
     engName: "voting",
-    rusName: [{ word: "опрос", isChangeable: true }],
+    rusName: [{ word: "опрос", isChangeable: true, replace: ["о"] }],
     gender: "мужской",
     keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true },
     components: [
@@ -65,7 +65,8 @@ export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataIt
         },
         {
             type: "input-vote",
-            title: [{ word: "варианты", isChangeable: true }, { word: "ответа" }], numberInOrder: 3, id: "options", gender: "мужской",
+            title: [{ word: "варианты", isChangeable: true }, { word: "ответа" }],
+            numberInOrder: 3, id: "options", gender: "мужской",
             rows: [], isInvisibleInTable: true
         },
         {
@@ -75,9 +76,27 @@ export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataIt
             rows: []
         },
         {
+            type: "none",
+            title: [{ word: "статус" }],
+            numberInOrder: 4, id: "status", gender: "мужской", enum: VotingStatus,
+            rows: []
+        },
+        {
+            type: "none",
+            title: [{ word: "результат" }],
+            numberInOrder: 5, id: "result", gender: "мужской",
+            rows: []
+        },
+        {
             type: "datepicker",
             title: [{ word: "дата" }, { word: "окончания" }],
-            numberInOrder: 4, id: "expiredAt", gender: "женский",
+            numberInOrder: 7, id: "expiredAt", gender: "женский",
+            rows: []
+        },
+        {
+            type: "none",
+            title: [{ word: "дата" }, { word: "начала" }],
+            numberInOrder: 6, id: "expiredAt", gender: "женский",
             rows: []
         },
     ]

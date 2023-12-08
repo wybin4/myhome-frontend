@@ -15,6 +15,12 @@ export interface SelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLSelect
     size?: "m" | "s";
 
     inputError?: string;
+    setInputError?: (newInputError: string) => void;
+
+    canIOpen?: {
+        foo: () => void,
+        flag: boolean;
+    };
 }
 
 export interface LittleSelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLSelectElement>, HTMLSelectElement> {
