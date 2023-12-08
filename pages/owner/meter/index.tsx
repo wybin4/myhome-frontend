@@ -1,4 +1,4 @@
-import { Card, Form, Htag, Tabs } from "@/components";
+import { Card, Form, Htag, PopUp, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import HeatingIcon from "./icons/heating.svg";
 import WaterIcon from "./icons/water.svg";
@@ -6,8 +6,8 @@ import ElectricityIcon from "./icons/electricity.svg";
 import ArrowIcon from "./icons/arrow.svg";
 import { format } from "date-fns";
 import ru from "date-fns/locale/ru";
-import { API } from "@/helpers/api";
-import { useState } from "react";
+import { API, api } from "@/helpers/api";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
 import { MeterType } from "@/interfaces/reference/meter.interface";
@@ -21,6 +21,7 @@ import { ITypeOfService } from "@/interfaces/common.interface";
 import { IApartmentAllInfo, IGetApartment } from "@/interfaces/reference/subscriber/apartment.interface";
 import { getEnumKeyByValue } from "@/helpers/constants";
 import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
+import { AxiosError } from "axios";
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
@@ -28,6 +29,19 @@ function Meter({ data }: MeterPageProps): JSX.Element {
     const [selectedSubscriberId, setSelectedSubscriberId] = useState<number>(0);
     const [selectedMCId, setSelectedMCId] = useState<number>(0);
     const useFormData = useForm<IAppeal>();
+    const [error, setError] = useState<string>("");
+    const [success, setSuccess] = useState<string>("");
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+    useEffect(() => {
+        setIsPopupVisible(true);
+
+        const timer = setTimeout(() => {
+            setIsPopupVisible(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [error, success]);
 
     const tabs = data.meters.map(obj => {
         return {
@@ -63,6 +77,22 @@ function Meter({ data }: MeterPageProps): JSX.Element {
 
     return (
         <>
+            {isPopupVisible &&
+                <>
+                    <PopUp
+                        isOpen={success !== ""}
+                        setIsOpen={() => setSuccess("")}
+                        type="success">
+                        {success}
+                    </PopUp>
+                    <PopUp
+                        isOpen={error !== ""}
+                        setIsOpen={() => setError("")}
+                        type="failure" >
+                        {error}
+                    </PopUp>
+                </>
+            }
             <Form
                 useFormData={useFormData}
                 isOpened={isFormOpened} setIsOpened={setIsFormOpened}
@@ -150,7 +180,8 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 }]}
                 urlToPost={API.subscriber.appeal.add}
                 successCode={201}
-                successMessage="Обращение на добавление счётчика успешно добавлено"            >
+                successMessage="Обращение на добавление счётчика успешно добавлено"
+            >
             </Form>
             <div className={cn({
                 "flex flex-col xl:flex-row 2xl:flex-row 3xl:flex-row items-center justify-center gap-2.6 md:gap-3 mt-2 flex-col": !isDataVal
@@ -181,7 +212,9 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                             className={`grid grid-cols-3 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 gap-y-3.25 gap-x-4 lg:gap-y-2 md:gap-y-2 sm:gap-y-2`}
                         >
                             {selectedData?.meters && selectedData?.meters.map((meter, index) => (
-                                <MeterCard {...meter} key={index} />
+                                <MeterCard meter={{ ...meter }} key={index}
+                                    setSuccess={setSuccess}
+                                    setError={setError} />
                             ))}
                         </Tabs>
                     </>
@@ -193,7 +226,15 @@ function Meter({ data }: MeterPageProps): JSX.Element {
 }
 
 
-function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
+function MeterCard({
+    meter,
+    setError,
+    setSuccess
+}: MeterCardProps): JSX.Element {
+    const [reading, setReading] = useState<number | string | undefined>(undefined);
+    const [isReading, setIsReading] = useState<boolean>(false);
+    const [inputError, setInputError] = useState<string>("");
+
     const iconLeft = (typeOfServiceId: number) => {
         switch (typeOfServiceId) {
             case 1:
@@ -233,11 +274,18 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
         } else return <>Предыдущие <strong>{replaceDotWithComma(previous)}</strong> {formatedDateMMMMYYYY(readAt)}</>;
     };
 
+    function isDaysRemainingLessThan(dateString: Date, numb: number) {
+        const targetDate = new Date(dateString);
+        const currentDate = new Date();
+        const timeDifference = targetDate.getTime() - currentDate.getTime();
+        const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+        return daysDifference < numb;
+    }
+
     return (
         <Card
             maxWidth="38.375rem"
             width="100%"
-            key={key}
             titlePart={{
                 text: titlePartText(meter.typeOfServiceName, meter.unitName),
                 iconLeft: iconLeft(meter.typeOfServiceId),
@@ -247,20 +295,67 @@ function MeterCard(meter: IGetMeterByAID, key: number): JSX.Element {
                     onClick: () => { }
                 },
             }}
-            description={`${meter.factoryNumber} · Поверка ${formatedDateMMYYYY(meter.verifiedAt)}`}
+            description={
+                <span>
+                    {meter.factoryNumber} · Поверка <span className={cn({
+                        "!text-red-500": isDaysRemainingLessThan(meter.issuedAt, 3) // ИСПРАВИТЬ
+                    })}>
+                        {formatedDateMMYYYY(
+                            meter.issuedAt
+                        )}
+                    </span>
+                </span>
+            }
             input={{
                 title: "Текущие показания",
                 placeholder: meter.readings.previous ? replaceDotWithComma(meter.readings.previous) : "",
                 textAlign: "center",
-                value: meter.readings.current ? replaceDotWithComma(meter.readings.current) : "",
                 readOnly: meter.readings.current ? true : false,
+                button: {
+                    text: "Внести показания",
+                    onClick: async () => {
+                        try {
+                            if (reading && parseFloat(String(reading))) {
+
+                                const response = await api.post(API.subscriber.meterReading.add, {
+                                    reading: parseFloat(String(reading)),
+                                    readAt: new Date(),
+                                    meterId: meter.id,
+                                    meterType: MeterType.Individual
+                                });
+
+                                if (response.status === 201) {
+                                    setSuccess("Показания успешно внесены");
+                                    setError("");
+                                    setInputError("");
+                                    setIsReading(true);
+                                    meter.readings.current = parseFloat(String(reading));
+                                } else {
+                                    setError("Что-то пошло не так");
+                                }
+                            } else {
+                                setInputError("Показание должно быть числом");
+                            }
+                        } catch (e: unknown) {
+                            if (e instanceof AxiosError) {
+                                setError(e.response?.data.message);
+                            } else {
+                                setError("Что-то пошло не так");
+                            }
+                        }
+                    },
+                    isReady: isReading,
+                    error: inputError
+                },
+                inputType: "number"
             }}
             bottom={
                 {
                     text: previousReadingsText(meter.readings.previous, meter.readings.previousReadAt),
-                    textAlign: "center"
+                    textAlign: "center",
                 }
             }
+            inputValue={meter.readings.current ? replaceDotWithComma(meter.readings.current) : reading} setInputValue={setReading}
         />
     );
 }
@@ -308,6 +403,12 @@ interface MeterPageProps extends Record<string, unknown>, IAppContext {
         typesOfService: ITypeOfService[];
         users: IGetUserWithSubscriber[];
     };
+}
+
+interface MeterCardProps {
+    meter: IGetMeterByAID;
+    setError: Dispatch<SetStateAction<string>>;
+    setSuccess: Dispatch<SetStateAction<string>>;
 }
 
 export interface IGetMeterByAIDs {

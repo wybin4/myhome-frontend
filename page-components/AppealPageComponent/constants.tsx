@@ -92,7 +92,7 @@ export const getAttachment = (attachment: string | undefined, date: string, appe
         if (place === "card") {
             return {
                 bottom: {
-                    tag: appealType
+                    tag: appealType, isBottom: false,
                 }
             };
         } else if (place === "info") {

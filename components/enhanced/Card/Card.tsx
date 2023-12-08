@@ -2,7 +2,7 @@ import { CardBottomProps, CardInputProps, CardProps, CardTitleProps, ChargeCardB
 import styles from "./Card.module.css";
 import cn from "classnames";
 import { Button, Icon, Input, Paragraph, Tag, Voting } from "@/components";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AttachmentIcon from "./attachment.svg";
 import SwapIcon from "./swap.svg";
 
@@ -10,10 +10,9 @@ export const Card = ({
     titlePart, description,
     text, isMobileText = true,
     input, bottom, voting,
-    maxWidth, width,
+    maxWidth, width, inputValue, setInputValue,
     className, ...props
 }: CardProps): JSX.Element => {
-    const [inputValue, setInputValue] = useState<string | number | undefined>(input?.value);
 
     return (
         <div
@@ -90,24 +89,48 @@ export const CardTitle = ({
     );
 };
 
-export const CardInput = ({ readOnly = false, title, value = "", setValue, textAlign = "left", placeholder, ...props }: CardInputProps): JSX.Element => {
+export const CardInput = ({
+    readOnly = false, title,
+    value = "", setValue,
+    textAlign = "left", placeholder,
+    button, inputType = "string",
+    ...props
+}: CardInputProps): JSX.Element => {
+    const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+
     return (
         <div {...props}>
             <Paragraph size="xs" className="font-medium mb-[0.5625rem]">{title}</Paragraph>
             <Input
+                inputType={inputType}
                 value={value} setValue={setValue}
                 placeholder={placeholder ? placeholder : ""}
                 size="m" textAlign={textAlign}
                 readOnly={readOnly}
+                onFocus={() => !readOnly && setIsInputFocused(true)}
+                inputError={button?.error}
             />
+            {isInputFocused && button && !button.isReady && <button
+                className={styles.addButton}
+                onClick={button.onClick}
+                ref={buttonRef}
+            >
+                {button.text}
+            </button>}
         </div>
     );
 };
 
-export const CardBottom = ({ text, textAlign = "left", tag, onClick, attachment, ...props }: CardBottomProps): JSX.Element => {
+export const CardBottom = ({
+    text, textAlign = "left",
+    tag, onClick,
+    attachment, isBottom = true,
+    ...props
+}: CardBottomProps): JSX.Element => {
     return (
         <div className={cn(styles.bottom, {
-            [styles.mobileWithoutAttachment]: !attachment
+            [styles.mobileWithoutAttachment]: !isBottom
         })}>
             {text &&
                 <Paragraph size="xs" className={cn(styles.bottomText, {

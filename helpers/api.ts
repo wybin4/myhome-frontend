@@ -23,6 +23,7 @@ export const API: {
         appeal: { add: string };
         apartment: { get: string };
         voting: { update: string };
+        meterReading: { add: string };
     },
     managementCompany: {
         reference: { [key: string]: { addMany: string; }; };
@@ -54,6 +55,7 @@ export const API: {
         apartment: {
             get: `apartment/get-apartments-by-user`,
         },
+        meterReading: { add: `meter/add-meter-reading` },
         appeal: { add: `appeal/add-appeal` },
         voting: { update: `voting/update-voting` },
     },

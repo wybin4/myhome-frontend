@@ -36,6 +36,13 @@ export interface CardInputProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
     placeholder?: string;
     textAlign?: "left" | "center";
     readOnly?: boolean;
+    button?: {
+        text: string;
+        onClick: () => void;
+        isReady: boolean;
+        error?: string;
+    };
+    inputType: "number" | "string";
 }
 
 export interface CardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -43,6 +50,7 @@ export interface CardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
     textAlign?: "left" | "center";
     tag?: string;
     attachment?: string;
+    isBottom?: boolean;
 }
 
 export interface ChargeCardBottomProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -61,11 +69,13 @@ export interface BaseCardProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivE
 
 export interface CardProps extends BaseCardProps {
     titlePart: CardTitleProps;
-    description?: string;
+    description?: ReactNode;
     text?: string;
     isMobileText?: boolean;
     input?: CardInputProps;
     voting?: VotingProps;
+    inputValue?: string | number | undefined;
+    setInputValue?: Dispatch<SetStateAction<string | number | undefined>>;
 }
 
 export interface ChargeCardProps extends BaseCardProps {

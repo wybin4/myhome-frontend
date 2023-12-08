@@ -358,13 +358,23 @@ export const AppealOwnerPageComponent = ({
                         error: {
                             value: true, message: "Выберите дату поверки"
                         },
-                    }],
+                    },
+                    {
+                        title: "Дата истечения поверки",
+                        id: "issuedAt",
+                        type: "datepicker",
+                        numberInOrder: 3,
+                        error: {
+                            value: true, message: "Выберите дату истечения поверки"
+                        },
+                    }
+                    ],
                     attachments: [{
                         text: "Акт поверки",
                         fileFormat: [FileType.JPEG, FileType.JPG, FileType.PNG],
                         id: "attachment",
                         type: "attachment",
-                        numberInOrder: 3,
+                        numberInOrder: 4,
                         error: {
                             value: true, message: "Добавьте вложение"
                         },
@@ -460,7 +470,7 @@ export const AppealOwnerPageComponent = ({
                 return ["text"];
             }
             case getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter): {
-                return ["meterId", "verifiedAt", "attachment"];
+                return ["meterId", "verifiedAt", "issuedAt", "attachment"];
             }
             case getEnumKeyByValue(AppealType, AppealType.AddIndividualMeter):
                 return ["typeOfServiceId", "apartmentId", "verifiedAt", "issuedAt", "factoryNumber", "attachment"];
