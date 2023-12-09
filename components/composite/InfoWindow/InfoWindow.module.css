@@ -17,7 +17,7 @@
     border: solid 1px var(--grey-light);
     border-radius: 1.46rem;
 
-    z-index: 3;
+    z-index: 5;
 }
 
 .hidden {

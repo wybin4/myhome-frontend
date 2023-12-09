@@ -1,4 +1,4 @@
-import { Card, Form, Htag, PopUp, Tabs } from "@/components";
+import { Card, Form, Htag, InfoWindow, PopUp, Tabs } from "@/components";
 import { withLayout } from "@/layout/Layout";
 import HeatingIcon from "./icons/heating.svg";
 import WaterIcon from "./icons/water.svg";
@@ -22,16 +22,29 @@ import { IApartmentAllInfo, IGetApartment } from "@/interfaces/reference/subscri
 import { getEnumKeyByValue } from "@/helpers/constants";
 import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
 import { AxiosError } from "axios";
+import { formatDate } from "@/helpers/translators";
+
+function isDaysRemainingLessThan(dateString: Date, numb: number) {
+    const targetDate = new Date(dateString);
+    const currentDate = new Date();
+    const timeDifference = targetDate.getTime() - currentDate.getTime();
+    const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    return daysDifference < numb;
+}
 
 function Meter({ data }: MeterPageProps): JSX.Element {
     const [apartmentId, setApartmentId] = useState<number>(data.meters[0].apartmentId);
-    const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+    const [isAddFormOpened, setIsAddFormOpened] = useState<boolean>(false);
+    const [isUpdateFormOpened, setIsUpdateFormOpened] = useState<boolean>(false);
     const [selectedSubscriberId, setSelectedSubscriberId] = useState<number>(0);
     const [selectedMCId, setSelectedMCId] = useState<number>(0);
-    const useFormData = useForm<IAppeal>();
+    const useUpdateFormData = useForm<IAppeal>();
+    const useAddFormData = useForm<IAppeal>();
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [selectedMeterId, setSelectedMeterId] = useState<number>(0);
+    const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
 
     useEffect(() => {
         setIsPopupVisible(true);
@@ -59,11 +72,11 @@ function Meter({ data }: MeterPageProps): JSX.Element {
 
     const handleSelectClick = (option: string | number) => {
         const apartmentId = parseInt(String(option));
-        if (data.apartments) {
+        if (data.apartments.length) {
             const apartment = data.apartments.find(a => a.id === apartmentId);
             if (apartment) {
                 const subscriberId = apartment.subscriberId;
-                if (data.users) {
+                if (data.users.length) {
                     const userWithSubscribers = data.users.find(user => user.subscribers.some(s => s.id === subscriberId));
                     if (userWithSubscribers) {
                         const mcId = userWithSubscribers.user.id;
@@ -75,27 +88,130 @@ function Meter({ data }: MeterPageProps): JSX.Element {
         }
     };
 
+    const handleUpdateFormSend = () => {
+        if (data.meters) {
+            const apartment = data.meters.find(m => m.meters.find(mm => mm.id === selectedMeterId));
+            if (apartment && data.apartments.length) {
+                const apartmentInList = data.apartments.find(a => a.id === apartment.apartmentId);
+                if (apartmentInList) {
+                    const subscriberId = apartmentInList.subscriberId;
+                    if (data.users) {
+                        const userWithSubscribers = data.users.find(user => user.subscribers.some(s => s.id === subscriberId));
+                        if (userWithSubscribers) {
+                            const mcId = userWithSubscribers.user.id;
+                            return {
+                                managementCompanyId: mcId,
+                                subscriberId: subscriberId
+                            };
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const getInfoWindow = (
+    ) => {
+        if (selectedData) {
+            const meter = selectedData.meters.find(m => m.id === selectedMeterId);
+            if (meter) {
+                const isIssued = isDaysRemainingLessThan(meter.issuedAt, 3); // ИСПРАВИТЬ
+
+                return (
+                    <InfoWindow
+                        title={meter.typeOfServiceName}
+                        description=""
+                        text={
+                            <div className="flex flex-col gap-1">
+                                <div className="flex flex-row justify-between">
+                                    <div className="font-medium" style={{ color: "var(--grey)" }}>Дата поверки</div>
+                                    <div>{formatDate(new Date(meter.verifiedAt))}</div>
+                                </div>
+                                <div className="flex flex-row justify-between">
+                                    <div className="font-medium" style={{ color: "var(--grey)" }}>Дата истечения поверки</div>
+                                    <div className={cn({
+                                        "text-red-500": isIssued
+                                    })}>{formatDate(new Date(meter.issuedAt))}</div>
+                                </div>
+                                {isIssued && <div className="text-red-500 text-right">Внимание! До конца срока поверки осталось менее 3 дней</div>}
+                                <div className="flex flex-row justify-between">
+                                    <div className="font-medium" style={{ color: "var(--grey)" }}>Текущее показание</div>
+                                    <div>{meter.readings.current}</div>
+                                </div>
+                                <div className="flex flex-row justify-between">
+                                    <div className="font-medium" style={{ color: "var(--grey)" }}>Предыдущее показание</div>
+                                    <div>{meter.readings.previous}</div>
+                                </div>
+                            </div>
+                        }
+                        tags={[meter.factoryNumber, meter.unitName]}
+                        isOpen={isInfoWindowOpen}
+                        setIsOpen={setIsInfoWindowOpen}
+                        buttons={[{
+                            name: "Изменить дату поверки",
+                            onClick: () => {
+                                setIsUpdateFormOpened(!isUpdateFormOpened);
+                                setIsInfoWindowOpen(false);
+                            }
+                        }]}
+                    />
+                );
+            }
+        }
+        return <></>;
+    };
+
     return (
         <>
-            {isPopupVisible &&
-                <>
-                    <PopUp
-                        isOpen={success !== ""}
-                        setIsOpen={() => setSuccess("")}
-                        type="success">
-                        {success}
-                    </PopUp>
-                    <PopUp
-                        isOpen={error !== ""}
-                        setIsOpen={() => setError("")}
-                        type="failure" >
-                        {error}
-                    </PopUp>
-                </>
-            }
             <Form
-                useFormData={useFormData}
-                isOpened={isFormOpened} setIsOpened={setIsFormOpened}
+                useFormData={useUpdateFormData}
+                isOpened={isUpdateFormOpened} setIsOpened={setIsUpdateFormOpened}
+                title="Поверка счётчика"
+                additionalFormData={
+                    {
+                        typeOfAppeal: getEnumKeyByValue(AppealType, AppealType.VerifyIndividualMeter),
+                        meterId: selectedMeterId,
+                        ...(handleUpdateFormSend() || {})
+                    }
+                }
+                dataList={["meterId", "verifiedAt", "issuedAt", "attachment"]}
+                datePickers={[{
+                    title: "Дата поверки",
+                    id: "verifiedAt",
+                    type: "datepicker",
+                    numberInOrder: 2,
+                    error: {
+                        value: true, message: "Выберите дату поверки"
+                    },
+                },
+                {
+                    title: "Дата истечения поверки",
+                    id: "issuedAt",
+                    type: "datepicker",
+                    numberInOrder: 3,
+                    error: {
+                        value: true, message: "Выберите дату истечения поверки"
+                    },
+                }
+                ]}
+                attachments={[{
+                    text: "Акт поверки",
+                    fileFormat: [FileType.JPEG, FileType.JPG, FileType.PNG],
+                    id: "attachment",
+                    type: "attachment",
+                    numberInOrder: 4,
+                    error: {
+                        value: true, message: "Добавьте вложение"
+                    },
+                }]}
+                urlToPost={API.subscriber.appeal.add}
+                successCode={201}
+                successMessage="Обращение на поверку счётчика успешно добавлено"
+            >
+            </Form>
+            <Form
+                useFormData={useAddFormData}
+                isOpened={isAddFormOpened} setIsOpened={setIsAddFormOpened}
                 title="Добавление счётчика"
                 additionalFormData={
                     {
@@ -183,6 +299,23 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                 successMessage="Обращение на добавление счётчика успешно добавлено"
             >
             </Form>
+            {isInfoWindowOpen && getInfoWindow()}
+            {isPopupVisible &&
+                <>
+                    <PopUp
+                        isOpen={success !== ""}
+                        setIsOpen={() => setSuccess("")}
+                        type="success">
+                        {success}
+                    </PopUp>
+                    <PopUp
+                        isOpen={error !== ""}
+                        setIsOpen={() => setError("")}
+                        type="failure" >
+                        {error}
+                    </PopUp>
+                </>
+            }
             <div className={cn({
                 "flex flex-col xl:flex-row 2xl:flex-row 3xl:flex-row items-center justify-center gap-2.6 md:gap-3 mt-2 flex-col": !isDataVal
             })}>
@@ -206,7 +339,7 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                             tabs={tabs}
                             tagTexts={selectedData && [selectedData?.apartmentFullAddress, "ТСЖ Прогресс"]}
                             descriptionText="Срок передачи показаний — с 20 по 25 число"
-                            onAddButtonClick={() => setIsFormOpened(!isFormOpened)}
+                            onAddButtonClick={() => setIsAddFormOpened(!isAddFormOpened)}
                             activeTab={apartmentId}
                             setActiveTab={setApartmentId}
                             className={`grid grid-cols-3 xl:grid-cols-1 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 gap-y-3.25 gap-x-4 lg:gap-y-2 md:gap-y-2 sm:gap-y-2`}
@@ -214,7 +347,9 @@ function Meter({ data }: MeterPageProps): JSX.Element {
                             {selectedData?.meters && selectedData?.meters.map((meter, index) => (
                                 <MeterCard meter={{ ...meter }} key={index}
                                     setSuccess={setSuccess}
-                                    setError={setError} />
+                                    setError={setError}
+                                    setIsInfoWindowOpen={setIsInfoWindowOpen}
+                                    setSelectedMeterId={setSelectedMeterId} />
                             ))}
                         </Tabs>
                     </>
@@ -229,7 +364,8 @@ function Meter({ data }: MeterPageProps): JSX.Element {
 function MeterCard({
     meter,
     setError,
-    setSuccess
+    setSuccess,
+    setSelectedMeterId, setIsInfoWindowOpen
 }: MeterCardProps): JSX.Element {
     const [reading, setReading] = useState<number | string | undefined>(undefined);
     const [isReading, setIsReading] = useState<boolean>(false);
@@ -274,14 +410,6 @@ function MeterCard({
         } else return <>Предыдущие <strong>{replaceDotWithComma(previous)}</strong> {formatedDateMMMMYYYY(readAt)}</>;
     };
 
-    function isDaysRemainingLessThan(dateString: Date, numb: number) {
-        const targetDate = new Date(dateString);
-        const currentDate = new Date();
-        const timeDifference = targetDate.getTime() - currentDate.getTime();
-        const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-        return daysDifference < numb;
-    }
-
     return (
         <Card
             maxWidth="38.375rem"
@@ -292,7 +420,10 @@ function MeterCard({
                 symbolRight: {
                     symbol: <ArrowIcon />,
                     size: "s",
-                    onClick: () => { }
+                    onClick: () => {
+                        setSelectedMeterId(meter.id);
+                        setIsInfoWindowOpen(true);
+                    }
                 },
             }}
             description={
@@ -409,6 +540,8 @@ interface MeterCardProps {
     meter: IGetMeterByAID;
     setError: Dispatch<SetStateAction<string>>;
     setSuccess: Dispatch<SetStateAction<string>>;
+    setSelectedMeterId: Dispatch<SetStateAction<number>>;
+    setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface IGetMeterByAIDs {

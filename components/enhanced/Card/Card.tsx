@@ -61,7 +61,7 @@ export const CardTitle = ({
                 </div>
                 {
                     symbolRight && <span
-                        className={cn(styles.symbolRight, {
+                        className={cn(styles.symbolRight, "viewAction", {
                             [styles.symbolRightL]: symbolRight.size === "l",
                             [styles.symbolRightS]: symbolRight.size === "s",
                         })}
