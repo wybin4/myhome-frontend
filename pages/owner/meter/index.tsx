@@ -19,7 +19,7 @@ import { FileType } from "@/components/primitive/Attachment/Attachment.props";
 import { AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
 import { ITypeOfService } from "@/interfaces/common.interface";
 import { IApartmentAllInfo, IGetApartment } from "@/interfaces/reference/subscriber/apartment.interface";
-import { getEnumKeyByValue } from "@/helpers/constants";
+import { getEnumKeyByValue, replaceDotWithComma } from "@/helpers/constants";
 import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
 import { AxiosError } from "axios";
 import { formatDate } from "@/helpers/translators";
@@ -396,12 +396,6 @@ function MeterCard({
 
     const titlePartText = (tOSName: string, uName: string) => {
         return `${tOSName}, ${uName}`;
-    };
-
-    const replaceDotWithComma = (input: number): string => {
-        const inputString = String(input);
-        const resultString = inputString.replace(/\./g, ',');
-        return resultString;
     };
 
     const previousReadingsText = (previous: number, readAt: Date) => {

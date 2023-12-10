@@ -41,6 +41,7 @@ export interface IReferencePageItem<T extends FieldValues> {
 
     type: "input" | "select" | "datepicker" | "input-vote" | "none" | "textarea";
     inputType?: "number" | "string";
+    selectorType?: "little" | "ordinary" | "withoutradio";
 
     selectorOptions?: SelectorOption[];
     isInvisibleInTable?: boolean;

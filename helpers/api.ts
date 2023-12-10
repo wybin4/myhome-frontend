@@ -1,14 +1,5 @@
 import axios from 'axios';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-interface IData {
-    [key: string]: {
-        add: string;
-        addMany: string;
-        get: string;
-    };
-}
-
 interface IDataGet {
     [key: string]: {
         get: string;
@@ -24,10 +15,11 @@ export const API: {
         apartment: { get: string };
         voting: { update: string };
         meterReading: { add: string };
+        debt: { get: string };
     },
     managementCompany: {
         reference: { [key: string]: { addMany: string; }; };
-        correction: IData;
+        correction: { [key: string]: { addMany: string; get: string; getMany?: string; } };
         singlePaymentDocument: { calculate: string };
         voting: { add: string };
         houseNotification: { add: string };
@@ -52,12 +44,11 @@ export const API: {
         readAll: `service-notification/update-all-service-notifications`
     },
     subscriber: {
-        apartment: {
-            get: `apartment/get-apartments-by-user`,
-        },
+        apartment: { get: `apartment/get-apartments-by-user`, },
         meterReading: { add: `meter/add-meter-reading` },
         appeal: { add: `appeal/add-appeal` },
         voting: { update: `voting/update-voting` },
+        debt: { get: `debt/get-debts` },
     },
     managementCompany: {
         reference: {
@@ -79,13 +70,12 @@ export const API: {
         },
         correction: {
             penaltyRule: {
-                add: ``,
-                addMany: ``,
-                get: `penalty/get-penalty-rules-by-mcid`
+                addMany: `penalty/add-penalty-calculation-rules`,
+                get: `penalty/get-penalty-calculation-rules-by-mcid`,
+                getMany: `penalty/get-penalty-rules`
             },
             cbr: {
                 get: `cbr/get-key-rate`,
-                add: ``,
                 addMany: ``
             }
         },

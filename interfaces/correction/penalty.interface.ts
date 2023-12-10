@@ -4,6 +4,11 @@ export interface IPenaltyCalculationRuleReferenceData extends IReferenceData {
     penaltyRules: IPenaltyCalculationRuleReferenceDataItem[];
 }
 
+export interface IPenaltyRule {
+    _id?: string;
+    name: string;
+}
+
 export interface IPenaltyCalculationRuleReferenceDataItem extends IReferenceDataItem {
     penaltyRuleId: string;
     description: string;
@@ -20,19 +25,16 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
     components: [
         {
             type: "select", selectorOptions: [],
-            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", gender: "женский",
+            title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", sendId: "typeOfServiceId",
+            gender: "женский",
             isFilter: true, filterItems: [
-                { items: ["ХВС", "ГВС", "Отопление"] },
+                { items: [] },
             ],
-            rows: []
+            rows: [], selectorType: "withoutradio"
         },
         {
-            type: "select", selectorOptions: [ // ИСПРАВИТЬ
-                { value: "34234fds324", text: "C 31 дня просрочки 1/300 ставки; С 91 дня 1/130 ставки" },
-                { value: "32234fds324", text: "С 1 дня просрочки 1/300 ставки" },
-                { value: "32145fds324", text: "Не начисляется" },
-            ],
-            title: [{ word: "правило" }], numberInOrder: 2, id: "description", gender: "средний",
+            type: "select", selectorOptions: [],
+            title: [{ word: "правило" }], numberInOrder: 2, id: "description", sendId: "penaltyRuleId", gender: "средний",
             rows: []
         },
         {

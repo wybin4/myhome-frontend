@@ -158,12 +158,15 @@ export const CardBottom = ({
 export const ChargeCard = ({
     titlePart, text,
     bottom,
-    maxWidth,
+    maxWidth, width,
     className, ...props
 }: ChargeCardProps): JSX.Element => {
     return (
         <div
-            style={{ maxWidth: maxWidth ? maxWidth : "100%" }}
+            style={{
+                maxWidth: maxWidth ? maxWidth : "100%",
+                width: width ? width : "fit-content"
+            }}
             className={cn(
                 "viewAction",
                 styles.cardWrapper,

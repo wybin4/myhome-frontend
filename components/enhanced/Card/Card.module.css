@@ -61,11 +61,6 @@
     margin-bottom: 0.3rem;
 }
 
-.chargeCard {
-    padding-left: 0;
-    padding-right: 0;
-}
-
 .chargeCard .titleDesc,
 .chargeCard .titleText {
     background-color: var(--primary);

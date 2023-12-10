@@ -4,7 +4,7 @@ import { API } from "@/helpers/api";
 import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
 import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IGetCommon, ITypeOfService } from "@/interfaces/common.interface";
-import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
+import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, IPenaltyRule, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
 import { IIndividualMeterReferenceDataItem, individualMeterPageComponent, IGeneralMeterReferenceDataItem, generalMeterPageComponent, IGeneralMeterReferenceData, IIndividualMeterReferenceData, MeterType } from "@/interfaces/reference/meter.interface";
 import { IReferencePageComponent, IReferenceData } from "@/interfaces/reference/page.interface";
 import { IApartmentReferenceData, IApartmentReferenceDataItem, IGetApartment, apartmentPageComponent } from "@/interfaces/reference/subscriber/apartment.interface";
@@ -341,7 +341,42 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             case "common-house-need-tariff":
                 return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.CommonHouseNeedTariff, false, true);
             case "penalty-rule":
-                return await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, undefined);
+                try {
+                    const { props: penaltyCalcRuleProps } = await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, undefined);
+                    const { props: penaltyRuleProps } = await fetchReferenceData<{ penaltyRules: IPenaltyRule[] }>(context,
+                        API.managementCompany.correction.penaltyRule.getMany || "",
+                        undefined);
+
+                    const { props: typeOfServiceProps } = await fetchReferenceData<{ typesOfService: ITypeOfService[] }>(
+                        context, API.reference.typeOfService.get, undefined
+                    );
+                    if (!penaltyCalcRuleProps || !typeOfServiceProps || !penaltyRuleProps) {
+                        return {
+                            notFound: true
+                        };
+                    }
+
+                    return {
+                        props: {
+                            data: {
+                                penaltyRules: ('penaltyRules' in penaltyCalcRuleProps.data) ? penaltyCalcRuleProps.data.penaltyRules : [],
+                                additionalData: [{
+                                    data: ('typesOfService' in typeOfServiceProps.data) ? typeOfServiceProps.data.typesOfService : [],
+                                    id: 'typeOfServiceId'
+                                },
+                                {
+                                    data: ('penaltyRules' in penaltyRuleProps.data) ? penaltyRuleProps.data.penaltyRules : [],
+                                    id: 'penaltyRuleId'
+                                }
+                                ]
+                            }
+                        }
+                    };
+                } catch {
+                    return {
+                        notFound: true
+                    };
+                }
             default:
                 return {
                     notFound: true

@@ -1,78 +1,56 @@
-import { InfoWindow, Tabs, ChargeCard, Table, Histogram } from "@/components";
+import { InfoWindow, Tabs, ChargeCard, Table, Histogram, Htag } from "@/components";
 import { ChargePageComponentProps, ChargeTextProps } from "./ChargePageComponent.props";
 import MoneyIcon from "./money.svg";
 import DownloadIcon from "./download.svg";
 import styles from "./ChargePageComponent.module.css";
 import cn from "classnames";
 import PdfIcon from "./pdf.svg";
-import { monthNamesInNominativeCase, bytesToSize, downloadPdf } from "@/helpers/constants";
-import { MouseEventHandler } from "react";
+import { monthNamesInNominativeCase, bytesToSize, downloadPdf, replaceDotWithComma, lowFirstLetter } from "@/helpers/constants";
+import { MouseEventHandler, useState } from "react";
+import NoDataIcon from "./nodata.svg";
+
+interface IChargeChart {
+    data: {
+        date: string;
+        total: number;
+    }[];
+    label: string;
+}
 
 export const ChargePageComponent = ({
     activeTab, setActiveTab,
     isInfoWindowOpen, setIsInfoWindowOpen,
-    singlePaymentDocuments
+    singlePaymentDocuments, debts
 }: ChargePageComponentProps): JSX.Element => {
-    const chargeCard = {
-        total: "2 703,70",
-        amount: "2 612,18",
-        debt: "91,52",
-        date: "февраль 2023",
-        downloadUrl: "https://www.youtube.com/watch?v=xchCnyDyvVw"
+    const [selectedId, setSelectedId] = useState<number>(0);
+
+    const getLastCharges = () => {
+        const groupedByApartment: IChargeChart[] = [];
+        singlePaymentDocuments.forEach(spd => {
+            const currDebt = debts.find(debt => debt.singlePaymentDocumentId === spd.id);
+
+            if (currDebt) {
+                const existingGroup = groupedByApartment.find(group => group.label === spd.apartmentName);
+
+                if (existingGroup) {
+                    existingGroup.data.push({
+                        date: String(spd.createdAt),
+                        total: currDebt?.originalDebt
+                    });
+                } else {
+                    groupedByApartment.push({
+                        label: spd.apartmentName, data: [{
+                            date: String(spd.createdAt),
+                            total: currDebt?.originalDebt
+                        }]
+                    });
+                }
+            }
+        });
+        return Object.values(groupedByApartment);
     };
 
-    const lastCharges = [
-        {
-            data: [
-                {
-                    date: '2023.11.10',
-                    total: 5840.32
-                }, {
-                    date: '2023.10.10',
-                    total: 5150
-                }, {
-                    date: '2023.09.10',
-                    total: 6532
-                }, {
-                    date: '2023.08.10',
-                    total: 5455
-                }, {
-                    date: '2023.07.10',
-                    total: 6001.2
-                },
-                {
-                    date: '2023.06.10',
-                    total: 5001.2
-                },
-            ],
-            label: "пер. Соборный 99, кв. 12"
-        },
-        {
-            data: [
-                {
-                    date: '2023.11.10',
-                    total: 2830.32
-                }, {
-                    date: '2023.10.10',
-                    total: 3150
-                }, {
-                    date: '2023.09.10',
-                    total: 2733
-                }, {
-                    date: '2023.08.10',
-                    total: 2415
-                }, {
-                    date: '2023.07.10',
-                    total: 3001.2
-                },
-                {
-                    date: '2023.06.10',
-                    total: 2001.2
-                },
-            ],
-            label: "ул. Малюгина 35, кв. 124"
-        }
-    ];
+    const isData = singlePaymentDocuments && singlePaymentDocuments.length > 0;
 
     type SPDData = {
         apartmentNames: string[],
@@ -88,17 +66,19 @@ export const ChargePageComponent = ({
         fileSizes: [],
     };
 
-    const spds: SPDData = singlePaymentDocuments.reduce(
+    const getMonth = (dateString: string) => {
+        const date = new Date(dateString);
+        const monthNumber = date.getMonth();
+        const year = date.getFullYear();
+
+        return `${monthNamesInNominativeCase[monthNumber]} ${year}`;
+    };
+
+    const spds: SPDData = singlePaymentDocuments && singlePaymentDocuments.reduce(
         (accumulator, spd) => {
             accumulator.apartmentNames.push(spd.apartmentName);
 
-            const date = new Date(spd.createdAt);
-            const monthNumber = date.getMonth();
-            const year = date.getFullYear();
-
-            accumulator.spdNames.push(
-                `${monthNamesInNominativeCase[monthNumber]} ${year}`
-            );
+            accumulator.spdNames.push(getMonth(String(spd.createdAt)));
 
             accumulator.spdIds.push(spd.id);
 
@@ -108,7 +88,7 @@ export const ChargePageComponent = ({
             return accumulator;
         },
         initialData
-    );
+    ) || [];
 
     const {
         apartmentNames,
@@ -124,136 +104,188 @@ export const ChargePageComponent = ({
         }
     };
 
+    const getInfoWindow = () => {
+        const debt = debts.find(debt => debt.singlePaymentDocumentId === selectedId);
+        const spd = singlePaymentDocuments.find(spd => spd.id === selectedId);
+        if (debt && spd) {
+            const outstandingDebt = getNumber(debt.outstandingDebt);
+            const originalDebt = getNumber(debt.originalDebt);
+            const payed = getNumber(debt.originalDebt - debt.outstandingDebt);
+
+            return (
+                <InfoWindow
+                    title={spd.apartmentName}
+                    description={spd.mcName}
+                    text={
+                        <ChargeText
+                            id={String(spd.id)}
+                            total={outstandingDebt}
+                            amount={originalDebt}
+                            payed={payed}
+                            date={lowFirstLetter(getMonth(String(spd.createdAt)))}
+                            onClick={download}
+                        />
+                    }
+                    isOpen={isInfoWindowOpen}
+                    setIsOpen={setIsInfoWindowOpen}
+                    buttons={[{ name: "Оплатить", onClick: () => { } }]}
+                    icon={<MoneyIcon />}
+                />
+            );
+        } else return <></>;
+    };
+
+    const getNumber = (numb: number) => {
+        return replaceDotWithComma(parseFloat(numb.toFixed(2)));
+    };
+
     return (
         <>
-            <InfoWindow
-                title="пер. Соборный 99, кв. 11"
-                description="ТСЖ Прогресс | Февраль 2023"
-                text={
-                    <ChargeText
-                        {...chargeCard}
-                    />
+            {getInfoWindow()}
+            <div className={cn({
+                [styles.noData]: !isData
+            })}>
+                {!isData &&
+                    <span className={styles.noDataIcon}><NoDataIcon /></span>
                 }
-                isOpen={isInfoWindowOpen}
-                setIsOpen={setIsInfoWindowOpen}
-                buttons={[{ name: "Оплатить", onClick: () => { } }]}
-                icon={<MoneyIcon />}
-            />
-            <Tabs
-                title="Начисления"
-                tabs={[
-                    { id: 1, name: "Оплата" },
-                    { id: 2, name: "Графики" },
-                    { id: 3, name: "Квитанции" },
-                ]}
-                activeTab={activeTab} setActiveTab={setActiveTab}
-            >
-                {activeTab === 1 &&
-                    <ChargeCard
-                        maxWidth="26.19rem"
-                        titlePart={{
-                            text: "пер. Соборный 99, кв. 11",
-                            description: "ТСЖ Прогресс",
-                            tag: {
-                                tag: "Оплатить",
-                                tagIcon: <MoneyIcon />
-                            },
-                            textRight: "2703,70₽"
-                        }}
-                        text={
-                            <ChargeText
-                                className="md:hidden sm:hidden"
-                                {...chargeCard}
-                            />}
-                        bottom={{
-                            text: "Февраль 2023",
-                            button: {
-                                name: "Оплатить",
-                                onClick: () => { }
-                            }
-                        }}
-                        onClick={() => {
-                            if (window.innerWidth <= 600) {
-                                setIsInfoWindowOpen(!isInfoWindowOpen);
-                            }
-                        }}
-                    />
-                }
-                {activeTab === 2 &&
-                    <Histogram data={lastCharges} />
-                }
-                {activeTab === 3 &&
-                    <div>
-                        <Table title="" rows={{
-                            startIcon: <PdfIcon />,
-                            actions: {
-                                actions: [{
-                                    type: "download",
-                                    onClick: download,
-                                    id: 0
-                                }]
-                            },
-                            ids: spdIds,
-                            items: [
-                                {
-                                    title: "Квитанция",
-                                    type: "text",
-                                    items: spdNames
-                                },
-                                {
-                                    title: "Квартира",
-                                    type: "text",
-                                    items: apartmentNames
-                                },
-                                {
-                                    title: "Размер",
-                                    type: "text",
-                                    items: fileSizes
-                                }
-                            ],
-                            keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true }
-                        }} />
-                    </div>
-                }
-            </Tabs>
+                <div className={styles.titleWrapper}>
+                    {!isData &&
+                        <Htag size="h1" className={styles.noDataTitle}>{
+                            "Данные о начислениях ещё не добавлены"
+                        }</Htag>
+                    }
+                    <Tabs
+                        isData={isData}
+                        title="Начисления"
+                        tabs={[
+                            { id: 1, name: "Оплата" },
+                            { id: 2, name: "Графики" },
+                            { id: 3, name: "Квитанции" },
+                        ]}
+                        activeTab={activeTab} setActiveTab={setActiveTab}
+                    >
+                        {activeTab === 1 &&
+                            <div className={styles.debtWrapper}>
+                                {debts && debts.map(debt => {
+                                    const currSPD = singlePaymentDocuments.find(spd => spd.id === debt.singlePaymentDocumentId);
+                                    const outstandingDebt = getNumber(debt.outstandingDebt);
+                                    const originalDebt = getNumber(debt.originalDebt);
+                                    const payed = getNumber(debt.originalDebt - debt.outstandingDebt);
+                                    if (currSPD) {
+                                        const createdAt = getMonth(String(currSPD.createdAt));
+
+                                        return (
+                                            <ChargeCard
+                                                key={debt.singlePaymentDocumentId}
+                                                width="26rem"
+                                                titlePart={{
+                                                    text: currSPD.apartmentName,
+                                                    description: currSPD.mcName,
+                                                    tag: {
+                                                        tag: "Оплатить",
+                                                        tagIcon: <MoneyIcon />
+                                                    },
+                                                    textRight: `${outstandingDebt}₽`
+                                                }}
+                                                text={
+                                                    <ChargeText
+                                                        id={String(currSPD.id)}
+                                                        className="md:hidden sm:hidden"
+                                                        total={outstandingDebt}
+                                                        amount={originalDebt}
+                                                        payed={payed}
+                                                        date={lowFirstLetter(createdAt)}
+                                                        onClick={download}
+                                                    />}
+                                                bottom={{
+                                                    text: createdAt,
+                                                    button: {
+                                                        name: "Оплатить",
+                                                        onClick: () => { }
+                                                    }
+                                                }}
+                                                onClick={() => {
+                                                    if (window.innerWidth <= 600) {
+                                                        setSelectedId(currSPD.id);
+                                                        setIsInfoWindowOpen(!isInfoWindowOpen);
+                                                    }
+                                                }}
+                                            />
+                                        );
+                                    }
+                                    return <></>;
+                                })}
+                            </div>
+                        }
+                        {activeTab === 2 &&
+                            <Histogram data={getLastCharges()} />
+                        }
+                        {activeTab === 3 &&
+                            <div>
+                                <Table
+                                    isData={isData}
+                                    title="" rows={{
+                                        startIcon: <PdfIcon />,
+                                        actions: {
+                                            actions: [{
+                                                type: "download",
+                                                onClick: download,
+                                                id: 0
+                                            }]
+                                        },
+                                        ids: spdIds,
+                                        items: [
+                                            {
+                                                title: "Квитанция",
+                                                type: "text",
+                                                items: spdNames
+                                            },
+                                            {
+                                                title: "Квартира",
+                                                type: "text",
+                                                items: apartmentNames
+                                            },
+                                            {
+                                                title: "Размер",
+                                                type: "text",
+                                                items: fileSizes
+                                            }
+                                        ],
+                                        keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true }
+                                    }} />
+                            </div>
+                        }
+                    </Tabs>
+                </div>
+            </div>
         </>
     );
 };
 
 const ChargeText = ({
-    total, amount, debt,
-    date, downloadUrl, ...props
+    total, amount, payed, id,
+    date, onClick, ...props
 }: ChargeTextProps): JSX.Element => {
     return (
         <div className={cn(styles.textWrapper)} {...props}>
             <div className={cn(styles.chargeText, styles.mediumText)}>
-                <span className="hidden md:block sm:block">Общая сумма</span>
+                <span className="hidden md:block sm:block">Задолженность</span>
                 <span>{total}₽</span>
-            </div>
-            <div className={styles.chargeText}>
-                <span>Задолженность:</span>
-                <span>{debt}</span>
             </div>
             <div className={styles.chargeText}>
                 <span>Начислено:</span>
                 <span>{amount}</span>
             </div>
             <div className={styles.chargeText}>
-                <span>Задолженность на конец:</span>
-                <span>{total}</span>
+                <span>Оплачено:</span>
+                <span>{payed}</span>
             </div>
             <div className={cn(styles.chargeText, styles.downloadText)}>
                 <span>Квитанция за {date}</span>
                 <span
+                    id={id}
                     className={styles.download}
-                    onClick={() => {
-                        const a = document.createElement('a');
-                        a.href = downloadUrl;
-                        a.download = String(Date.now());
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(downloadUrl);
-                    }}
+                    onClick={onClick}
                 ><DownloadIcon /></span>
             </div>
         </div>

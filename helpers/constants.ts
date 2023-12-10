@@ -154,3 +154,13 @@ export const getUserCookie = (
 export function capFirstLetter(word: string) {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
+
+export function lowFirstLetter(word: string) {
+    return word.charAt(0).toLowerCase() + word.slice(1);
+}
+
+export const replaceDotWithComma = (input: number): string => {
+    const inputString = String(input);
+    const resultString = inputString.replace(/\./g, ',');
+    return resultString;
+};

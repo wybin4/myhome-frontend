@@ -155,7 +155,8 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     }
                     return {
                         ...getComponent(component),
-                        options: [...selectorOptions, ...component.selectorOptions || []]
+                        options: [...selectorOptions, ...component.selectorOptions || []],
+                        selectorType: component.selectorType
                     } as SelectorFormProps<T>;
                 })
         };

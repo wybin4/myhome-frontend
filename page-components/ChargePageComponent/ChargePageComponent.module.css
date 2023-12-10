@@ -44,7 +44,88 @@
     margin-top: 1.54rem;
 }
 
+.noData .noDataIcon svg {
+    fill: var(--primary);
+
+    width: 30rem;
+    height: 34rem;
+}
+
+.noData {
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+}
+
+.noData .titleWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.6rem;
+
+    margin-top: 2rem;
+}
+
+.noData .noDataTitle {
+    text-align: center;
+}
+
+.noData .noDataWrapper {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.debtWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .noData .noDataIcon svg {
+        width: 26rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .noData {
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+
+    .noData .noDataWrapper {
+        flex-direction: column;
+        align-items: center;
+
+        text-align: center;
+    }
+
+    .noData .noDataIcon svg {
+        width: 26rem;
+        height: 26rem;
+        max-width: 100%;
+    }
+
+    .noData {
+        margin-top: 2rem;
+    }
+
+    .debtWrapper {
+        flex-direction: column;
+        gap: 2rem;
+
+        width: 27rem;
+    }
+}
+
 @media (max-width: 600px) {
+    .debtWrapper {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
     .mediumText {
         font-size: 1.2rem;
         font-weight: 500;

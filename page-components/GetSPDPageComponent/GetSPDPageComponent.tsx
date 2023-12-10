@@ -297,7 +297,14 @@ export const GetSPDPageComponent = ({
                                     titleEng: "accrualMethod",
                                     type: "checkboxWithoutSearch",
                                     isRadio: true,
-                                    items: ["По домам", "По лицевым счетам"],
+                                    items: [{
+                                        value: "byHouses",
+                                        text: "По домам"
+                                    },
+                                    {
+                                        value: "bySubscribers",
+                                        text: "По лицевым счетам"
+                                    }],
                                     onClick: () => setIsHouses(!isHouses),
                                 },
                                 {
@@ -305,14 +312,28 @@ export const GetSPDPageComponent = ({
                                     titleEng: "isPenalty",
                                     type: "checkboxWithoutSearch",
                                     isRadio: true,
-                                    items: ["Выполнять", "Не выполнять"]
+                                    items: [{
+                                        value: "with",
+                                        text: "Выполнять"
+                                    },
+                                    {
+                                        value: "without",
+                                        text: "Не выполнять"
+                                    }]
                                 },
                                 {
                                     title: "Штрих-код",
                                     titleEng: "isBarcode",
                                     type: "checkboxWithoutSearch",
                                     isRadio: true,
-                                    items: ["Формировать", "Не формировать"]
+                                    items: [{
+                                        value: "with",
+                                        text: "Формировать"
+                                    },
+                                    {
+                                        value: "without",
+                                        text: "Не формировать"
+                                    }]
                                 },
                                 {
                                     title: "Поверка",
@@ -320,7 +341,7 @@ export const GetSPDPageComponent = ({
                                     type: "number",
                                     numberText: "Предупреждать за (в мес)"
                                 },
-                            ]} isOpen={isFilterOpened} setIsOpen={setIsFilterOpened} filterButtonRef={filterButtonRef} />
+                            ]} isOpen={isFilterOpened} setIsOpen={setIsFilterOpened} filterButtonRef={filterButtonRef} isOne={true} />
                         </div>
                     </>
                 }
