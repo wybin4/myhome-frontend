@@ -22,6 +22,7 @@ export interface ChargeTextProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 export interface ISpdData {
     id: number;
     apartmentName: string;
+    mcCheckingAccount: string;
     mcName: string;
     fileSize: number;
     pdfBuffer: string;

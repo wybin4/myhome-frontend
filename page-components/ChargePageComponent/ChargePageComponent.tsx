@@ -24,6 +24,40 @@ export const ChargePageComponent = ({
 }: ChargePageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
 
+    const createForm = (amount: number, spdId: number, checkingAccount: string) => {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://yoomoney.ru/quickpay/confirm';
+        form.style.display = 'none';
+
+        const receiverInput = document.createElement('input');
+        receiverInput.type = 'hidden';
+        receiverInput.name = 'receiver';
+        receiverInput.value = checkingAccount;
+        form.appendChild(receiverInput);
+
+        const labelInput = document.createElement('input');
+        labelInput.type = 'hidden';
+        labelInput.name = 'label';
+        labelInput.value = String(spdId);
+        form.appendChild(labelInput);
+
+        const quickpayInput = document.createElement('input');
+        quickpayInput.type = 'hidden';
+        quickpayInput.name = 'quickpay-form';
+        quickpayInput.value = 'button';
+        form.appendChild(quickpayInput);
+
+        const sumInput = document.createElement('input');
+        sumInput.type = 'hidden';
+        sumInput.name = 'sum';
+        sumInput.value = String(amount);
+        form.appendChild(sumInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    };
+
     const getLastCharges = () => {
         const groupedByApartment: IChargeChart[] = [];
         singlePaymentDocuments.forEach(spd => {
@@ -128,7 +162,7 @@ export const ChargePageComponent = ({
                     }
                     isOpen={isInfoWindowOpen}
                     setIsOpen={setIsInfoWindowOpen}
-                    buttons={[{ name: "Оплатить", onClick: () => { } }]}
+                    buttons={[{ name: "Оплатить", onClick: () => createForm(debt.outstandingDebt, spd.id, spd.mcCheckingAccount) }]}
                     icon={<MoneyIcon />}
                 />
             );
@@ -167,51 +201,53 @@ export const ChargePageComponent = ({
                         {activeTab === 1 &&
                             <div className={styles.debtWrapper}>
                                 {debts && debts.map(debt => {
-                                    const currSPD = singlePaymentDocuments.find(spd => spd.id === debt.singlePaymentDocumentId);
-                                    const outstandingDebt = getNumber(debt.outstandingDebt);
-                                    const originalDebt = getNumber(debt.originalDebt);
-                                    const payed = getNumber(debt.originalDebt - debt.outstandingDebt);
-                                    if (currSPD) {
-                                        const createdAt = getMonth(String(currSPD.createdAt));
+                                    if (debt.outstandingDebt !== 0) {
+                                        const currSPD = singlePaymentDocuments.find(spd => spd.id === debt.singlePaymentDocumentId);
+                                        const outstandingDebt = getNumber(debt.outstandingDebt);
+                                        const originalDebt = getNumber(debt.originalDebt);
+                                        const payed = getNumber(debt.originalDebt - debt.outstandingDebt);
+                                        if (currSPD) {
+                                            const createdAt = getMonth(String(currSPD.createdAt));
 
-                                        return (
-                                            <ChargeCard
-                                                key={debt.singlePaymentDocumentId}
-                                                width="26rem"
-                                                titlePart={{
-                                                    text: currSPD.apartmentName,
-                                                    description: currSPD.mcName,
-                                                    tag: {
-                                                        tag: "Оплатить",
-                                                        tagIcon: <MoneyIcon />
-                                                    },
-                                                    textRight: `${outstandingDebt}₽`
-                                                }}
-                                                text={
-                                                    <ChargeText
-                                                        id={String(currSPD.id)}
-                                                        className="md:hidden sm:hidden"
-                                                        total={outstandingDebt}
-                                                        amount={originalDebt}
-                                                        payed={payed}
-                                                        date={lowFirstLetter(createdAt)}
-                                                        onClick={download}
-                                                    />}
-                                                bottom={{
-                                                    text: createdAt,
-                                                    button: {
-                                                        name: "Оплатить",
-                                                        onClick: () => { }
-                                                    }
-                                                }}
-                                                onClick={() => {
-                                                    if (window.innerWidth <= 600) {
-                                                        setSelectedId(currSPD.id);
-                                                        setIsInfoWindowOpen(!isInfoWindowOpen);
-                                                    }
-                                                }}
-                                            />
-                                        );
+                                            return (
+                                                <ChargeCard
+                                                    key={debt.singlePaymentDocumentId}
+                                                    width="26rem"
+                                                    titlePart={{
+                                                        text: currSPD.apartmentName,
+                                                        description: currSPD.mcName,
+                                                        tag: {
+                                                            tag: "Оплатить",
+                                                            tagIcon: <MoneyIcon />
+                                                        },
+                                                        textRight: `${outstandingDebt}₽`
+                                                    }}
+                                                    text={
+                                                        <ChargeText
+                                                            id={String(currSPD.id)}
+                                                            className="md:hidden sm:hidden"
+                                                            total={outstandingDebt}
+                                                            amount={originalDebt}
+                                                            payed={payed}
+                                                            date={lowFirstLetter(createdAt)}
+                                                            onClick={download}
+                                                        />}
+                                                    bottom={{
+                                                        text: createdAt,
+                                                        button: {
+                                                            name: "Оплатить",
+                                                            onClick: () => createForm(debt.outstandingDebt, currSPD.id, currSPD.mcCheckingAccount)
+                                                        }
+                                                    }}
+                                                    onClick={() => {
+                                                        if (window.innerWidth <= 600) {
+                                                            setSelectedId(currSPD.id);
+                                                            setIsInfoWindowOpen(!isInfoWindowOpen);
+                                                        }
+                                                    }}
+                                                />
+                                            );
+                                        }
                                     }
                                     return <></>;
                                 })}
