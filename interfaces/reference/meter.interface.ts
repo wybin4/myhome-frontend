@@ -133,7 +133,8 @@ export const individualMeterPageComponent:
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IIndividualMeterReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { "isAllInfo": true, "meterType": MeterType.Individual }
 };
 
 export const generalMeterPageComponent:
@@ -155,5 +156,6 @@ export const generalMeterPageComponent:
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IGeneralMeterReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { "isAllInfo": true, "meterType": MeterType.General }
 };

@@ -8,6 +8,7 @@ import { Gender } from "russian-nouns-js/src/Gender";
 
 export interface IReferenceDataItem {
     id: number | string;
+    totalCount?: number;
     [key: string]: number | string | Date | undefined;
 }
 
@@ -22,6 +23,7 @@ export interface IReferencePageComponent<T extends FieldValues> {
     components: IReferencePageItem<T>[];
     tableActions?: ActionProps;
     keyElements?: RowKeyElements;
+    additionalGetFormData?: { [key: string]: string | boolean | number };
 }
 
 export interface IReferencePageItem<T extends FieldValues> {

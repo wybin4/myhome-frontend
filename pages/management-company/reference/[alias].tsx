@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Pagination } from "@/components";
 import { IAppContext } from "@/context/app.context";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
+import { PAGE_LIMIT } from "@/helpers/constants";
 import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
 import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IGetCommon, ITypeOfService } from "@/interfaces/common.interface";
@@ -23,6 +25,7 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [engName, setEngName] = useState<string>("");
     const [baseEngName, setBaseEngName] = useState<string>("");
     const router = useRouter();
+    const [itemOffset, setItemOffset] = useState(0);
 
     const getAdditionalFormData = (): { additionalFormData: Record<string, string | number> } | undefined => {
         switch (engName) {
@@ -116,17 +119,44 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
         item: IReferencePageComponent<T>,
         uriToAdd?: string
     ) => {
-        const newItem = enrichReferenceComponent(data, item, baseEngName);
+        const endOffset = itemOffset + PAGE_LIMIT;
+        const newItem = enrichReferenceComponent(data, item, baseEngName, itemOffset, endOffset);
+
+        const handlePaginate = async (selected: number) => {
+            const uriToGet = API.reference[baseEngName].get;
+            if (data.totalCount !== data[baseEngName + "s"].length) {
+                const { data } = await api.post(uriToGet, {
+                    ...item.additionalGetFormData,
+                    meta: {
+                        limit: PAGE_LIMIT,
+                        page: selected + 1
+                    }
+                });
+                setPostData(data);
+            }
+        };
+
         return (
-            <ReferencePageComponent<T>
-                setPostData={setPostData}
-                key={newItem.engName}
-                item={newItem}
-                uriToAdd={uriToAdd ? uriToAdd : API.managementCompany.reference[baseEngName].addMany}
-                additionalSelectorOptions={data.additionalData}
-                entityName={baseEngName}
-                {...getAdditionalFormData()}
-            />
+            <>
+                <ReferencePageComponent<T>
+                    setPostData={setPostData}
+                    key={newItem.engName}
+                    item={newItem}
+                    uriToAdd={uriToAdd ? uriToAdd : API.managementCompany.reference[baseEngName].addMany}
+                    additionalSelectorOptions={data.additionalData}
+                    entityName={baseEngName}
+                    {...getAdditionalFormData()}
+                />
+                {data.totalCount &&
+                    <Pagination
+                        handlePaginate={handlePaginate}
+                        setItemOffset={setItemOffset}
+                        itemsCount={data.totalCount}
+                        itemsPerPage={PAGE_LIMIT}
+                    />
+                }
+            </>
+
         );
     };
 
@@ -162,24 +192,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         const engName = url.split("/")[3];
 
         let apiUrl: string = '';
-        let additionalData: Record<string, string | number> = {};
         switch (engName) {
             case "owner":
-                additionalData = {
-                    "userRole": UserRole.Owner
-                };
                 apiUrl = API.common.user.getAll;
                 break;
             case "individual-meter":
-                additionalData = {
-                    "meterType": MeterType.Individual
-                };
                 apiUrl = API.reference["meter"].get;
                 break;
             case "general-meter":
-                additionalData = {
-                    "meterType": MeterType.General
-                };
                 apiUrl = API.reference["meter"].get;
                 break;
             case "norm":
@@ -200,7 +220,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         switch (engName) {
             case "house":
-                return await fetchReferenceData<IHouseReferenceData>(context, apiUrl, { "isAllInfo": true });
+                return await fetchReferenceData<IHouseReferenceData>(context, apiUrl,
+                    housePageComponent.additionalGetFormData
+                );
             case "apartment":
                 try {
                     const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(context, API.reference.house.get,
@@ -219,7 +241,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                                 additionalData: [{
                                     data: ('houses' in houseProps.data) ? houseProps.data.houses : [],
                                     id: 'houseId'
-                                }]
+                                }],
+                                totalCount: ('totalCount' in apartmentProps.data) ? apartmentProps.data.totalCount : null,
                             }
                         }
                     };
@@ -231,7 +254,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             case "subscriber":
                 try {
                     const { props: apartmentProps } = await fetchReferenceData<{ apartments: IGetApartment[] }>(context, API.reference.apartment.get,
-                        { "isAllInfo": false }
+                        apartmentPageComponent.additionalGetFormData
                     );
                     const { props: ownerProps } = await fetchReferenceData<{ profiles: IUser[] }>(context, API.common.user.getAll, { "userRole": UserRole.Owner });
                     const { props: subscriberProps } = await fetchReferenceData<ISubscriberReferenceData>(context, apiUrl, undefined);
@@ -251,7 +274,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                                 {
                                     data: ('profiles' in ownerProps.data) ? ownerProps.data.profiles : [],
                                     id: 'ownerId'
-                                }]
+                                }],
                             }
                         }
                     };
@@ -261,10 +284,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     };
                 }
             case "owner":
-                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, additionalData);
+                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, ownerPageComponent.additionalGetFormData);
             case "individual-meter":
                 try {
-                    const { props: meterProps } = await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl, additionalData);
+                    const { props: meterProps } = await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl,
+                        individualMeterPageComponent.additionalGetFormData
+                    );
                     const { props: apartmentProps } = await fetchReferenceData<{ apartments: IGetApartment[] }>(context, API.reference.apartment.get,
                         { "isAllInfo": false }
                     );
@@ -298,7 +323,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 }
             case "general-meter":
                 try {
-                    const { props: meterProps } = await fetchReferenceData<IGeneralMeterReferenceData>(context, apiUrl, additionalData);
+                    const { props: meterProps } = await fetchReferenceData<IGeneralMeterReferenceData>(context, apiUrl,
+                        generalMeterPageComponent.additionalGetFormData
+                    );
                     const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(context, API.reference.house.get,
                         { "isAllInfo": true }
                     );
@@ -477,5 +504,11 @@ const fetchTariffAndNormData = async (
 
 
 interface ReferencePageProps extends Record<string, unknown>, IAppContext {
-    data: IReferenceData & { additionalData: { data: Record<string, string | number>[]; id: string }[] };
+    data: IReferenceData & {
+        additionalData: {
+            data: Record<string, string | number>[];
+            id: string;
+        }[];
+        totalCount?: number;
+    };
 }

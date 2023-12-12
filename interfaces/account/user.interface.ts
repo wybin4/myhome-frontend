@@ -59,7 +59,8 @@ export const ownerPageComponent:
             title: [{ word: "email" }], numberInOrder: 2, id: "email", gender: "мужской",
             rows: []
         }
-    ]
+    ],
+    additionalGetFormData: { "userRole": UserRole.Owner }
 };
 
 export const managementCompanyPageComponent:
@@ -84,5 +85,6 @@ export const managementCompanyPageComponent:
             title: [{ word: "расчётный" }, { word: "счёт" }], numberInOrder: 3, id: "checkingAccount", gender: "мужской",
             rows: []
         },
-    ]
+    ],
+    additionalGetFormData: { "userRole": UserRole.ManagementCompany }
 };

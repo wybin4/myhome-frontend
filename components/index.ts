@@ -18,6 +18,7 @@ export * from "./primitive/InputVote/InputVote";
 export * from "./primitive/Attachment/Attachment";
 export * from "./primitive/Excel/Excel";
 export * from "./primitive/Ul/Ul";
+export * from "./primitive/Pagination/Pagination";
 
 export * from "./composite/PopUp/PopUp";
 export * from "./composite/Menu/Menu";

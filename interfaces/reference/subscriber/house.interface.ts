@@ -71,5 +71,6 @@ export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem
             numberInOrder: 6, id: "commonArea",
             rows: []
         },
-    ]
+    ],
+    additionalGetFormData: { "isAllInfo": true }
 };

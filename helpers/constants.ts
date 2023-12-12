@@ -164,3 +164,5 @@ export const replaceDotWithComma = (input: number): string => {
     const resultString = inputString.replace(/\./g, ',');
     return resultString;
 };
+
+export const PAGE_LIMIT = 5;

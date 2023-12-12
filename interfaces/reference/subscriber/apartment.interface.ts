@@ -67,5 +67,6 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
             numberInOrder: 5, id: "numberOfRegistered", gender: "женский",
             rows: []
         },
-    ]
+    ],
+    additionalGetFormData: { "isAllInfo": false }
 };

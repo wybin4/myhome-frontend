@@ -5,7 +5,7 @@ import { GetServerSidePropsContext } from "next";
 import axios from "axios";
 import { API } from "./api";
 import { parse } from "cookie";
-import { getEnumValueByKey } from "./constants";
+import { PAGE_LIMIT, getEnumValueByKey } from "./constants";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function fetchReferenceData<T extends Record<string, string | number | any>>(
@@ -15,7 +15,13 @@ export async function fetchReferenceData<T extends Record<string, string | numbe
 ) {
     const originalRequest = async (cookie?: string) => {
         return await axios.post<T>(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/${apiUrl}`, postData,
+            `${process.env.NEXT_PUBLIC_DOMAIN}/${apiUrl}`, {
+            ...postData,
+            meta: {
+                limit: PAGE_LIMIT,
+                page: 1
+            }
+        },
             {
                 withCredentials: true,
                 headers: {
@@ -103,10 +109,12 @@ const valueFormat = (value: string | number | Date) => {
 };
 
 export const enrichReferenceComponent = <T extends FieldValues>(
-    data: IReferenceData, item: IReferencePageComponent<T>, baseEngName: string
+    data: IReferenceData, item: IReferencePageComponent<T>, baseEngName: string,
+    start?: number, end?: number
 ): IReferencePageComponent<T> => {
     const enrichedComponent = { ...item };
-    const dataFromBack = data[baseEngName + "s"];
+    let dataFromBack = data[baseEngName + "s"];
+    dataFromBack = dataFromBack.slice(start, end);
     if (dataFromBack) {
         const enrichedComponents = enrichedComponent.components.map(component => {
             const values = dataFromBack.map(item =>
