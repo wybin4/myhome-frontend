@@ -14,9 +14,9 @@ export const Pagination = ({
 
     const handlePageClick = async (selectedItem: { selected: number }) => {
         if (handlePaginate) {
+            handlePaginate(selectedItem.selected);
             const newOffset = (selectedItem.selected * itemsPerPage) % itemsCount;
             setItemOffset(newOffset);
-            handlePaginate(selectedItem.selected);
         }
     };
 

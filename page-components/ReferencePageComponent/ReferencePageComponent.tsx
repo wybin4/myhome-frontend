@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReferencePageComponentProps } from "./ReferencePageComponent.props";
 import styles from "./ReferencePageComponent.module.css";
 import { FileForm, Form, Htag, Table } from "@/components";
@@ -13,12 +14,14 @@ import NoDataIcon from "./nodata.svg";
 import cn from "classnames";
 import { TableButtonType } from "@/components/composite/TableButton/TableButton.props";
 import { capFirstLetter } from "@/helpers/constants";
+import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
     additionalSelectorOptions,
     setPostData, additionalFormData,
-    entityName, uriToAdd, addMany = true
+    entityName, uriToAdd, addMany = true,
+    handleFilter, isData
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
@@ -162,6 +165,53 @@ export const ReferencePageComponent = <T extends FieldValues>({
         };
     };
 
+    const getFilters = (): { filters: TableFilterItemProps[] } => {
+        return {
+            filters: item.components
+                .filter(c => c.type === "select" || c.enum)
+                .map(component => {
+                    if (additionalSelectorOptions) {
+                        const data = additionalSelectorOptions.find(ad => {
+                            return ad.id === component.sendId;
+                        });
+                        if (data) {
+                            return {
+                                title: capFirstLetter(phraseByArr(component.title)),
+                                titleEng: String(component.sendId),
+                                type: "checkbox",
+                                items: data.data.map(d => {
+                                    return {
+                                        value: d.id,
+                                        text: String(d.name)
+                                    };
+                                }),
+                                handleClick: handleFilter
+                            };
+                        }
+                    }
+                    if (component.enum) {
+                        return {
+                            title: capFirstLetter(phraseByArr(component.title)),
+                            titleEng: String(component.id),
+                            type: "checkbox",
+                            items: Object.entries(component.enum).map(val => {
+                                return {
+                                    value: val[0],
+                                    text: String(val[1])
+                                };
+                            }),
+                            handleClick: handleFilter
+                        };
+                    }
+                    return {
+                        title: capFirstLetter(phraseByArr(component.title)),
+                        titleEng: String(component.id),
+                        type: "checkbox",
+                    };
+                })
+        };
+    };
+
     const { selectors } = getSelectors();
 
     const getHeaders = (): ExcelHeader[] => {
@@ -171,10 +221,6 @@ export const ReferencePageComponent = <T extends FieldValues>({
                 value: c.title.map(t => t.word).join(" ")
             };
         });
-    };
-
-    const isData = () => {
-        return item.components.filter(component => component.rows.length > 0).length > 0;
     };
 
     const getButtons = (): TableButtonType[] => {
@@ -237,13 +283,13 @@ export const ReferencePageComponent = <T extends FieldValues>({
             >
             </Form>
             <div className={cn(styles.tableWrapper, {
-                [styles.noData]: !isData()
+                [styles.noData]: !isData
             })}>
-                {!isData() &&
+                {!isData &&
                     <span className={styles.noDataIcon}><NoDataIcon /></span>
                 }
                 <div className={styles.titleWrapper}>
-                    {!isData() &&
+                    {!isData &&
                         <Htag size="h1" className={styles.noDataTitle}>{
                             `Данные ${getPretext(noun)} ${pluralNominativeWithCase(
                                 noun, gender, "предложный"
@@ -254,22 +300,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     <Table
                         title={capFirstLetter(pluralNominative(noun, gender))}
                         buttons={getButtons()}
-                        filters={item.components
-                            .filter(component => component.isFilter)
-                            .flatMap(component => {
-                                if (component.filterItems) {
-                                    return component.filterItems?.map(i => {
-                                        return {
-                                            title: i.name ? capFirstLetter(phraseByArr(i.name))
-                                                : capFirstLetter(phraseByArr(component.title)),
-                                            titleEng: String(component.id),
-                                            type: "checkbox",
-                                            items: i.items,
-                                        };
-                                    });
-                                }
-                                return [];
-                            })}
+                        {...getFilters()}
                         rows={{
                             actions: item.tableActions,
                             ids: [],
@@ -283,7 +314,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                                 })),
                             keyElements: item.keyElements,
                         }}
-                        isData={isData()}
+                        isData={isData}
                     />
                 </div>
             </div>

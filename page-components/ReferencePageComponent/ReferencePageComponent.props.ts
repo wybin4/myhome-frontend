@@ -16,4 +16,7 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     setPostData: (newData: any) => void;
     entityName?: string;
     addMany?: boolean;
+
+    handleFilter: (value: string[], id: string) => Promise<void>;
+    isData: boolean;
 }

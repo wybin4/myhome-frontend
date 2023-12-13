@@ -124,12 +124,6 @@ export const individualMeterPageComponent:
         {
             type: "select", selectorOptions: [],
             title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", sendId: "apartmentId", gender: "мужской",
-            isFilter: true, filterItems: [
-                { name: [{ word: "город" }], items: [] },
-                { name: [{ word: "улица" }], items: [] },
-                { name: [{ word: "дом" }], items: [] },
-                { name: [{ word: "квартира" }], items: [] }
-            ],
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IIndividualMeterReferenceDataItem>[]
@@ -147,12 +141,6 @@ export const generalMeterPageComponent:
         {
             type: "select", selectorOptions: [],
             title: [{ word: "объект" }, { word: "учёта" }], numberInOrder: 1, id: "houseName", sendId: "houseId", gender: "мужской",
-            isFilter: true, filterItems: [
-                { name: [{ word: "город" }], items: [] },
-                { name: [{ word: "улица" }], items: [] },
-                { name: [{ word: "дом" }], items: [] },
-                { name: [{ word: "квартира" }], items: [] }
-            ],
             rows: []
         },
         ...meterPageComponents as unknown as IReferencePageItem<IGeneralMeterReferenceDataItem>[]

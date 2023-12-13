@@ -59,8 +59,7 @@ export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataIt
     components: [
         {
             type: "select", selectorOptions: [],
-            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", sendId: "houseId", gender: "мужской", isFilter: true,
-            filterItems: [{ items: [] }],
+            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", sendId: "houseId", gender: "мужской",
             rows: []
         },
         {

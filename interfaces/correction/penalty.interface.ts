@@ -27,9 +27,6 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
             type: "select", selectorOptions: [],
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", sendId: "typeOfServiceId",
             gender: "женский",
-            isFilter: true, filterItems: [
-                { items: [] },
-            ],
             rows: [], selectorType: "withoutradio"
         },
         {

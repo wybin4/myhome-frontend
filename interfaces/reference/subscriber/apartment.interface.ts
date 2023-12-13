@@ -39,14 +39,12 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
     components: [
         {
             type: "select", selectorOptions: [],
-            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", sendId: "houseId", gender: "мужской", isFilter: true,
-            filterItems: [{ items: [] }],
+            title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", sendId: "houseId", gender: "мужской",
             rows: []
         },
         {
             type: "input", inputType: "number",
-            title: [{ word: "квартира", isChangeable: true }], numberInOrder: 2, id: "apartmentNumber", gender: "женский", isFilter: true,
-            filterItems: [{ items: [] }],
+            title: [{ word: "квартира", isChangeable: true }], numberInOrder: 2, id: "apartmentNumber", gender: "женский",
             rows: []
         },
         {

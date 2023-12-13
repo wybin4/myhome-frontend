@@ -28,7 +28,7 @@ export const Table = ({
                 <div>
                     {(buttons || filters) && <TableButton
                         buttons={buttons?.filter(button => button.type !== "download")}
-                        isFiltersExist={isOne()}
+                        isFiltersExist={false}
                         filterButtonRef={filterButtonRef}
                         isFilterOpened={isFilterOpened} setIsFilterOpened={setIsFilterOpened}
                     />}

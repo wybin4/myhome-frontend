@@ -23,7 +23,7 @@ export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<H
 
     isRadio?: boolean;
 
-    onClick?: () => void;
+    handleClick?: (value: string[], id: string) => Promise<void>;
 }
 
 export interface ITableFilterItem { value: string | number; text: string; }

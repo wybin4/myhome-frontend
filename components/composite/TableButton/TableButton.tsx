@@ -29,7 +29,7 @@ export const TableButton = ({
                                     symbol="download" size="m" appearance={button.appearance ? button.appearance : "ghost"}
                                     onClick={button.onClick}
                                     key={key}
-                                >Загрузить</Button>
+                                >Скачать</Button>
                             );
                         case "upload":
                             return (

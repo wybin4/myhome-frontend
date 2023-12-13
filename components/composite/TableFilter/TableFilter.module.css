@@ -5,6 +5,30 @@
     z-index: 5;
 }
 
+.valuesWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    max-height: 5rem;
+    overflow-y: auto;
+}
+
+.valuesWrapper::-webkit-scrollbar {
+    width: 0.375rem;
+}
+
+.valuesWrapper::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 0.375rem;
+}
+
+.valuesWrapper::-webkit-scrollbar-thumb {
+    border-radius: 0.375rem;
+
+    background: var(--primary);
+}
+
 .hidden {
     visibility: hidden;
     display: none;

@@ -55,12 +55,6 @@ export const subscriberPageComponent:
             type: "select", selectorOptions: [],
             title: [{ word: "объект" }, { word: "учета" }],
             numberInOrder: 3, id: "apartmentName", sendId: "apartmentId", gender: "мужской",
-            isFilter: true, filterItems: [
-                { name: [{ word: "город" }], items: [] },
-                { name: [{ word: "улица" }], items: [] },
-                { name: [{ word: "дом" }], items: [] },
-                { name: [{ word: "квартира" }], items: [] }
-            ],
             rows: []
         },
         {

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Pagination } from "@/components";
 import { IAppContext } from "@/context/app.context";
-import { API, api } from "@/helpers/api";
+import { API } from "@/helpers/api";
 import { PAGE_LIMIT } from "@/helpers/constants";
-import { enrichReferenceComponent, fetchReferenceData } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, fetchReferenceData, handleFilter } from "@/helpers/reference-constants";
 import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IGetCommon, ITypeOfService } from "@/interfaces/common.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, IPenaltyRule, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
@@ -19,6 +18,7 @@ import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { getPagination } from "../reference-helper";
 
 function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [data, setData] = useState(initialData);
@@ -103,38 +103,57 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
         setBaseEngName(baseEngName);
     }, [router.asPath]);
 
-    const setPostData = (newData: any) => {
-        setData(prevData => {
-            if (baseEngName + "s" in prevData) {
-                const newDataArray = [...prevData[baseEngName + "s"], ...newData[baseEngName + "s"]];
-                return { ...prevData, [baseEngName + "s"]: newDataArray };
+    const setPostData = (newData: any, isNew?: boolean, isGet?: boolean) => {
+        const name = baseEngName + "s";
+        const newArr = newData[name];
+
+        if (!isGet) {
+            setData(prevData => {
+                const newTotalCount = data.totalCount ? data.totalCount + 1 : 1;
+                if (name in prevData) {
+                    const newDataArray = [...prevData[name], ...newArr];
+                    return { ...prevData, [name]: newDataArray, totalCount: newTotalCount } as IReferenceData & {
+                        additionalData: {
+                            data: Record<string, string | number>[];
+                            id: string;
+                        }[];
+                        totalCount?: number;
+                    };
+                } else {
+                    const newDataArray = [...newArr];
+                    return { ...prevData, [name]: newDataArray } as IReferenceData & {
+                        additionalData: {
+                            data: Record<string, string | number>[];
+                            id: string;
+                        }[];
+                        totalCount?: number;
+                    };
+                }
+            });
+        } else {
+            const newTotalCount = newData.totalCount;
+            if (!isNew) {
+                setData((prevData) => {
+                    const newDataArray = [...prevData[name], ...newArr];
+                    return { ...prevData, [name]: newDataArray, totalCount: newTotalCount };
+                });
             } else {
-                const newDataArray = [...newData[baseEngName + "s"]];
-                return { ...prevData, [baseEngName + "s"]: newDataArray };
+                setData(prevData => {
+                    const newDataArray = [...newArr];
+                    return { ...prevData, [name]: newDataArray, totalCount: newTotalCount };
+                });
             }
-        });
+        }
     };
 
     const createComponent = <T extends FieldValues>(
         item: IReferencePageComponent<T>,
-        uriToAdd?: string
+        uriToAdd?: string,
+        uriToGet?: string
     ) => {
         const endOffset = itemOffset + PAGE_LIMIT;
         const newItem = enrichReferenceComponent(data, item, baseEngName, itemOffset, endOffset);
-
-        const handlePaginate = async (selected: number) => {
-            const uriToGet = API.reference[baseEngName].get;
-            if (data.totalCount !== data[baseEngName + "s"].length) {
-                const { data } = await api.post(uriToGet, {
-                    ...item.additionalGetFormData,
-                    meta: {
-                        limit: PAGE_LIMIT,
-                        page: selected + 1
-                    }
-                });
-                setPostData(data);
-            }
-        };
+        const linkToGet = uriToGet ? uriToGet : API.reference[baseEngName].get;
 
         return (
             <>
@@ -145,16 +164,20 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                     uriToAdd={uriToAdd ? uriToAdd : API.managementCompany.reference[baseEngName].addMany}
                     additionalSelectorOptions={data.additionalData}
                     entityName={baseEngName}
+                    isData={initialData.totalCount !== null || data.totalCount !== 0}
+                    handleFilter={async (value: string[], id: string) => {
+                        await handleFilter(
+                            value, id,
+                            linkToGet, item.additionalGetFormData, setPostData,
+                            setItemOffset
+                        );
+                    }}
                     {...getAdditionalFormData()}
                 />
-                {data.totalCount &&
-                    <Pagination
-                        handlePaginate={handlePaginate}
-                        setItemOffset={setItemOffset}
-                        itemsCount={data.totalCount}
-                        itemsPerPage={PAGE_LIMIT}
-                    />
-                }
+                {getPagination(
+                    setItemOffset, data, initialData, baseEngName + "s",
+                    linkToGet, item.additionalGetFormData, setPostData
+                )}
             </>
 
         );
@@ -174,11 +197,13 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
             {engName === "commonHouseNeedTariff" && createComponent<ICommonHouseNeedTariffReferenceDataItem>(сommonHouseNeedTariffPageComponent)}
             {engName === "penaltyRule" && createComponent<IPenaltyCalculationRuleReferenceDataItem>(
                 penaltyCalcRulePageComponent,
-                API.managementCompany.correction.penaltyRule.addMany
+                API.managementCompany.correction.penaltyRule.addMany,
+                API.managementCompany.correction.penaltyRule.get,
             )}
             {engName === "profile" && createComponent<IUserReferenceDataItem>(
                 ownerPageComponent,
-                API.common.user.addMany
+                API.common.user.addMany,
+                API.common.user.get
             )}
         </>
     );
@@ -221,14 +246,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         switch (engName) {
             case "house":
                 return await fetchReferenceData<IHouseReferenceData>(context, apiUrl,
-                    housePageComponent.additionalGetFormData
+                    housePageComponent.additionalGetFormData, true
                 );
             case "apartment":
                 try {
                     const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(context, API.reference.house.get,
                         { "isAllInfo": true }
                     );
-                    const { props: apartmentProps } = await fetchReferenceData<IApartmentReferenceData>(context, apiUrl, undefined);
+                    const { props: apartmentProps } = await fetchReferenceData<IApartmentReferenceData>(context, apiUrl, undefined, true);
                     if (!apartmentProps || !houseProps) {
                         return {
                             notFound: true
@@ -257,7 +282,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                         apartmentPageComponent.additionalGetFormData
                     );
                     const { props: ownerProps } = await fetchReferenceData<{ profiles: IUser[] }>(context, API.common.user.getAll, { "userRole": UserRole.Owner });
-                    const { props: subscriberProps } = await fetchReferenceData<ISubscriberReferenceData>(context, apiUrl, undefined);
+                    const { props: subscriberProps } = await fetchReferenceData<ISubscriberReferenceData>(context, apiUrl, undefined, true);
                     if (!subscriberProps || !apartmentProps || !ownerProps) {
                         return {
                             notFound: true
@@ -284,11 +309,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     };
                 }
             case "owner":
-                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, ownerPageComponent.additionalGetFormData);
+                return await fetchReferenceData<IUserReferenceData>(context, apiUrl, ownerPageComponent.additionalGetFormData, true);
             case "individual-meter":
                 try {
                     const { props: meterProps } = await fetchReferenceData<IIndividualMeterReferenceData>(context, apiUrl,
-                        individualMeterPageComponent.additionalGetFormData
+                        individualMeterPageComponent.additionalGetFormData, true
                     );
                     const { props: apartmentProps } = await fetchReferenceData<{ apartments: IGetApartment[] }>(context, API.reference.apartment.get,
                         { "isAllInfo": false }
@@ -324,7 +349,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             case "general-meter":
                 try {
                     const { props: meterProps } = await fetchReferenceData<IGeneralMeterReferenceData>(context, apiUrl,
-                        generalMeterPageComponent.additionalGetFormData
+                        generalMeterPageComponent.additionalGetFormData, true
                     );
                     const { props: houseProps } = await fetchReferenceData<{ houses: IGetHouse[] }>(context, API.reference.house.get,
                         { "isAllInfo": true }
@@ -369,7 +394,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.CommonHouseNeedTariff, false, true);
             case "penalty-rule":
                 try {
-                    const { props: penaltyCalcRuleProps } = await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, undefined);
+                    const { props: penaltyCalcRuleProps } = await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, undefined, true);
                     const { props: penaltyRuleProps } = await fetchReferenceData<{ penaltyRules: IPenaltyRule[] }>(context,
                         API.managementCompany.correction.penaltyRule.getMany || "",
                         undefined);
@@ -427,7 +452,8 @@ const fetchTariffAndNormData = async (
         const { props: tariffAndNormProps } = await fetchReferenceData<IBaseTariffAndNormReferenceData>(
             context,
             apiUrl,
-            { type }
+            { type },
+            true
         );
 
         const additionalData: {

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ITableFilterItem } from "@/components/composite/TableFilter/TableFilter.props";
 import { ActionProps } from "@/components/composite/TableRow/Action/Action.props";
 import { RowKeyElements } from "@/components/composite/TableRow/TableRow.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
@@ -8,7 +7,6 @@ import { Gender } from "russian-nouns-js/src/Gender";
 
 export interface IReferenceDataItem {
     id: number | string;
-    totalCount?: number;
     [key: string]: number | string | Date | undefined;
 }
 
@@ -37,9 +35,6 @@ export interface IReferencePageItem<T extends FieldValues> {
     numberInOrder: number;
 
     rows: string[];
-
-    isFilter?: boolean;
-    filterItems?: { name?: IReferenceTitle[]; items: ITableFilterItem[] }[];
 
     type: "input" | "select" | "datepicker" | "input-vote" | "none" | "textarea";
     inputType?: "number" | "string";

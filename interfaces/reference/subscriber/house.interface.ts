@@ -36,21 +36,18 @@ export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem
     components: [
         {
             type: "input",
-            title: [{ word: "город", isChangeable: true }], numberInOrder: 1, id: "city", gender: "мужской", isFilter: true,
-            filterItems: [{ items: [] }],
+            title: [{ word: "город", isChangeable: true }], numberInOrder: 1, id: "city", gender: "мужской",
             rows: []
         },
         {
             type: "input",
-            title: [{ word: "улица", isChangeable: true }], numberInOrder: 2, id: "street", gender: "женский", isFilter: true,
-            filterItems: [{ items: [] }],
+            title: [{ word: "улица", isChangeable: true }], numberInOrder: 2, id: "street", gender: "женский",
             rows: []
         },
         {
             type: "input",
             title: [{ word: "дом" }], gender: "мужской",
-            numberInOrder: 3, id: "houseNumber", isFilter: true,
-            filterItems: [{ items: [] }],
+            numberInOrder: 3, id: "houseNumber",
             rows: []
         },
         {

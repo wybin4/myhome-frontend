@@ -1,26 +1,36 @@
-import { IReferenceData, IReferencePageComponent, IReferencePageItem } from "@/interfaces/reference/page.interface";
+import { IReferenceData, IReferencePageComponent } from "@/interfaces/reference/page.interface";
 import { format, isDate, isValid } from "date-fns";
 import { FieldValues } from "react-hook-form";
 import { GetServerSidePropsContext } from "next";
 import axios from "axios";
-import { API } from "./api";
+import { API, api } from "./api";
 import { parse } from "cookie";
 import { PAGE_LIMIT, getEnumValueByKey } from "./constants";
+import { Dispatch, SetStateAction } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function fetchReferenceData<T extends Record<string, string | number | any>>(
     { req, res }: GetServerSidePropsContext,
     apiUrl: string,
-    postData: any
+    postData: any,
+    isMeta?: boolean
 ) {
+    const getMeta = () => {
+        if (isMeta) {
+            return {
+                meta: {
+                    limit: PAGE_LIMIT,
+                    page: 1
+                }
+            };
+        }
+    };
+
     const originalRequest = async (cookie?: string) => {
         return await axios.post<T>(
             `${process.env.NEXT_PUBLIC_DOMAIN}/${apiUrl}`, {
             ...postData,
-            meta: {
-                limit: PAGE_LIMIT,
-                page: 1
-            }
+            ...getMeta()
         },
             {
                 withCredentials: true,
@@ -36,6 +46,7 @@ export async function fetchReferenceData<T extends Record<string, string | numbe
                 notFound: true
             };
         }
+
         return {
             props: {
                 data
@@ -122,24 +133,6 @@ export const enrichReferenceComponent = <T extends FieldValues>(
                     getEnumValueByKey(component.enum, String(item[component.id]) || "")
                     : item[component.id]);
             const rows = values.map(value => value ? valueFormat(value) : "");
-            if (component.isFilter) {
-                const uniqueValues = Array.from(new Set(values));
-                const filterItems = [{
-                    name: [{ word: component.title.map(t => t.word).join(" ") }],
-                    items: uniqueValues.map(value => {
-                        return {
-                            value: component.id,
-                            text: value ? valueFormat(value) : ""
-                        };
-                    })
-                }];
-
-                return {
-                    ...component,
-                    filterItems,
-                    rows
-                } as IReferencePageItem<T>;
-            }
             return {
                 ...component,
                 rows
@@ -153,4 +146,23 @@ export const enrichReferenceComponent = <T extends FieldValues>(
     }
 
     return enrichedComponent;
+};
+
+export const handleFilter = async (
+    value: string[], id: string,
+    uriToGet: string, postData: any,
+    setPostData: (newData: any, isNew?: boolean, isGet?: boolean) => void,
+    setItemOffset: Dispatch<SetStateAction<number>>
+) => {
+    const { data } = await api.post(uriToGet, {
+        meta: {
+            limit: PAGE_LIMIT,
+            page: 1,
+            filterField: id,
+            filterArray: value
+        },
+        ...postData
+    });
+    setItemOffset(0);
+    setPostData(data, true, true);
 };

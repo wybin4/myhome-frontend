@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { getStatusIcon, getAttachment, getInfoWindow, getTypeIcon, getFormattedAppealDate } from "./constants";
 import { UserRole } from "@/interfaces/account/user.interface";
 import styles from "./AppealPageComponent.module.css";
-import { ITableFilterItem, TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
+import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
 import { SelectorOption } from "@/components/primitive/Select/Select.props";
 import NoDataIcon from "./nodata.svg";
 import cn from "classnames";
@@ -28,11 +28,7 @@ const isOne = (filters: TableFilterItemProps[]) => {
     }
 };
 
-const isData = (appeals: IGetAppeal[]) => {
-    return appeals.length > 0;
-};
-
-export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponentProps): JSX.Element => {
+export const AppealPageComponent = ({ appeals, users, user, handleFilter, isData }: AppealPageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -52,6 +48,7 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
             case UserRole.ManagementCompany:
                 return (
                     <AppealManagementCompanyPageComponent
+                        handleFilter={handleFilter} isData={isData}
                         selectedId={selectedId} setSelectedId={setSelectedId}
                         isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
                         appeals={appeals}
@@ -61,6 +58,7 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
             case UserRole.Owner:
                 return (
                     <AppealOwnerPageComponent
+                        handleFilter={handleFilter} isData={isData}
                         users={users}
                         selectedId={selectedId} setSelectedId={setSelectedId}
                         isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
@@ -86,7 +84,7 @@ export const AppealPageComponent = ({ appeals, users, user }: AppealPageComponen
 };
 
 export const AppealOwnerPageComponent = ({
-    appeals, users,
+    appeals, users, isData,
     selectedId, setSelectedId,
     setError,
     isInfoWindowOpen, setIsInfoWindowOpen,
@@ -479,8 +477,6 @@ export const AppealOwnerPageComponent = ({
         }
     };
 
-    const isDataVal = isData(appeals);
-
     return (
         <>
             {selectedId !== 0 && getInfoWindow(appeals, selectedId, isInfoWindowOpen, setIsInfoWindowOpen)}
@@ -530,20 +526,20 @@ export const AppealOwnerPageComponent = ({
                 />
             }
             <div className={cn(styles.ownerWrapper, {
-                [styles.noData]: !isDataVal
+                [styles.noData]: !isData
             })}>
-                {!isDataVal &&
+                {!isData &&
                     <span className={styles.noDataIcon}><NoDataIcon /></span>
                 }
                 <div className={styles.titleWrapper}>
-                    {!isDataVal &&
+                    {!isData &&
                         <Htag size="h1" className={styles.noDataTitle}>{
                             "Данные об обращениях ещё не добавлены"
                         }</Htag>
                     }
                     <>
                         <Tabs
-                            isData={isDataVal}
+                            isData={isData}
                             title="Обращения"
                             tabs={[
                                 { id: 1, name: "Все" },
@@ -567,14 +563,12 @@ export const AppealOwnerPageComponent = ({
 };
 
 export const AppealManagementCompanyPageComponent = ({
-    appeals,
+    appeals, handleFilter, isData,
     // setError,
     selectedId, setSelectedId,
     isInfoWindowOpen, setIsInfoWindowOpen,
 }: AppealDetailPageComponentProps): JSX.Element => {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
-    const [type, setType] = useState<ITableFilterItem[]>();
-    const [status, setStatus] = useState<ITableFilterItem[]>();
     const filterButtonRef = useRef(null);
     const useFormData = useForm<IUpdateAppeal>();
     const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
@@ -649,25 +643,19 @@ export const AppealManagementCompanyPageComponent = ({
         );
     };
 
-    useEffect(() => {
-        const typeArr = appeals.map(a => a.typeOfAppeal);
-        const uniqueType = Array.from(new Set(typeArr));
+    const typeArr = Object.entries(AppealType).map(t => {
+        return {
+            value: t[0],
+            text: t[1]
+        };
+    });
 
-        const statusArr = appeals.map(a => a.status);
-        const uniqueStatus = Array.from(new Set(statusArr));
-        setStatus(uniqueStatus.map(s => {
-            return {
-                value: s,
-                text: getEnumValueByKey(AppealStatus, s)
-            };
-        }));
-        setType(uniqueType.map(t => {
-            return {
-                value: t,
-                text: getEnumValueByKey(AppealType, t)
-            };
-        }));
-    }, [appeals]);
+    const statusArr = Object.entries(AppealStatus).map(s => {
+        return {
+            value: s[0],
+            text: s[1]
+        };
+    });
 
     const filters: TableFilterItemProps[] = [
         {
@@ -677,15 +665,17 @@ export const AppealManagementCompanyPageComponent = ({
         },
         {
             title: "Тип обращения",
-            titleEng: "type",
+            titleEng: "typeOfAppeal",
             type: "checkbox",
-            items: type
+            items: typeArr,
+            handleClick: handleFilter
         },
         {
             title: "Статус",
             titleEng: "status",
             type: "checkbox",
-            items: status
+            items: statusArr,
+            handleClick: handleFilter
         }
     ];
 
@@ -713,8 +703,6 @@ export const AppealManagementCompanyPageComponent = ({
         onSwapClick(id);
         setIsInfoWindowOpen(false);
     };
-
-    const isDataVal = isData(appeals);
 
     return (
         <>
@@ -754,18 +742,18 @@ export const AppealManagementCompanyPageComponent = ({
                     buttonsText={{ add: "Сохранить", cancell: "Отмена" }}
                 />
                 <div className={cn({
-                    [styles.noData]: !isDataVal
+                    [styles.noData]: !isData
                 })}>
-                    {!isDataVal &&
+                    {!isData &&
                         <span className={styles.noDataIcon}><NoDataIcon /></span>
                     }
                     <div className={styles.titleWrapper}>
-                        {!isDataVal &&
+                        {!isData &&
                             <Htag size="h1" className={styles.noDataTitle}>{
                                 "Данные об обращениях ещё не добавлены"
                             }</Htag>
                         }
-                        {isDataVal &&
+                        {isData &&
                             <>
                                 <div className={styles.topPart}>
                                     <Htag size="h1" className={styles.title}>Обращения</Htag>

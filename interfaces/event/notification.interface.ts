@@ -64,15 +64,13 @@ export const notificationPageComponent: IReferencePageComponent<IHouseNotificati
     components: [
         {
             type: "select", selectorOptions: [],
-            title: [{ word: "дом", isChangeable: true }], numberInOrder: 3, id: "name", sendId: "houseId", gender: "мужской", isFilter: true,
-            filterItems: [{ items: [] }],
+            title: [{ word: "дом", isChangeable: true }], numberInOrder: 3, id: "name", sendId: "houseId", gender: "мужской",
             rows: []
         },
         {
             type: "select", selectorOptions: [],
             title: [{ word: "тип" }],
-            numberInOrder: 2, id: "type", sendId: "type", enum: HouseNotificationType, gender: "мужской", isFilter: true,
-            filterItems: [{ items: [] }],
+            numberInOrder: 2, id: "type", sendId: "type", enum: HouseNotificationType, gender: "мужской",
             rows: []
         },
         {

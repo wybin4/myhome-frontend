@@ -77,13 +77,14 @@ export const TableFilter = ({
 
 export const TableFilterItem = ({
     items,
-    type, onClick,
+    type, handleClick,
     title, titleEng,
     isRadio = false, numberText = "",
     ...props
 }: TableFilterItemProps): JSX.Element => {
     const [hidden, setHidden] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number>(0);
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [choosedDate, setChoosedDate] = useState<Omit<IDateRange, "focusedInput"> | undefined>({
         startDate: new Date(),
         endDate: new Date()
@@ -96,6 +97,16 @@ export const TableFilterItem = ({
         } else {
             setSelectedItem(index);
         }
+    };
+
+    const addItem = (array: string[], item: string) => {
+        const index = array.indexOf(item);
+        if (index !== -1) {
+            array.splice(index, 1);
+        } else {
+            array.push(item);
+        }
+        return array;
     };
 
     return (
@@ -131,7 +142,7 @@ export const TableFilterItem = ({
                                 />
                             </div>
                         }
-                        {items && <div className="flex flex-col gap-1">{
+                        {items && <div className={styles.valuesWrapper}>{
                             items
                                 .filter(item => {
                                     if (searchValue) {
@@ -145,8 +156,9 @@ export const TableFilterItem = ({
                                             <Radio
                                                 checked={selectedItem === index}
                                                 onClick={() => {
-                                                    if (onClick) {
-                                                        onClick();
+                                                    if (handleClick) {
+                                                        setSelectedItems((prev) => [...prev, String(item.value)]);
+                                                        handleClick([...selectedItems, String(item.value)], titleEng);
                                                     }
                                                     handleItemClick(index);
                                                 }}
@@ -160,8 +172,12 @@ export const TableFilterItem = ({
                                         return (
                                             <Checkbox
                                                 onClick={() => {
-                                                    if (onClick) {
-                                                        onClick();
+                                                    if (handleClick) {
+                                                        let items = [...selectedItems];
+                                                        const itemValue = String(item.value);
+                                                        items = addItem(items, itemValue);
+                                                        setSelectedItems(items);
+                                                        handleClick(items, titleEng);
                                                     }
                                                 }}
                                                 forString={`${titleEng}_${index}`}

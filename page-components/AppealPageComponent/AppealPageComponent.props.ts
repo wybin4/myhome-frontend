@@ -10,6 +10,9 @@ export interface AppealPageComponentProps extends DetailedHTMLProps<HTMLAttribut
 
     appeals: IGetAppeal[];
     users?: IGetUserWithSubscriber[];
+
+    handleFilter: (value: string[], id: string) => Promise<void>;
+    isData: boolean;
 }
 
 export interface AppealDetailPageComponentProps extends Omit<AppealPageComponentProps, "user"> {
@@ -20,4 +23,7 @@ export interface AppealDetailPageComponentProps extends Omit<AppealPageComponent
     setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>;
 
     setError: Dispatch<SetStateAction<string>>;
+
+    handleFilter: (value: string[], id: string) => Promise<void>;
+    isData: boolean;
 }
