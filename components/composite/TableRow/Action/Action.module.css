@@ -26,6 +26,8 @@
 .eye svg {
     width: 1.2rem;
     height: 1.2rem;
+    stroke: var(--black);
+    stroke-width: 0.3px;
 }
 
 @media (max-width: 900px) {

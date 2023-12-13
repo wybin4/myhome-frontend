@@ -10,9 +10,9 @@
 }
 
 .page {
-    height: 80vh;
-    max-height: 80vh;
-    min-height: 80vh;
+    height: max-content;
+    max-height: max-content;
+    min-height: max-content;
 }
 
 .page {
@@ -88,6 +88,9 @@
 
 .print svg {
     fill: var(--black);
+    stroke: var(--black);
+    stroke-width: 0.3px;
+
     width: 1.3rem;
     height: 1.3rem;
 }
@@ -106,4 +109,87 @@
     background-color: var(--white);
 
     z-index: 5;
+}
+
+@media (max-width: 600px) {
+    .zoom {
+        display: none;
+    }
+
+    .topWrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .foo,
+    .topWrapper {
+        gap: 7vw;
+    }
+
+    .back {
+        min-width: 6rem;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .foo,
+    .topWrapper {
+        gap: 0;
+    }
+
+    .download {
+        border-radius: 100%;
+        width: 3rem;
+        height: 3rem;
+
+        background-color: transparent;
+    }
+
+    .back {
+        min-width: 3rem;
+    }
+
+    .download:hover {
+        background-color: var(--white-hover);
+    }
+
+    .download svg {
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+
+    .download,
+    .back,
+    .print {
+        background-color: var(--primary);
+    }
+
+    .download:hover,
+    .back:hover,
+    .print:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .download svg,
+    .back svg,
+    .print svg {
+        fill: var(--white);
+    }
+
+    .print svg {
+        stroke: var(--white);
+        stroke-width: 0.3px;
+    }
+
+    .topWrapper {
+        background-color: transparent;
+        box-shadow: none;
+        margin-bottom: 1rem;
+    }
+
+    .foo,
+    .topWrapper {
+        gap: 1rem;
+    }
 }

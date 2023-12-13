@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { PdfProps } from './Pdf.props';
 import styles from "./Pdf.module.css";
 import { Button } from '../Button/Button';
 import PrintIcon from "./print.svg";
+import DownloadIcon from "./download.svg";
+import BackIcon from "./back.svg";
 import cn from "classnames";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
 export const Pdf = ({ pdfUrl, print, back, ...props }: PdfProps) => {
     const [numPages, setNumPages] = useState(1);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [pageNumber, setPageNumber] = useState(1); // ИСПРАВИТЬ
     const [width, setWidth] = useState<number>(0);
     const pdfWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -87,8 +89,11 @@ export const Pdf = ({ pdfUrl, print, back, ...props }: PdfProps) => {
                 {back &&
                     <Button
                         onClick={back}
-                        className={cn(styles.download, "ml-4 self-center")} appearance="primary" size="s"
-                    >Назад</Button>
+                        className={cn(styles.download, styles.back, "ml-4 self-center")} appearance="primary" size="s"
+                    >
+                        <span className="sm:hidden">Назад</span>
+                        <span className="hidden sm:block"><BackIcon /></span>
+                    </Button>
                 }
                 <div className={styles.zoom}>
                     <button onClick={zoomOut}>
@@ -111,7 +116,10 @@ export const Pdf = ({ pdfUrl, print, back, ...props }: PdfProps) => {
                     <Button
                         onClick={download}
                         size="s"
-                        className={styles.download} appearance="primary">Скачать</Button>
+                        className={styles.download} appearance="primary">
+                        <span className="sm:hidden">Скачать</span>
+                        <span className="hidden sm:block"><DownloadIcon /></span>
+                    </Button>
                 </div>
             </div>
             <div className={styles.pdfWrapper}>
@@ -128,7 +136,7 @@ export const Pdf = ({ pdfUrl, print, back, ...props }: PdfProps) => {
                     />
                 </Document>
             </div>
-            <p>Page {pageNumber} of {numPages}</p>
+            {/* <p>Page {pageNumber} of {numPages}</p> */}
         </div>
     );
 };
