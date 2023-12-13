@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ChatIcon from "./chat.svg";
 import WriteIcon from "./write.svg";
 import BackIcon from "./back.svg";
-import { Icon, TableSearch } from "@/components";
+import { Icon, Search } from "@/components";
 import SendIcon from "./send.svg";
 import EmojiIcon from "./emoji.svg";
 import CloseIcon from "../close.svg";
@@ -421,7 +421,7 @@ const ReceiversItem = ({
                 >
                     <CloseIcon />
                 </span>
-                <TableSearch
+                <Search
                     value={searchValue} setValue={setSearchValue}
                     size="m" placeholder="Поиск по пользователям"
                     className="viewRecievers"

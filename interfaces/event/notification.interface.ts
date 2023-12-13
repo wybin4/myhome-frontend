@@ -77,7 +77,7 @@ export const notificationPageComponent: IReferencePageComponent<IHouseNotificati
             type: "input",
             title: [{ word: "тема", isChangeable: true }],
             numberInOrder: 1, id: "title", gender: "женский",
-            rows: []
+            rows: [], isSearchable: true
         },
         {
             type: "textarea",

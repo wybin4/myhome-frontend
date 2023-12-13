@@ -46,9 +46,9 @@ export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem
         },
         {
             type: "input",
-            title: [{ word: "дом" }], gender: "мужской",
+            title: [{ word: "дом", isChangeable: true }], gender: "мужской",
             numberInOrder: 3, id: "houseNumber",
-            rows: []
+            rows: [], isSearchable: true
         },
         {
             type: "input", inputType: "number",

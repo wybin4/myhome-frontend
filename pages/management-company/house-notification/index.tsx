@@ -10,8 +10,9 @@ import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
 import { ReferencePageComponent } from "@/page-components";
 import { PAGE_LIMIT, getEnumKeyByValue } from "@/helpers/constants";
-import { enrichReferenceComponent, handleFilter, fetchReferenceData } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, handleFilter, fetchReferenceData, handleSearch } from "@/helpers/reference-constants";
 import { getPagination, setPostDataForEvent } from "../reference-helper";
+import { IFilter, ISearch } from "@/interfaces/meta.interface";
 
 const postDataHouseNotifications = {
     events: [EventType.Notification]
@@ -22,6 +23,8 @@ const name = "notification";
 function HouseNotification({ data: initialData }: IHouseNotificationProps): JSX.Element {
     const [data, setData] = useState(initialData);
     const [itemOffset, setItemOffset] = useState(0);
+    const [filters, setFilters] = useState<IFilter[]>();
+    const [search, setSearch] = useState<ISearch>();
 
     const getItem = () => {
         const endOffset = itemOffset + PAGE_LIMIT;
@@ -44,13 +47,21 @@ function HouseNotification({ data: initialData }: IHouseNotificationProps): JSX.
                         await handleFilter(
                             value, id,
                             uriToGet, postDataHouseNotifications, setPostData,
-                            setItemOffset
+                            setItemOffset, filters, setFilters, search
+                        );
+                    }}
+                    handleSearch={async (value: string, id: string) => {
+                        await handleSearch(
+                            value, id,
+                            uriToGet, postDataHouseNotifications, setPostData,
+                            setItemOffset, setSearch, filters
                         );
                     }}
                 />
                 {getPagination(
                     setItemOffset, data, initialData, name + "s",
-                    uriToGet, postDataHouseNotifications, setPostData
+                    uriToGet, postDataHouseNotifications, setPostData,
+                    search, filters
                 )}
             </>
         );

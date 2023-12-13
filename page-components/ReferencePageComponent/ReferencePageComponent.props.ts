@@ -18,5 +18,6 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     addMany?: boolean;
 
     handleFilter: (value: string[], id: string) => Promise<void>;
+    handleSearch: (value: string, id: string) => Promise<void>;
     isData: boolean;
 }

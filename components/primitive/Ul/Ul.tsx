@@ -2,7 +2,7 @@ import { UlProps } from "./Ul.props";
 import styles from "./Ul.module.css";
 import cn from "classnames";
 import { useState } from "react";
-import { TableSearch } from "../TableSearch/TableSearch";
+import { Search } from "../TableSearch/TableSearch";
 
 export const Ul = ({
     li, title,
@@ -14,7 +14,7 @@ export const Ul = ({
     return (
         <div className={cn("flex flex-col pt-4", className)} {...props}>
             <div className={styles.title}>{title}</div>
-            <TableSearch
+            <Search
                 size="s"
                 className="mb-3"
                 value={searchValue} setValue={setSearchValue}

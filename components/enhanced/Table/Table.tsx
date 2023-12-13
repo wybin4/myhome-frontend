@@ -7,11 +7,10 @@ import { useState, useRef } from "react";
 export const Table = ({
     title, buttons,
     filters,
-    rows, isSearch = true, isData,
+    rows, search, isData,
     className, ...props
 }: TableProps): JSX.Element => {
     const [isFilterOpened, setIsFilterOpened] = useState<boolean>(false);
-    const [value, setValue] = useState<string | number>();
     const filterButtonRef = useRef(null);
 
     const isOne = () => {
@@ -46,7 +45,12 @@ export const Table = ({
                     </div>
                     <div className={styles.bottomPart}>
                         <div className="w-full">
-                            {isSearch && <TableSearch size="l" className={cn("mb-8", styles.searchBar)} value={value} setValue={setValue} />}
+                            {search &&
+                                <TableSearch
+                                    {...search}
+                                    className={cn("mb-8", styles.searchBar)}
+                                />
+                            }
                             <TableRow {...rows} className={styles.rows} />
                         </div>
                         {filters && filters.length !== 0 &&

@@ -2,7 +2,7 @@
 import { IAppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { PAGE_LIMIT } from "@/helpers/constants";
-import { enrichReferenceComponent, fetchReferenceData, handleFilter } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleSearch } from "@/helpers/reference-constants";
 import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IGetCommon, ITypeOfService } from "@/interfaces/common.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, IPenaltyRule, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { getPagination } from "../reference-helper";
+import { IFilter, ISearch } from "@/interfaces/meta.interface";
 
 function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [data, setData] = useState(initialData);
@@ -26,6 +27,8 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [baseEngName, setBaseEngName] = useState<string>("");
     const router = useRouter();
     const [itemOffset, setItemOffset] = useState(0);
+    const [filters, setFilters] = useState<IFilter[]>();
+    const [search, setSearch] = useState<ISearch>();
 
     const getAdditionalFormData = (): { additionalFormData: Record<string, string | number> } | undefined => {
         switch (engName) {
@@ -139,7 +142,7 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                 });
             } else {
                 setData(prevData => {
-                    const newDataArray = [...newArr];
+                    const newDataArray = [...newArr || []];
                     return { ...prevData, [name]: newDataArray, totalCount: newTotalCount };
                 });
             }
@@ -169,14 +172,22 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                         await handleFilter(
                             value, id,
                             linkToGet, item.additionalGetFormData, setPostData,
-                            setItemOffset
+                            setItemOffset, filters, setFilters, search
+                        );
+                    }}
+                    handleSearch={async (value: string, id: string) => {
+                        await handleSearch(
+                            value, id,
+                            linkToGet, item.additionalGetFormData, setPostData,
+                            setItemOffset, setSearch, filters
                         );
                     }}
                     {...getAdditionalFormData()}
                 />
                 {getPagination(
                     setItemOffset, data, initialData, baseEngName + "s",
-                    linkToGet, item.additionalGetFormData, setPostData
+                    linkToGet, item.additionalGetFormData, setPostData,
+                    search, filters
                 )}
             </>
 
@@ -203,7 +214,7 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
             {engName === "profile" && createComponent<IUserReferenceDataItem>(
                 ownerPageComponent,
                 API.common.user.addMany,
-                API.common.user.get
+                API.common.user.getAll
             )}
         </>
     );
@@ -236,7 +247,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 break;
             }
             case "penalty-rule": {
-                apiUrl = API.managementCompany.correction["penaltyRule"].get;
+                apiUrl = API.managementCompany.correction.penaltyRule.get;
                 break;
             }
             default:

@@ -5,6 +5,7 @@ import { PAGE_LIMIT } from "@/helpers/constants";
 import { fetchReferenceData, handleFilter } from "@/helpers/reference-constants";
 import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
 import { EventType, IGetEvents, IGetAppeal } from "@/interfaces/event.interface";
+import { IFilter } from "@/interfaces/meta.interface";
 import { withLayout } from "@/layout/Layout";
 import { AppealPageComponent } from "@/page-components";
 import { getPagination, setPostDataForEvent } from "@/pages/management-company/reference-helper";
@@ -22,6 +23,7 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
     const { userId, userRole } = useContext(AppContext);
     const [itemOffset, setItemOffset] = useState(0);
     const endOffset = itemOffset + PAGE_LIMIT;
+    const [filters, setFilters] = useState<IFilter[]>();
 
     const setPostData = (newData: any, isNew?: boolean, isGet?: boolean) => {
         setPostDataForEvent(setData, name, newData, isNew, isGet);
@@ -31,7 +33,7 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
         await handleFilter(
             value, id,
             uriToGet, postDataAppeals, setPostData,
-            setItemOffset
+            setItemOffset, filters, setFilters
         );
     };
 
@@ -45,7 +47,8 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
             />
             {getPagination(
                 setItemOffset, data, initialData, name + "s",
-                uriToGet, postDataAppeals, setPostData
+                uriToGet, postDataAppeals, setPostData,
+                undefined, filters
             )}
         </>
     );

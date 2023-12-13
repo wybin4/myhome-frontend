@@ -1,4 +1,4 @@
-import { Checkbox, DatePickerRange, Radio, TableSearch } from "@/components";
+import { Checkbox, DatePickerRange, Radio, Search } from "@/components";
 import { TableFilterItemProps, TableFilterProps } from "./TableFilter.props";
 import ArrowIcon from './arrow.svg';
 import { useEffect, useRef, useState } from "react";
@@ -136,7 +136,7 @@ export const TableFilterItem = ({
                         }
                         {type !== "checkboxWithoutSearch" && type !== "date" && type !== "number" &&
                             <div className="mb-3">
-                                <TableSearch
+                                <Search
                                     size="s"
                                     value={searchValue} setValue={setSearchValue}
                                 />

@@ -7,6 +7,7 @@ import { API, api } from "./api";
 import { parse } from "cookie";
 import { PAGE_LIMIT, getEnumValueByKey } from "./constants";
 import { Dispatch, SetStateAction } from "react";
+import { IFilter, ISearch } from "@/interfaces/meta.interface";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function fetchReferenceData<T extends Record<string, string | number | any>>(
@@ -148,21 +149,89 @@ export const enrichReferenceComponent = <T extends FieldValues>(
     return enrichedComponent;
 };
 
+
+
 export const handleFilter = async (
     value: string[], id: string,
     uriToGet: string, postData: any,
     setPostData: (newData: any, isNew?: boolean, isGet?: boolean) => void,
-    setItemOffset: Dispatch<SetStateAction<number>>
+    setItemOffset: Dispatch<SetStateAction<number>>,
+    filters: IFilter[] | undefined,
+    setFilters: Dispatch<SetStateAction<IFilter[] | undefined>>,
+    search?: ISearch
 ) => {
-    const { data } = await api.post(uriToGet, {
-        meta: {
-            limit: PAGE_LIMIT,
-            page: 1,
-            filterField: id,
-            filterArray: value
-        },
-        ...postData
-    });
+    const getNewFilters = (filters: IFilter[] | undefined) => {
+        if (filters && filters.length) {
+            const existingFilterIndex = filters.findIndex((filter) => filter.filterField === id);
+            if (value.length === 0) {
+                if (existingFilterIndex !== -1) {
+                    filters.splice(existingFilterIndex, 1);
+                }
+            } else {
+                if (existingFilterIndex === -1) {
+                    filters.push({ filterField: id, filterArray: value });
+                } else {
+                    filters.map(filter => {
+                        if (filter.filterField === id) {
+                            filter.filterArray = value;
+                        }
+                    });
+                }
+            }
+            return [...filters];
+        }
+        return [{ filterField: id, filterArray: value }];
+    };
+    const newFilters = getNewFilters(filters);
+
+    try {
+        const { data } = await api.post(uriToGet, {
+            meta: {
+                limit: PAGE_LIMIT,
+                page: 1,
+                filters: newFilters,
+                search
+            },
+            ...postData
+        });
+        setPostData(data, true, true);
+    } catch (e) {
+        setPostData([], true, true);
+    }
+
     setItemOffset(0);
-    setPostData(data, true, true);
+    setFilters(newFilters);
+};
+
+export const handleSearch = async (
+    value: string, id: string,
+    uriToGet: string, postData: any,
+    setPostData: (newData: any, isNew?: boolean, isGet?: boolean) => void,
+    setItemOffset: Dispatch<SetStateAction<number>>,
+    setSearch: Dispatch<SetStateAction<ISearch | undefined>>,
+    filters?: IFilter[]
+) => {
+    try {
+        const { data } = await api.post(uriToGet, {
+            meta: {
+                limit: PAGE_LIMIT,
+                page: 1,
+                search: {
+                    searchField: id,
+                    searchLine: value
+                },
+                filters
+            },
+            ...postData
+        });
+        setPostData(data, true, true);
+    } catch (e) {
+        setPostData([], true, true);
+    }
+
+    setItemOffset(0);
+    setSearch({
+        searchField: id,
+        searchLine: value
+    });
 };

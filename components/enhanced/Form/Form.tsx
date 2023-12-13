@@ -885,7 +885,9 @@ export const FileForm = ({
                             </div>
                         }
                     </div>
-                    <div className={styles.fileFormWrapper}>
+                    <div className={cn(styles.fileFormWrapper, {
+                        [styles.withoutAdditional]: !selectors || !selectors.length
+                    })}>
                         <Paragraph size="l" className={styles.title}>{title}</Paragraph>
                         <Paragraph size="s" className={styles.description}>
                             Обязательно включите поля {headers.map(h => `"${capFirstLetter(h.value)}"`).join(`, `)}

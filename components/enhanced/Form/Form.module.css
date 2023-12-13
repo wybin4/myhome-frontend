@@ -228,6 +228,11 @@
     margin-bottom: 2.6rem;
 }
 
+.withoutAdditional {
+    border: none !important;
+    padding: 0 !important;
+}
+
 @media (max-width: 900px) {
     .wrapper {
         width: 50%;

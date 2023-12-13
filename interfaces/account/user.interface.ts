@@ -52,7 +52,7 @@ export const ownerPageComponent:
         {
             type: "input",
             title: [{ word: "ФИО" }], numberInOrder: 1, id: "name", gender: "мужской",
-            rows: []
+            rows: [], isSearchable: true
         },
         {
             type: "input",
@@ -73,7 +73,7 @@ export const managementCompanyPageComponent:
         {
             type: "input",
             title: [{ word: "название" }], numberInOrder: 1, id: "name", gender: "средний",
-            rows: []
+            rows: [], isSearchable: true
         },
         {
             type: "input",

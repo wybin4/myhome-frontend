@@ -45,7 +45,7 @@ export const apartmentPageComponent: IReferencePageComponent<IApartmentReference
         {
             type: "input", inputType: "number",
             title: [{ word: "квартира", isChangeable: true }], numberInOrder: 2, id: "apartmentNumber", gender: "женский",
-            rows: []
+            rows: [], isSearchable: true
         },
         {
             type: "input", inputType: "number",

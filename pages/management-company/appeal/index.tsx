@@ -9,6 +9,7 @@ import { AppContext, IAppContext } from "@/context/app.context";
 import { useContext, useState } from "react";
 import { setPostDataForEvent, getPagination } from "../reference-helper";
 import { PAGE_LIMIT } from "@/helpers/constants";
+import { IFilter } from "@/interfaces/meta.interface";
 
 const postDataAppeals = {
     events: [EventType.Appeal]
@@ -21,6 +22,7 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
     const { userId, userRole } = useContext(AppContext);
     const [itemOffset, setItemOffset] = useState(0);
     const endOffset = itemOffset + PAGE_LIMIT;
+    const [filters, setFilters] = useState<IFilter[]>();
 
     const setPostData = (newData: any, isNew?: boolean, isGet?: boolean) => {
         setPostDataForEvent(setData, name, newData, isNew, isGet);
@@ -30,7 +32,7 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
         await handleFilter(
             value, id,
             uriToGet, postDataAppeals, setPostData,
-            setItemOffset
+            setItemOffset, filters, setFilters
         );
     };
 
@@ -44,7 +46,8 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
             />
             {getPagination(
                 setItemOffset, data, initialData, name + "s",
-                uriToGet, postDataAppeals, setPostData
+                uriToGet, postDataAppeals, setPostData,
+                undefined, filters
             )}
         </>
     );

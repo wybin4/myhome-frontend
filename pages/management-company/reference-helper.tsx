@@ -2,12 +2,14 @@
 import { Pagination } from "@/components";
 import { api } from "@/helpers/api";
 import { PAGE_LIMIT } from "@/helpers/constants";
+import { IFilter, ISearch } from "@/interfaces/meta.interface";
 import { Dispatch, SetStateAction } from "react";
 
 export const getPagination = (
     setItemOffset: Dispatch<SetStateAction<number>>,
     data: any, initialData: any, name: string, uriToGet: string,
-    postData: any, setPostData: (newData: any, isNew?: boolean, isGet?: boolean) => void
+    postData: any, setPostData: (newData: any, isNew?: boolean, isGet?: boolean) => void,
+    search?: ISearch, filters?: IFilter[]
 ) => {
     const handlePaginate = async (
         selected: number,
@@ -16,7 +18,8 @@ export const getPagination = (
             const { data } = await api.post(uriToGet, {
                 meta: {
                     limit: PAGE_LIMIT,
-                    page: selected + 1
+                    page: selected + 1,
+                    search, filters,
                 },
                 ...postData
             });

@@ -5,13 +5,14 @@ import { IVotingReferenceData, IVotingReferenceDataItem, votingPageComponent } f
 import { withLayout } from "@/layout/Layout";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { EventType, IGetEvents } from "@/interfaces/event.interface";
-import { enrichReferenceComponent, fetchReferenceData, handleFilter } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleSearch } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
 import { ReferencePageComponent } from "@/page-components";
 import { useState } from "react";
 import { PAGE_LIMIT } from "@/helpers/constants";
 import { getPagination, setPostDataForEvent } from "../reference-helper";
+import { IFilter, ISearch } from "@/interfaces/meta.interface";
 
 const postDataVotings = {
     events: [EventType.Voting]
@@ -22,6 +23,8 @@ const name = "voting";
 function Voting({ data: initialData }: IVotingProps): JSX.Element {
     const [data, setData] = useState(initialData);
     const [itemOffset, setItemOffset] = useState(0);
+    const [filters, setFilters] = useState<IFilter[]>();
+    const [search, setSearch] = useState<ISearch>();
 
     const getItem = () => {
         const endOffset = itemOffset + PAGE_LIMIT;
@@ -41,13 +44,21 @@ function Voting({ data: initialData }: IVotingProps): JSX.Element {
                         await handleFilter(
                             value, id,
                             uriToGet, postDataVotings, setPostData,
-                            setItemOffset
+                            setItemOffset, filters, setFilters, search
+                        );
+                    }}
+                    handleSearch={async (value: string, id: string) => {
+                        await handleSearch(
+                            value, id,
+                            uriToGet, postDataVotings, setPostData,
+                            setItemOffset, setSearch, filters
                         );
                     }}
                 />
                 {getPagination(
                     setItemOffset, data, initialData, name + "s",
-                    uriToGet, postDataVotings, setPostData
+                    uriToGet, postDataVotings, setPostData,
+                    search, filters
                 )}
             </>
         );

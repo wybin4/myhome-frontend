@@ -72,7 +72,7 @@ export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataIt
             type: "input",
             title: [{ word: "тема", isChangeable: true }, { word: "опроса" }],
             numberInOrder: 2, id: "title", gender: "женский",
-            rows: []
+            rows: [], isSearchable: true
         },
         {
             type: "none",

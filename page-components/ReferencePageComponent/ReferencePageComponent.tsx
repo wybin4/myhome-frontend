@@ -15,13 +15,14 @@ import cn from "classnames";
 import { TableButtonType } from "@/components/composite/TableButton/TableButton.props";
 import { capFirstLetter } from "@/helpers/constants";
 import { TableFilterItemProps } from "@/components/composite/TableFilter/TableFilter.props";
+import { TableSearchProps } from "@/components/primitive/TableSearch/TableSearch.props";
 
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
     additionalSelectorOptions,
     setPostData, additionalFormData,
     entityName, uriToAdd, addMany = true,
-    handleFilter, isData
+    handleFilter, handleSearch, isData
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
@@ -238,6 +239,20 @@ export const ReferencePageComponent = <T extends FieldValues>({
         }
     };
 
+    const getSearch = (): { search: TableSearchProps } | undefined => {
+        const search = item.components.find(c => c.isSearchable);
+        if (search) {
+            return {
+                search: {
+                    title: getCase(search.title, search.gender, "дательный"),
+                    id: String(search.sendId ? search.sendId : search.id),
+                    handleSearch
+                }
+            };
+        }
+        return;
+    };
+
     return (
         <>
             {addMany &&
@@ -301,6 +316,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                         title={capFirstLetter(pluralNominative(noun, gender))}
                         buttons={getButtons()}
                         {...getFilters()}
+                        {...getSearch()}
                         rows={{
                             actions: item.tableActions,
                             ids: [],
