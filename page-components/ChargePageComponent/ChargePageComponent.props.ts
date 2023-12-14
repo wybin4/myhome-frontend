@@ -8,7 +8,11 @@ export interface ChargePageComponentProps extends DetailedHTMLProps<HTMLAttribut
     setIsInfoWindowOpen: Dispatch<SetStateAction<boolean>>;
 
     singlePaymentDocuments: ISpdData[];
+    allSinglePaymentDocuments: ISpdData[];
     debts: IGetDebt[];
+    totalCount: number;
+
+    setItemOffset: Dispatch<SetStateAction<number>>;
 }
 
 export interface ChargeTextProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

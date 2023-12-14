@@ -6,4 +6,6 @@ export interface PaginationProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 
     setItemOffset: Dispatch<SetStateAction<number>>;
     handlePaginate?: (selected: number) => Promise<void>;
+
+    withoutPadding?: boolean;
 }

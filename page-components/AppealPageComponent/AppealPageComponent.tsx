@@ -1,8 +1,8 @@
-import { Card, CardForm, Form, Htag, PopUp, TableButton, TableFilter, Tabs } from "@/components";
+import { Card, CardForm, Form, Htag, Pagination, PopUp, TableButton, TableFilter, Tabs } from "@/components";
 import { AttachmentFormProps, TextAreaFormProps, InputFormProps, SelectorFormProps, DatePickerFormProps } from "@/components/enhanced/Form/Form.props";
 import { FileType } from "@/components/primitive/Attachment/Attachment.props";
 import { API, api } from "@/helpers/api";
-import { getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
+import { PAGE_LIMIT, getEnumKeyByValue, getEnumValueByKey } from "@/helpers/constants";
 import { ITypeOfService } from "@/interfaces/common.interface";
 import { IGetAppeal, IUpdateAppeal } from "@/interfaces/event.interface";
 import { AppealStatus, AppealType, IAppeal } from "@/interfaces/event/appeal.interface";
@@ -28,7 +28,11 @@ const isOne = (filters: TableFilterItemProps[]) => {
     }
 };
 
-export const AppealPageComponent = ({ appeals, users, user, handleFilter, isData }: AppealPageComponentProps): JSX.Element => {
+export const AppealPageComponent = ({
+    appeals, users, user,
+    handleFilter, isData,
+    endOffset, totalCount, itemOffset, setItemOffset, handlePaginate
+}: AppealPageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
     const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -64,6 +68,8 @@ export const AppealPageComponent = ({ appeals, users, user, handleFilter, isData
                         isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
                         appeals={appeals}
                         setError={setError}
+                        endOffset={endOffset} totalCount={totalCount} itemOffset={itemOffset} setItemOffset={setItemOffset}
+                        handlePaginate={handlePaginate}
                     />
                 );
             default:
@@ -87,6 +93,7 @@ export const AppealOwnerPageComponent = ({
     appeals, users, isData,
     selectedId, setSelectedId,
     setError,
+    totalCount, itemOffset, setItemOffset, endOffset, handlePaginate,
     isInfoWindowOpen, setIsInfoWindowOpen,
 }: AppealDetailPageComponentProps): JSX.Element => {
     const [activeTab, setActiveTab] = useState<number>(1);
@@ -110,13 +117,14 @@ export const AppealOwnerPageComponent = ({
             appeals = appeals.filter(a => a.status === status);
         }
 
-        appeals.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
+        const currAppeals = appeals
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .slice(itemOffset, endOffset);
+        
         return (
             <div className="flex flex-col gap-6">
-                {appeals.map((appeal, key) => {
+                {currAppeals.map((appeal, key) => {
                     const { status, type, createdAt } = getFormattedAppealDate(appeal);
-
                     return (
                         <Card
                             key={key}
@@ -143,6 +151,15 @@ export const AppealOwnerPageComponent = ({
                         />
                     );
                 })}
+                {setItemOffset && currAppeals.length !== 0 &&
+                    <Pagination
+                        handlePaginate={handlePaginate}
+                        setItemOffset={setItemOffset}
+                        itemsCount={totalCount || 0}
+                        itemsPerPage={PAGE_LIMIT}
+                        withoutPadding={true}
+                    />
+                }
             </div>
         );
     };
@@ -547,7 +564,12 @@ export const AppealOwnerPageComponent = ({
                                 { id: 3, name: "Обработанные" },
                                 { id: 4, name: "Отклоненные" },
                             ]}
-                            activeTab={activeTab} setActiveTab={setActiveTab}
+                            activeTab={activeTab} setActiveTab={prev => {
+                                if (setItemOffset) {
+                                    setItemOffset(0);
+                                }
+                                setActiveTab(prev);
+                            }}
                             onAddButtonClick={() => setIsCardFormOpened(!isCardFormOpened)}
                         >
                             {activeTab === 1 && getAppeals("all")}

@@ -142,53 +142,61 @@ export const TableFilterItem = ({
                                 />
                             </div>
                         }
-                        {items && <div className={styles.valuesWrapper}>{
-                            items
-                                .filter(item => {
-                                    if (searchValue) {
-                                        return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
-                                    }
-                                    return true;
-                                })
-                                .map((item, index) => {
-                                    if (isRadio) {
-                                        return (
-                                            <Radio
-                                                checked={selectedItem === index}
-                                                onClick={() => {
-                                                    if (handleClick) {
-                                                        setSelectedItems((prev) => [...prev, String(item.value)]);
-                                                        handleClick([...selectedItems, String(item.value)], titleEng);
-                                                    }
-                                                    handleItemClick(index);
-                                                }}
-                                                forString={`${titleEng}_${index}`}
-                                                key={index}
-                                            >
-                                                {item.text}
-                                            </Radio>
-                                        );
-                                    } else {
-                                        return (
-                                            <Checkbox
-                                                onClick={() => {
-                                                    if (handleClick) {
-                                                        let items = [...selectedItems];
-                                                        const itemValue = String(item.value);
-                                                        items = addItem(items, itemValue);
-                                                        setSelectedItems(items);
-                                                        handleClick(items, titleEng);
-                                                    }
-                                                }}
-                                                forString={`${titleEng}_${index}`}
-                                                key={index}
-                                            >
-                                                {item.text}
-                                            </Checkbox>
-                                        );
-                                    }
-                                })
-                        }</div>}
+                        {items && <div className={styles.valuesWrapper} style={{
+                                height: `${items
+                                    .filter(item => {
+                                        if (searchValue) {
+                                            return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
+                                        }
+                                        return true;
+                                    }).length + 1}rem`
+                        }}>{
+                                items
+                                    .filter(item => {
+                                        if (searchValue) {
+                                            return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
+                                        }
+                                        return true;
+                                    })
+                                    .map((item, index) => {
+                                        if (isRadio) {
+                                            return (
+                                                <Radio
+                                                    checked={selectedItem === index}
+                                                    onClick={() => {
+                                                        if (handleClick) {
+                                                            setSelectedItems((prev) => [...prev, String(item.value)]);
+                                                            handleClick([...selectedItems, String(item.value)], titleEng);
+                                                        }
+                                                        handleItemClick(index);
+                                                    }}
+                                                    forString={`${titleEng}_${index}`}
+                                                    key={index}
+                                                >
+                                                    {item.text}
+                                                </Radio>
+                                            );
+                                        } else {
+                                            return (
+                                                <Checkbox
+                                                    onClick={() => {
+                                                        if (handleClick) {
+                                                            let items = [...selectedItems];
+                                                            const itemValue = String(item.value);
+                                                            items = addItem(items, itemValue);
+                                                            setSelectedItems(items);
+                                                            handleClick(items, titleEng);
+                                                        }
+                                                    }}
+                                                    forString={`${titleEng}_${index}`}
+                                                    key={index}
+                                                >
+                                                    {item.text}
+                                                </Checkbox>
+                                            );
+                                        }
+                                    })
+                            }</div>}
                         {type === "date" && <DatePickerRange choosedDates={choosedDate} setChoosedDates={setChoosedDate} />}
                     </div>
                 </div>

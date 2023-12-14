@@ -8,6 +8,7 @@ import { fetchReferenceData, handleFilter } from "@/helpers/reference-constants"
 import { IAppContext } from "@/context/app.context";
 import { getPagination, setPostDataForReference } from "../reference-helper";
 import { ArchieveSPDPageComponent } from "@/page-components";
+import { IFilter } from "@/interfaces/meta.interface";
 
 const postDataSPDs = {
     withoutAttachments: false
@@ -19,6 +20,7 @@ function ArchiveSPD({ data: initialData }: IArchieveSPDProps): JSX.Element {
     const [data, setData] = useState(initialData);
     const [itemOffset, setItemOffset] = useState(0);
     const endOffset = itemOffset + PAGE_LIMIT;
+    const [filters, setFilters] = useState<IFilter[]>();
 
     const setPostData = (newData: any, isNew?: boolean, isGet?: boolean) => {
         setPostDataForReference(setData, name, newData, isNew, isGet);
@@ -28,7 +30,7 @@ function ArchiveSPD({ data: initialData }: IArchieveSPDProps): JSX.Element {
         await handleFilter(
             value, id,
             uriToGet, postDataSPDs, setPostData,
-            setItemOffset
+            setItemOffset, filters, setFilters
         );
     };
 

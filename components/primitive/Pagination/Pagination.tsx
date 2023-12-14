@@ -8,7 +8,8 @@ import NextIcon from "./next.svg";
 
 export const Pagination = ({
     itemsPerPage, itemsCount,
-    setItemOffset, handlePaginate
+    setItemOffset, handlePaginate,
+    withoutPadding
 }: PaginationProps): JSX.Element => {
     const pageCount = Math.ceil(itemsCount / itemsPerPage);
 
@@ -43,7 +44,9 @@ export const Pagination = ({
                     disabledClassName={styles.disable}
                 />
             </div>
-            <div className={styles.desktopPagination}>
+            <div className={cn(styles.desktopPagination, {
+                [styles.withoutPadding]: withoutPadding
+            })}>
                 <ReactPaginate
                     breakClassName={cn(styles.item, styles.break)}
                     activeClassName={cn(styles.item, styles.active)}

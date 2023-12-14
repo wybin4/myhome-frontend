@@ -14,7 +14,8 @@
 
 .liWrapper {
     max-height: 5rem;
-    overflow-y: auto;
+    height: max-content;
+    overflow-y: scroll;
 }
 
 .liWrapper::-webkit-scrollbar {

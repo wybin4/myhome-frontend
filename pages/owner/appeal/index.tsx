@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppContext, IAppContext } from "@/context/app.context";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { PAGE_LIMIT } from "@/helpers/constants";
 import { fetchReferenceData, handleFilter } from "@/helpers/reference-constants";
 import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
@@ -8,7 +8,7 @@ import { EventType, IGetEvents, IGetAppeal } from "@/interfaces/event.interface"
 import { IFilter } from "@/interfaces/meta.interface";
 import { withLayout } from "@/layout/Layout";
 import { AppealPageComponent } from "@/page-components";
-import { getPagination, setPostDataForEvent } from "@/pages/management-company/reference-helper";
+import { setPostDataForEvent } from "@/pages/management-company/reference-helper";
 import { GetServerSidePropsContext } from "next";
 import { useContext, useState } from "react";
 
@@ -22,11 +22,26 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
     const [data, setData] = useState(initialData);
     const { userId, userRole } = useContext(AppContext);
     const [itemOffset, setItemOffset] = useState(0);
-    const endOffset = itemOffset + PAGE_LIMIT;
     const [filters, setFilters] = useState<IFilter[]>();
+    const endOffset = itemOffset + PAGE_LIMIT;
 
     const setPostData = (newData: any, isNew?: boolean, isGet?: boolean) => {
         setPostDataForEvent(setData, name, newData, isNew, isGet);
+    };
+
+    const handlePaginate = async (
+        selected: number,
+    ) => {
+        if (data.totalCount !== data.appeals.length) {
+            const { data: newData } = await api.post(API.event.get, {
+                meta: {
+                    limit: PAGE_LIMIT,
+                    page: selected + 1,
+                },
+                ...postDataAppeals
+            });
+            setPostData(newData, false, true);
+        }
     };
 
     const handleFilterClick = async (value: string[], id: string) => {
@@ -40,16 +55,13 @@ function Appeal({ data: initialData }: AppealProps): JSX.Element {
     return (
         <>
             <AppealPageComponent
+                endOffset={endOffset} totalCount={data.totalCount} itemOffset={itemOffset} setItemOffset={setItemOffset}
+                handlePaginate={handlePaginate}
                 isData={initialData.totalCount !== null || data.totalCount !== null}
                 handleFilter={handleFilterClick}
                 user={{ userId, userRole }} users={data.users}
-                appeals={data.appeals.slice(itemOffset, endOffset)}
+                appeals={data.appeals}
             />
-            {getPagination(
-                setItemOffset, data, initialData, name + "s",
-                uriToGet, postDataAppeals, setPostData,
-                undefined, filters
-            )}
         </>
     );
 }

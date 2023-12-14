@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IGetUserWithSubscriber, UserRole } from "@/interfaces/account/user.interface";
 import { IGetAppeal } from "@/interfaces/event.interface";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, SetStateAction } from "react";
@@ -13,6 +14,12 @@ export interface AppealPageComponentProps extends DetailedHTMLProps<HTMLAttribut
 
     handleFilter: (value: string[], id: string) => Promise<void>;
     isData: boolean;
+
+    endOffset?: number;
+    totalCount?: number;
+    setItemOffset?: Dispatch<SetStateAction<number>>;
+    itemOffset?: number;
+    handlePaginate?: (selected: number) => Promise<void>;
 }
 
 export interface AppealDetailPageComponentProps extends Omit<AppealPageComponentProps, "user"> {
@@ -26,4 +33,10 @@ export interface AppealDetailPageComponentProps extends Omit<AppealPageComponent
 
     handleFilter: (value: string[], id: string) => Promise<void>;
     isData: boolean;
+
+    endOffset?: number;
+    totalCount?: number;
+    setItemOffset?: Dispatch<SetStateAction<number>>;
+    itemOffset?: number;
+    handlePaginate?: (selected: number) => Promise<void>;
 }

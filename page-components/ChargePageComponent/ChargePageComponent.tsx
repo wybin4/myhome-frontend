@@ -1,13 +1,14 @@
-import { InfoWindow, Tabs, ChargeCard, Table, Histogram, Htag } from "@/components";
+import { InfoWindow, Tabs, ChargeCard, Table, Histogram, Htag, Pagination } from "@/components";
 import { ChargePageComponentProps, ChargeTextProps } from "./ChargePageComponent.props";
 import MoneyIcon from "./money.svg";
 import DownloadIcon from "./download.svg";
 import styles from "./ChargePageComponent.module.css";
 import cn from "classnames";
 import PdfIcon from "./pdf.svg";
-import { monthNamesInNominativeCase, bytesToSize, downloadPdf, replaceDotWithComma, lowFirstLetter } from "@/helpers/constants";
+import { monthNamesInNominativeCase, bytesToSize, downloadPdf, replaceDotWithComma, lowFirstLetter, PAGE_LIMIT } from "@/helpers/constants";
 import { MouseEventHandler, useState } from "react";
 import NoDataIcon from "./nodata.svg";
+import { api, API } from "@/helpers/api";
 
 interface IChargeChart {
     data: {
@@ -18,9 +19,9 @@ interface IChargeChart {
 }
 
 export const ChargePageComponent = ({
-    activeTab, setActiveTab,
+    activeTab, setActiveTab, setItemOffset,
     isInfoWindowOpen, setIsInfoWindowOpen,
-    singlePaymentDocuments, debts
+    singlePaymentDocuments, allSinglePaymentDocuments, debts, totalCount
 }: ChargePageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
 
@@ -60,7 +61,7 @@ export const ChargePageComponent = ({
 
     const getLastCharges = () => {
         const groupedByApartment: IChargeChart[] = [];
-        singlePaymentDocuments.forEach(spd => {
+        allSinglePaymentDocuments.slice(0, 12).forEach(spd => {
             const currDebt = debts.find(debt => debt.singlePaymentDocumentId === spd.id);
 
             if (currDebt) {
@@ -173,6 +174,20 @@ export const ChargePageComponent = ({
         return replaceDotWithComma(parseFloat(numb.toFixed(2)));
     };
 
+    const handlePaginate = async (
+        selected: number,
+    ) => {
+        if (totalCount !== singlePaymentDocuments.length) {
+            const { data } = await api.post(API.singlePaymentDocument.get, {
+                meta: {
+                    limit: PAGE_LIMIT > 12 ? PAGE_LIMIT : 12,
+                    page: selected + 1,
+                },
+            });
+            singlePaymentDocuments.push(...data.singlePaymentDocuments);
+        }
+    };
+
     return (
         <>
             {getInfoWindow()}
@@ -196,68 +211,79 @@ export const ChargePageComponent = ({
                             { id: 2, name: "Графики" },
                             { id: 3, name: "Квитанции" },
                         ]}
-                        activeTab={activeTab} setActiveTab={setActiveTab}
+                        activeTab={activeTab} setActiveTab={prev => {
+                            setItemOffset(0);
+                            setActiveTab(prev);
+                        }}
                     >
                         {activeTab === 1 &&
-                            <div className={styles.debtWrapper}>
-                                {debts && debts.map(debt => {
-                                    if (debt.outstandingDebt !== 0) {
-                                        const currSPD = singlePaymentDocuments.find(spd => spd.id === debt.singlePaymentDocumentId);
-                                        const outstandingDebt = getNumber(debt.outstandingDebt);
-                                        const originalDebt = getNumber(debt.originalDebt);
-                                        const payed = getNumber(debt.originalDebt - debt.outstandingDebt);
-                                        if (currSPD) {
-                                            const createdAt = getMonth(String(currSPD.createdAt));
+                            <>
+                                <div className={styles.debtWrapper}>
+                                    {debts && debts.map((debt, index) => {
+                                        if (debt.outstandingDebt !== 0) {
+                                            const currSPD = singlePaymentDocuments.find(spd => spd.id === debt.singlePaymentDocumentId);
+                                            const outstandingDebt = getNumber(debt.outstandingDebt);
+                                            const originalDebt = getNumber(debt.originalDebt);
+                                            const payed = getNumber(debt.originalDebt - debt.outstandingDebt);
+                                            if (currSPD) {
+                                                const createdAt = getMonth(String(currSPD.createdAt));
 
-                                            return (
-                                                <ChargeCard
-                                                    key={debt.singlePaymentDocumentId}
-                                                    width="26rem"
-                                                    titlePart={{
-                                                        text: currSPD.apartmentName,
-                                                        description: currSPD.mcName,
-                                                        tag: {
-                                                            tag: "Оплатить",
-                                                            tagIcon: <MoneyIcon />
-                                                        },
-                                                        textRight: `${outstandingDebt}₽`
-                                                    }}
-                                                    text={
-                                                        <ChargeText
-                                                            id={String(currSPD.id)}
-                                                            className="md:hidden sm:hidden"
-                                                            total={outstandingDebt}
-                                                            amount={originalDebt}
-                                                            payed={payed}
-                                                            date={lowFirstLetter(createdAt)}
-                                                            onClick={download}
-                                                        />}
-                                                    bottom={{
-                                                        text: createdAt,
-                                                        button: {
-                                                            name: "Оплатить",
-                                                            onClick: () => createForm(debt.outstandingDebt, currSPD.id, currSPD.mcCheckingAccount)
-                                                        }
-                                                    }}
-                                                    onClick={() => {
-                                                        if (window.innerWidth <= 600) {
-                                                            setSelectedId(currSPD.id);
-                                                            setIsInfoWindowOpen(!isInfoWindowOpen);
-                                                        }
-                                                    }}
-                                                />
-                                            );
+                                                return (
+                                                    <ChargeCard
+                                                        key={index}
+                                                        width="26rem"
+                                                        titlePart={{
+                                                            text: currSPD.apartmentName,
+                                                            description: currSPD.mcName,
+                                                            tag: {
+                                                                tag: "Оплатить",
+                                                                tagIcon: <MoneyIcon />
+                                                            },
+                                                            textRight: `${outstandingDebt}₽`
+                                                        }}
+                                                        text={
+                                                            <ChargeText
+                                                                id={String(currSPD.id)}
+                                                                className="md:hidden sm:hidden"
+                                                                total={outstandingDebt}
+                                                                amount={originalDebt}
+                                                                payed={payed}
+                                                                date={lowFirstLetter(createdAt)}
+                                                                onClick={download}
+                                                            />}
+                                                        bottom={{
+                                                            text: createdAt,
+                                                            button: {
+                                                                name: "Оплатить",
+                                                                onClick: () => createForm(debt.outstandingDebt, currSPD.id, currSPD.mcCheckingAccount)
+                                                            }
+                                                        }}
+                                                        onClick={() => {
+                                                            if (window.innerWidth <= 600) {
+                                                                setSelectedId(currSPD.id);
+                                                                setIsInfoWindowOpen(!isInfoWindowOpen);
+                                                            }
+                                                        }}
+                                                    />
+                                                );
+                                            }
                                         }
-                                    }
-                                    return <></>;
-                                })}
-                            </div>
+                                        return null;
+                                    })}
+                                </div>
+                                <Pagination
+                                    handlePaginate={handlePaginate}
+                                    setItemOffset={setItemOffset}
+                                    itemsCount={totalCount || 0}
+                                    itemsPerPage={PAGE_LIMIT}
+                                />
+                            </>
                         }
                         {activeTab === 2 &&
                             <Histogram data={getLastCharges()} />
                         }
                         {activeTab === 3 &&
-                            <div>
+                            <>
                                 <Table
                                     isData={isData}
                                     title="" rows={{
@@ -289,7 +315,13 @@ export const ChargePageComponent = ({
                                         ],
                                         keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true }
                                     }} />
-                            </div>
+                                <Pagination
+                                    handlePaginate={handlePaginate}
+                                    setItemOffset={setItemOffset}
+                                    itemsCount={totalCount || 0}
+                                    itemsPerPage={PAGE_LIMIT}
+                                />
+                            </>
                         }
                     </Tabs>
                 </div>
