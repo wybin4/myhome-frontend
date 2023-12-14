@@ -11,10 +11,6 @@
     top: -19.75rem;
 }
 
-.datepickerWrapper {
-    position: absolute;
-    top: -13.75rem;
-}
 
 .datepickerWrapperBottom,
 .datepickerWrapperTop,
@@ -103,4 +99,11 @@
 .selectedFirstOrLastColor {
     color: var(--white);
     background: var(--primary);
+}
+
+@media (max-width: 900px) {
+    .datepickerWrapper {
+        position: absolute !important;
+        top: -13.75rem !important;
+    }
 }

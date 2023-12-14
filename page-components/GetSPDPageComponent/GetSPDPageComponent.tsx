@@ -162,10 +162,12 @@ export const GetSPDPageComponent = ({
             <SerialForm title="Проверьте данные о муниципальных тарифах"
                 data={{
                     dataType: "scroll",
-                    items: [{
-                        value: "Водоснабжение ГВС",
-                        description: "2278,93 руб./гКал"
-                    }]
+                    items: data.municipalTariffs.map(mt => {
+                        return {
+                            value: String(mt.typeOfServiceName) || "",
+                            description: `${mt.norm} ${mt.unitName}` || ""
+                        };
+                    })
                 }}
                 activeForm={activeForm}
                 setActiveForm={setActiveForm}
@@ -173,10 +175,13 @@ export const GetSPDPageComponent = ({
             />
             <SerialForm title="Проверьте данные о тарифах на общедомовые нужды" data={{
                 dataType: "scroll",
-                items: [{
-                    value: "Водоснабжение ГВС",
-                    description: "2278,93 руб./гКал"
-                }]
+                items:
+                    data.commonHouseNeeds.map(chn => {
+                        return {
+                            value: String(chn.typeOfServiceName) || "",
+                            description: `${chn.multiplier} ${chn.unitName}` || ""
+                        };
+                    })
             }}
                 activeForm={activeForm}
                 setActiveForm={setActiveForm}
@@ -184,10 +189,12 @@ export const GetSPDPageComponent = ({
             />
             <SerialForm title="Проверьте данные о нормативах" data={{
                 dataType: "scroll",
-                items: [{
-                    value: "Водоснабжение ГВС",
-                    description: "2278,93 руб./гКал"
-                }]
+                items: data.norms.map(n => {
+                    return {
+                        value: String(n.typeOfServiceName) || "",
+                        description: `${n.norm} ${n.unitName}` || ""
+                    };
+                })
             }}
                 activeForm={activeForm}
                 setActiveForm={setActiveForm}

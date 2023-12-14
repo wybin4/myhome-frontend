@@ -3,6 +3,7 @@ import { IAppContext } from "@/context/app.context";
 import { API, api } from "@/helpers/api";
 import { fetchReferenceData } from "@/helpers/reference-constants";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
+import { ICommonHouseNeedTariffReferenceDataItem, IMunicipalTariffReferenceDataItem, INormReferenceDataItem, TariffAndNormType } from "@/interfaces/reference/tariff-and-norm.interface";
 import { withLayout } from "@/layout/Layout";
 import { GetSPDPageComponent } from "@/page-components";
 import axios from "axios";
@@ -103,11 +104,42 @@ export default withLayout(GetSPD);
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const apiUrl = API.reference.subscriber.get;
-    return await fetchReferenceData<{ data: ISubscriberReferenceData }>(context, apiUrl, undefined);
+
+    try {
+        const { props: subscriberProps } = await fetchReferenceData<{ data: ISubscriberReferenceData }>(context, apiUrl, undefined);
+        const { props: municipalProps } = await fetchReferenceData<{ tariffAndNorms: IMunicipalTariffReferenceDataItem[] }>(context, API.reference.tariffAndNorm.get, { type: TariffAndNormType.MunicipalTariff });
+        const { props: commonProps } = await fetchReferenceData<{ tariffAndNorms: ICommonHouseNeedTariffReferenceDataItem[] }>(context, API.reference.tariffAndNorm.get, { type: TariffAndNormType.CommonHouseNeedTariff });
+        const { props: normProps } = await fetchReferenceData<{ tariffAndNorms: INormReferenceDataItem[] }>(context, API.reference.tariffAndNorm.get, { type: TariffAndNormType.Norm });
+
+        if (!subscriberProps || !municipalProps || !commonProps || !normProps) {
+            return {
+                notFound: true
+            };
+        }
+
+        return {
+            props: {
+                data: {
+                    subscribers: ('subscribers' in subscriberProps.data) ? subscriberProps.data.subscribers : [],
+                    municipalTariffs: ('tariffAndNorms' in municipalProps.data) ? municipalProps.data.tariffAndNorms : [],
+                    commonHouseNeeds: ('tariffAndNorms' in commonProps.data) ? commonProps.data.tariffAndNorms : [],
+                    norms: ('tariffAndNorms' in normProps.data) ? normProps.data.tariffAndNorms : [],
+                }
+            }
+        };
+    } catch {
+        return {
+            notFound: true
+        };
+    }
 }
 
 interface IGetSPDProps extends Record<string, unknown>, IAppContext {
-    data: ISubscriberReferenceData;
+    data: ISubscriberReferenceData & {
+        municipalTariffs: IMunicipalTariffReferenceDataItem[];
+        commonHouseNeeds: ICommonHouseNeedTariffReferenceDataItem[];
+        norms: INormReferenceDataItem[];
+    };
 }
 
 interface IGetSPDData {

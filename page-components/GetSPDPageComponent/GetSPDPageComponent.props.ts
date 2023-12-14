@@ -1,9 +1,14 @@
 import { PdfProps } from "@/components/primitive/Pdf/Pdf.props";
 import { ISubscriberReferenceData } from "@/interfaces/reference/subscriber/subscriber.interface";
+import { IMunicipalTariffReferenceDataItem, ICommonHouseNeedTariffReferenceDataItem, INormReferenceDataItem } from "@/interfaces/reference/tariff-and-norm.interface";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, SetStateAction } from "react";
 
 export interface GetSPDPageComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    data: ISubscriberReferenceData;
+    data: ISubscriberReferenceData & {
+        municipalTariffs: IMunicipalTariffReferenceDataItem[];
+        commonHouseNeeds: ICommonHouseNeedTariffReferenceDataItem[];
+        norms: INormReferenceDataItem[];
+    };
     fetchSPD: (keyRate: number) => Promise<void>;
     fetchKeyRate: () => Promise<{
         keyRate: number;

@@ -128,15 +128,19 @@ export const Pdf = ({ pdfUrl, print, back, ...props }: PdfProps) => {
                     file={pdfUrl}
                     onLoadSuccess={onDocumentLoadSuccess}
                 >
-                    <Page
-                        className={styles.page}
-                        scale={scale}
-                        pageNumber={pageNumber} width={width}
-                        renderAnnotationLayer={false} renderTextLayer={false}
-                    />
+                    {Array.from({ length: numPages }, (_, i) => i + 1).map(page => (
+                        <Page
+                            key={page}
+                            className={styles.page}
+                            scale={scale}
+                            pageNumber={pageNumber}
+                            width={width}
+                            renderAnnotationLayer={false}
+                            renderTextLayer={false}
+                        />
+                    ))}
                 </Document>
             </div>
-            {/* <p>Page {pageNumber} of {numPages}</p> */}
         </div>
     );
 };
