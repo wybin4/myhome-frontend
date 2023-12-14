@@ -42,7 +42,8 @@ export interface IReferencePageItem<T extends FieldValues> {
 
     selectorOptions?: SelectorOption[];
     isInvisibleInTable?: boolean;
-    isSearchable?: true;
+    isSearchable?: boolean;
+    isNotFilter?: boolean;
 }
 
 export interface IReferenceTitle {

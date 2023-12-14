@@ -22,7 +22,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
     additionalSelectorOptions,
     setPostData, additionalFormData,
     entityName, uriToAdd, addMany = true,
-    handleFilter, handleSearch, isData
+    handleFilter, handleFilterDate, handleSearch, isData
     // className, ...props
 }: ReferencePageComponentProps<T>): JSX.Element => {
     const useFormData = useForm<T>();
@@ -169,15 +169,17 @@ export const ReferencePageComponent = <T extends FieldValues>({
     const getFilters = (): { filters: TableFilterItemProps[] } => {
         return {
             filters: item.components
-                .filter(c => c.type === "select" || c.enum)
+                .filter(c => (c.type === "select" || c.enum || c.id === "createdAt" || c.id === "expiredAt") && !c.isNotFilter)
                 .map(component => {
+                    const title = capFirstLetter(phraseByArr(component.title));
+
                     if (additionalSelectorOptions) {
                         const data = additionalSelectorOptions.find(ad => {
                             return ad.id === component.sendId;
                         });
                         if (data) {
                             return {
-                                title: capFirstLetter(phraseByArr(component.title)),
+                                title,
                                 titleEng: String(component.sendId),
                                 type: "checkbox",
                                 items: data.data.map(d => {
@@ -192,7 +194,7 @@ export const ReferencePageComponent = <T extends FieldValues>({
                     }
                     if (component.enum) {
                         return {
-                            title: capFirstLetter(phraseByArr(component.title)),
+                            title,
                             titleEng: String(component.id),
                             type: "checkbox",
                             items: Object.entries(component.enum).map(val => {
@@ -202,6 +204,15 @@ export const ReferencePageComponent = <T extends FieldValues>({
                                 };
                             }),
                             handleClick: handleFilter
+                        };
+                    }
+                    if (component.id === "createdAt" || component.id === "expiredAt") {
+                        return {
+                            title,
+                            titleEng: component.id,
+                            type: "date",
+                            handleDateRangeClick: handleFilterDate,
+                            items: []
                         };
                     }
                     return {

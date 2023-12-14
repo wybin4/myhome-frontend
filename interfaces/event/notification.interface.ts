@@ -63,6 +63,12 @@ export const notificationPageComponent: IReferencePageComponent<IHouseNotificati
     },
     components: [
         {
+            type: "none",
+            title: [{ word: "дата" }, { word: "создания" }],
+            numberInOrder: 4, id: "createdAt", gender: "женский",
+            rows: []
+        },
+        {
             type: "select", selectorOptions: [],
             title: [{ word: "дом", isChangeable: true }], numberInOrder: 3, id: "name", sendId: "houseId", gender: "мужской",
             rows: []
@@ -83,12 +89,6 @@ export const notificationPageComponent: IReferencePageComponent<IHouseNotificati
             type: "textarea",
             title: [{ word: "подробности" }],
             numberInOrder: 5, id: "text", gender: "женский",
-            rows: []
-        },
-        {
-            type: "none",
-            title: [{ word: "дата" }, { word: "создания" }],
-            numberInOrder: 4, id: "createdAt", gender: "женский",
             rows: []
         },
     ]

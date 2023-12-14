@@ -21,4 +21,6 @@ export interface InputProps extends DetailedHTMLProps<HTMLAttributes<HTMLInputEl
     innerRef?: LegacyRef<HTMLInputElement>;
 
     inputError?: string;
+
+    innerInputClassName?: string;
 }

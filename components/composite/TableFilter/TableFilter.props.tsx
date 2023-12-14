@@ -1,3 +1,4 @@
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, MutableRefObject, SetStateAction } from "react";
 
 export interface TableFilterProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -24,6 +25,7 @@ export interface TableFilterItemProps extends DetailedHTMLProps<HTMLAttributes<H
     isRadio?: boolean;
 
     handleClick?: (value: string[], id: string) => Promise<void>;
+    handleDateRangeClick?: (value: IBaseDateRange | undefined, id: string) => Promise<void>;
 }
 
 export interface ITableFilterItem { value: string | number; text: string; }

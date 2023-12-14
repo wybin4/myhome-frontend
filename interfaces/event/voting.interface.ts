@@ -58,6 +58,12 @@ export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataIt
     keyElements: { first: [3], second: 1, isSecondNoNeedTitle: true },
     components: [
         {
+            type: "datepicker",
+            title: [{ word: "дата" }, { word: "окончания" }],
+            numberInOrder: 7, id: "expiredAt", gender: "женский",
+            rows: []
+        },
+        {
             type: "select", selectorOptions: [],
             title: [{ word: "дом", isChangeable: true }], numberInOrder: 1, id: "name", sendId: "houseId", gender: "мужской",
             rows: []
@@ -87,16 +93,10 @@ export const votingPageComponent: IReferencePageComponent<IVotingReferenceDataIt
             rows: []
         },
         {
-            type: "datepicker",
-            title: [{ word: "дата" }, { word: "окончания" }],
-            numberInOrder: 7, id: "expiredAt", gender: "женский",
-            rows: []
-        },
-        {
             type: "none",
             title: [{ word: "дата" }, { word: "начала" }],
-            numberInOrder: 6, id: "expiredAt", gender: "женский",
-            rows: []
+            numberInOrder: 6, id: "createdAt", gender: "женский",
+            rows: [], isNotFilter: true
         },
     ]
 };

@@ -5,7 +5,7 @@ import { IVotingReferenceData, IVotingReferenceDataItem, votingPageComponent } f
 import { withLayout } from "@/layout/Layout";
 import { IHouse } from "@/interfaces/reference/subscriber/house.interface";
 import { EventType, IGetEvents } from "@/interfaces/event.interface";
-import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleSearch } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleFilterDateClick, handleSearch } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
 import { ReferencePageComponent } from "@/page-components";
@@ -13,6 +13,7 @@ import { useState } from "react";
 import { PAGE_LIMIT } from "@/helpers/constants";
 import { getPagination, setPostDataForEvent } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 const postDataVotings = {
     events: [EventType.Voting]
@@ -42,6 +43,13 @@ function Voting({ data: initialData }: IVotingProps): JSX.Element {
                     isData={initialData.totalCount !== null || data.totalCount !== null}
                     handleFilter={async (value: string[], id: string) => {
                         await handleFilter(
+                            value, id,
+                            uriToGet, postDataVotings, setPostData,
+                            setItemOffset, filters, setFilters, search
+                        );
+                    }}
+                    handleFilterDate={async (value: IBaseDateRange | undefined, id: string) => {
+                        await handleFilterDateClick(
                             value, id,
                             uriToGet, postDataVotings, setPostData,
                             setItemOffset, filters, setFilters, search

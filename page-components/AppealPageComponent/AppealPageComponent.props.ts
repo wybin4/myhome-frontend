@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 import { IGetUserWithSubscriber, UserRole } from "@/interfaces/account/user.interface";
 import { IGetAppeal } from "@/interfaces/event.interface";
 import { DetailedHTMLProps, Dispatch, HTMLAttributes, SetStateAction } from "react";
@@ -20,6 +21,7 @@ export interface AppealPageComponentProps extends DetailedHTMLProps<HTMLAttribut
     setItemOffset?: Dispatch<SetStateAction<number>>;
     itemOffset?: number;
     handlePaginate?: (selected: number) => Promise<void>;
+    handleFilterDate?: (value: IBaseDateRange | undefined, id: string) => Promise<void>;
 }
 
 export interface AppealDetailPageComponentProps extends Omit<AppealPageComponentProps, "user"> {
@@ -39,4 +41,5 @@ export interface AppealDetailPageComponentProps extends Omit<AppealPageComponent
     setItemOffset?: Dispatch<SetStateAction<number>>;
     itemOffset?: number;
     handlePaginate?: (selected: number) => Promise<void>;
+    handleFilterDate?: (value: IBaseDateRange | undefined, id: string) => Promise<void>;
 }

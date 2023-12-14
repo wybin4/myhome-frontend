@@ -15,7 +15,7 @@ export const Table = ({
 
     const isOne = () => {
         if (filters) {
-            return filters.filter(item => item.items && item.items.length > 0).length > 0;
+            return filters.filter(item => item.items && item.items.length > 0 || item.type === "date").length > 0;
         } else {
             return false;
         }

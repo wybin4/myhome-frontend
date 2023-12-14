@@ -4,7 +4,7 @@ import ArrowIcon from './arrow.svg';
 import { useEffect, useRef, useState } from "react";
 import styles from "./TableFilter.module.css";
 import cn from 'classnames';
-import { IDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
+import { IBaseDateRange, IDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 export const TableFilter = ({
     filterButtonRef,
@@ -77,7 +77,7 @@ export const TableFilter = ({
 
 export const TableFilterItem = ({
     items,
-    type, handleClick,
+    type, handleClick, handleDateRangeClick,
     title, titleEng,
     isRadio = false, numberText = "",
     ...props
@@ -112,7 +112,7 @@ export const TableFilterItem = ({
     return (
         <>
             {
-                items && items.length > 0 &&
+
                 <div {...props}>
                     <div className="flex items-baseline justify-between">
                         <p className="text-[0.9375rem] leading-5 font-medium mb-4">{title}</p>
@@ -126,6 +126,73 @@ export const TableFilterItem = ({
                         [styles.hidden]: hidden,
                         [styles.visible]: !hidden
                     })}>
+                        {items && items.length > 0 &&
+                            <>
+                                {type !== "checkboxWithoutSearch" && type !== "date" && type !== "number" &&
+                                    <div className="mb-3">
+                                        <Search
+                                            size="s"
+                                            value={searchValue} setValue={setSearchValue}
+                                        />
+                                    </div>
+                                }
+                                {items && <div className={styles.valuesWrapper} style={{
+                                    height: `${items
+                                        .filter(item => {
+                                            if (searchValue) {
+                                                return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
+                                            }
+                                            return true;
+                                        }).length + 1}rem`
+                                }}>{
+                                        items
+                                            .filter(item => {
+                                                if (searchValue) {
+                                                    return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
+                                                }
+                                                return true;
+                                            })
+                                            .map((item, index) => {
+                                                if (isRadio) {
+                                                    return (
+                                                        <Radio
+                                                            checked={selectedItem === index}
+                                                            onClick={() => {
+                                                                if (handleClick) {
+                                                                    setSelectedItems((prev) => [...prev, String(item.value)]);
+                                                                    handleClick([...selectedItems, String(item.value)], titleEng);
+                                                                }
+                                                                handleItemClick(index);
+                                                            }}
+                                                            forString={`${titleEng}_${index}`}
+                                                            key={index}
+                                                        >
+                                                            {item.text}
+                                                        </Radio>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <Checkbox
+                                                            onClick={() => {
+                                                                if (handleClick) {
+                                                                    let items = [...selectedItems];
+                                                                    const itemValue = String(item.value);
+                                                                    items = addItem(items, itemValue);
+                                                                    setSelectedItems(items);
+                                                                    handleClick(items, titleEng);
+                                                                }
+                                                            }}
+                                                            forString={`${titleEng}_${index}`}
+                                                            key={index}
+                                                        >
+                                                            {item.text}
+                                                        </Checkbox>
+                                                    );
+                                                }
+                                            })
+                                    }</div>}
+                            </>
+                        }
                         {type === "number" &&
                             <div className="flex items-center gap-3">
                                 <p className={styles.numberInputText}>{numberText}</p>
@@ -134,70 +201,16 @@ export const TableFilterItem = ({
                                 />
                             </div>
                         }
-                        {type !== "checkboxWithoutSearch" && type !== "date" && type !== "number" &&
-                            <div className="mb-3">
-                                <Search
-                                    size="s"
-                                    value={searchValue} setValue={setSearchValue}
-                                />
-                            </div>
+                        {type === "date" &&
+                            <DatePickerRange
+                                choosedDates={choosedDate}
+                                setChoosedDates={(newDates: IBaseDateRange | undefined) => {
+                                    if (handleDateRangeClick && newDates) {
+                                        handleDateRangeClick(newDates, titleEng);
+                                        setChoosedDate(newDates);
+                                    }
+                                }} />
                         }
-                        {items && <div className={styles.valuesWrapper} style={{
-                                height: `${items
-                                    .filter(item => {
-                                        if (searchValue) {
-                                            return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
-                                        }
-                                        return true;
-                                    }).length + 1}rem`
-                        }}>{
-                                items
-                                    .filter(item => {
-                                        if (searchValue) {
-                                            return item.text.toLowerCase().includes(String(searchValue).toLowerCase());
-                                        }
-                                        return true;
-                                    })
-                                    .map((item, index) => {
-                                        if (isRadio) {
-                                            return (
-                                                <Radio
-                                                    checked={selectedItem === index}
-                                                    onClick={() => {
-                                                        if (handleClick) {
-                                                            setSelectedItems((prev) => [...prev, String(item.value)]);
-                                                            handleClick([...selectedItems, String(item.value)], titleEng);
-                                                        }
-                                                        handleItemClick(index);
-                                                    }}
-                                                    forString={`${titleEng}_${index}`}
-                                                    key={index}
-                                                >
-                                                    {item.text}
-                                                </Radio>
-                                            );
-                                        } else {
-                                            return (
-                                                <Checkbox
-                                                    onClick={() => {
-                                                        if (handleClick) {
-                                                            let items = [...selectedItems];
-                                                            const itemValue = String(item.value);
-                                                            items = addItem(items, itemValue);
-                                                            setSelectedItems(items);
-                                                            handleClick(items, titleEng);
-                                                        }
-                                                    }}
-                                                    forString={`${titleEng}_${index}`}
-                                                    key={index}
-                                                >
-                                                    {item.text}
-                                                </Checkbox>
-                                            );
-                                        }
-                                    })
-                            }</div>}
-                        {type === "date" && <DatePickerRange choosedDates={choosedDate} setChoosedDates={setChoosedDate} />}
                     </div>
                 </div>
             }

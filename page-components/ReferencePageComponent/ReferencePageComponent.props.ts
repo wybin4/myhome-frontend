@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
 import { IReferencePageComponent } from "@/interfaces/reference/page.interface";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
@@ -18,6 +19,7 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     addMany?: boolean;
 
     handleFilter: (value: string[], id: string) => Promise<void>;
+    handleFilterDate?: (value: IBaseDateRange | undefined, id: string) => Promise<void>;
     handleSearch: (value: string, id: string) => Promise<void>;
     isData: boolean;
 }

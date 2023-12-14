@@ -53,10 +53,11 @@ export const DatePickerRange = forwardRef(({
         startDate: Date,
         endDate: Date,
     }): string => {
-        if (!dateRange.startDate || !dates) {
-            if (!dateRange.endDate) {
-                return "";
-            } else return formatDate(dateRange.endDate);
+        if (
+            dates.startDate && dates.endDate
+            && dates.startDate.getTime() === dates.endDate.getTime()
+        ) {
+            return "";
         }
 
         if (!dateRange.endDate || !dates) {
@@ -89,10 +90,6 @@ export const DatePickerRange = forwardRef(({
         });
     };
 
-    const clear = () => {
-        setChoosedDates(undefined);
-    };
-
     useEffect(() => {
         if (setChoosedDates) {
             setChoosedDates({
@@ -116,13 +113,14 @@ export const DatePickerRange = forwardRef(({
                 readOnly={true}
                 inputError={inputError}
                 ref={ref}
+                innerInputClassName='!p-3'
             />
             {isPickerOpened &&
                 <DatePickerR
                     dateRange={dateRange}
                     setDateRange={setDateRange}
                     setToday={setToday}
-                    clear={clear}
+                    clear={setToday}
                     className="mt-3"
                 />
             }
@@ -137,7 +135,6 @@ const DatePickerR = ({
     setToday, clear,
     ...props
 }: DatePickerRProps): JSX.Element => {
-
     const {
         firstDayOfWeek,
         activeMonths,

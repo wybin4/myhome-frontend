@@ -10,9 +10,10 @@ import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
 import { ReferencePageComponent } from "@/page-components";
 import { PAGE_LIMIT, getEnumKeyByValue } from "@/helpers/constants";
-import { enrichReferenceComponent, handleFilter, fetchReferenceData, handleSearch } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, handleFilter, fetchReferenceData, handleSearch, handleFilterDateClick } from "@/helpers/reference-constants";
 import { getPagination, setPostDataForEvent } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 const postDataHouseNotifications = {
     events: [EventType.Notification]
@@ -45,6 +46,13 @@ function HouseNotification({ data: initialData }: IHouseNotificationProps): JSX.
                     isData={initialData.totalCount !== null || data.totalCount !== null}
                     handleFilter={async (value: string[], id: string) => {
                         await handleFilter(
+                            value, id,
+                            uriToGet, postDataHouseNotifications, setPostData,
+                            setItemOffset, filters, setFilters, search
+                        );
+                    }}
+                    handleFilterDate={async (value: IBaseDateRange | undefined, id: string) => {
+                        await handleFilterDateClick(
                             value, id,
                             uriToGet, postDataHouseNotifications, setPostData,
                             setItemOffset, filters, setFilters, search

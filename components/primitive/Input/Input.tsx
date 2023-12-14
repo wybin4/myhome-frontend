@@ -8,12 +8,11 @@ export const Input = forwardRef(({
     size,
     value, setValue, inputType = "string",
     icon, sizeOfIcon = "normal", alignOfIcon = "left",
-    className,
     readOnly = false, datePicker = false,
     inputError,
+    innerInputClassName, className,
     ...props
 }: InputProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
-
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (inputType === "number") {
             const inputValue = event.target.value;
@@ -44,6 +43,7 @@ export const Input = forwardRef(({
                         ref={ref}
                         className={cn(
                             styles.input,
+                            innerInputClassName,
                             {
                                 "text-center": textAlign === "center",
                                 "text-left": textAlign === "left",

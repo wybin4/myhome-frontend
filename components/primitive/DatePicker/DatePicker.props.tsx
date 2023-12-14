@@ -15,7 +15,7 @@ export interface DatePickerInputProps extends DetailedHTMLProps<HTMLAttributes<H
 
 export interface DatePickerRangeProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     choosedDates: Omit<IDateRange, "focusedInput"> | undefined;
-    setChoosedDates: Dispatch<SetStateAction<Omit<IDateRange, "focusedInput"> | undefined>>;
+    setChoosedDates: (value: IBaseDateRange | undefined) => void;
 
     title?: string;
     size?: "l" | "m" | "s";
@@ -56,10 +56,13 @@ export interface NavButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<H
     onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export interface IDateRange {
+export interface IDateRange extends IBaseDateRange {
+    focusedInput: FocusedInput;
+}
+
+export interface IBaseDateRange {
     startDate: Date;
     endDate: Date;
-    focusedInput: FocusedInput;
 }
 
 export interface IDateInput {

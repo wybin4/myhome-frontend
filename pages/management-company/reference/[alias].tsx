@@ -2,7 +2,7 @@
 import { IAppContext } from "@/context/app.context";
 import { API } from "@/helpers/api";
 import { PAGE_LIMIT } from "@/helpers/constants";
-import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleSearch } from "@/helpers/reference-constants";
+import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleFilterDateClick, handleSearch } from "@/helpers/reference-constants";
 import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
 import { IGetCommon, ITypeOfService } from "@/interfaces/common.interface";
 import { IPenaltyCalculationRuleReferenceData, IPenaltyCalculationRuleReferenceDataItem, IPenaltyRule, penaltyCalcRulePageComponent } from "@/interfaces/correction/penalty.interface";
@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { getPagination } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [data, setData] = useState(initialData);
@@ -175,6 +176,13 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                             setItemOffset, filters, setFilters, search
                         );
                     }}
+                    handleFilterDate={async (value: IBaseDateRange | undefined, id: string) => {
+                        await handleFilterDateClick(
+                            value, id,
+                            linkToGet, item.additionalGetFormData, setPostData,
+                            setItemOffset, filters, setFilters, search
+                        );
+                    }}
                     handleSearch={async (value: string, id: string) => {
                         await handleSearch(
                             value, id,
@@ -233,17 +241,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 apiUrl = API.common.user.getAll;
                 break;
             case "individual-meter":
-                apiUrl = API.reference["meter"].get;
+                apiUrl = API.reference.meter.get;
                 break;
             case "general-meter":
-                apiUrl = API.reference["meter"].get;
+                apiUrl = API.reference.meter.get;
                 break;
             case "norm":
             case "social-norm":
             case "seasonality-factor":
             case "common-house-need-tariff":
             case "municipal-tariff": {
-                apiUrl = API.reference["tariffAndNorm"].get;
+                apiUrl = API.reference.tariffAndNorm.get;
                 break;
             }
             case "penalty-rule": {

@@ -26,13 +26,13 @@ export const penaltyCalcRulePageComponent: IReferencePageComponent<IPenaltyCalcu
         {
             type: "select", selectorOptions: [],
             title: [{ word: "тип" }, { word: "услуги" }], numberInOrder: 1, id: "typeOfServiceName", sendId: "typeOfServiceId",
-            gender: "женский",
+            gender: "женский", isNotFilter: true,
             rows: [], selectorType: "withoutradio"
         },
         {
             type: "select", selectorOptions: [],
             title: [{ word: "правило" }], numberInOrder: 2, id: "description", sendId: "penaltyRuleId", gender: "средний",
-            rows: []
+            rows: [], isNotFilter: true
         },
         {
             type: "input", inputType: "number",

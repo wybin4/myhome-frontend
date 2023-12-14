@@ -4,11 +4,11 @@ import { withLayout } from "@/layout/Layout";
 import { useState } from "react";
 import { PAGE_LIMIT } from "@/helpers/constants";
 import { GetServerSidePropsContext } from "next";
-import { fetchReferenceData, handleFilter } from "@/helpers/reference-constants";
+import { fetchReferenceData, handleFilterDateClick } from "@/helpers/reference-constants";
 import { IAppContext } from "@/context/app.context";
 import { getPagination, setPostDataForReference } from "../reference-helper";
 import { ArchieveSPDPageComponent } from "@/page-components";
-import { IFilter } from "@/interfaces/meta.interface";
+import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 const postDataSPDs = {
     withoutAttachments: false
@@ -20,17 +20,16 @@ function ArchiveSPD({ data: initialData }: IArchieveSPDProps): JSX.Element {
     const [data, setData] = useState(initialData);
     const [itemOffset, setItemOffset] = useState(0);
     const endOffset = itemOffset + PAGE_LIMIT;
-    const [filters, setFilters] = useState<IFilter[]>();
 
     const setPostData = (newData: any, isNew?: boolean, isGet?: boolean) => {
         setPostDataForReference(setData, name, newData, isNew, isGet);
     };
 
-    const handleFilterClick = async (value: string[], id: string) => {
-        await handleFilter(
+    const handleFilterClick = async (value: IBaseDateRange | undefined, id: string) => {
+        await handleFilterDateClick(
             value, id,
             uriToGet, postDataSPDs, setPostData,
-            setItemOffset, filters, setFilters
+            setItemOffset, undefined, undefined
         );
     };
 

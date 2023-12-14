@@ -30,7 +30,7 @@ const isOne = (filters: TableFilterItemProps[]) => {
 
 export const AppealPageComponent = ({
     appeals, users, user,
-    handleFilter, isData,
+    handleFilter, handleFilterDate, isData,
     endOffset, totalCount, itemOffset, setItemOffset, handlePaginate
 }: AppealPageComponentProps): JSX.Element => {
     const [selectedId, setSelectedId] = useState<number>(0);
@@ -52,7 +52,7 @@ export const AppealPageComponent = ({
             case UserRole.ManagementCompany:
                 return (
                     <AppealManagementCompanyPageComponent
-                        handleFilter={handleFilter} isData={isData}
+                        handleFilter={handleFilter} handleFilterDate={handleFilterDate} isData={isData}
                         selectedId={selectedId} setSelectedId={setSelectedId}
                         isInfoWindowOpen={isInfoWindowOpen} setIsInfoWindowOpen={setIsInfoWindowOpen}
                         appeals={appeals}
@@ -120,7 +120,7 @@ export const AppealOwnerPageComponent = ({
         const currAppeals = appeals
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(itemOffset, endOffset);
-        
+
         return (
             <div className="flex flex-col gap-6">
                 {currAppeals.map((appeal, key) => {
@@ -585,7 +585,7 @@ export const AppealOwnerPageComponent = ({
 };
 
 export const AppealManagementCompanyPageComponent = ({
-    appeals, handleFilter, isData,
+    appeals, handleFilter, handleFilterDate, isData,
     // setError,
     selectedId, setSelectedId,
     isInfoWindowOpen, setIsInfoWindowOpen,
@@ -683,7 +683,8 @@ export const AppealManagementCompanyPageComponent = ({
         {
             title: "Дата",
             titleEng: "createdAt",
-            type: "date"
+            type: "date",
+            handleDateRangeClick: handleFilterDate
         },
         {
             title: "Тип обращения",

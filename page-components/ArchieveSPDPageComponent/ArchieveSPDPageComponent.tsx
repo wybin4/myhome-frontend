@@ -6,7 +6,7 @@ import { ArchieveSPDPageComponentProps } from "./ArchieveSPDPageComponent.props"
 import PdfIcon from "./pdf.svg";
 
 export const ArchieveSPDPageComponent = ({
-    singlePaymentDocuments, isData
+    singlePaymentDocuments, isData, handleFilter
 }: ArchieveSPDPageComponentProps): JSX.Element => {
     const [isOneSPD, setIsOneSPD] = useState<boolean>(false);
     const [downloadUrlDate, setDownloadUrlDate] = useState<IPdfUrl>(
@@ -88,8 +88,12 @@ export const ArchieveSPDPageComponent = ({
                 <Table title="Архив"
                     isData={isData}
                     filters={[
-
-                        // ИСПРАВИТЬ!!! ДОБАВИТЬ ВЫБОР ПЕРИОДА
+                        {
+                            title: "Период",
+                            titleEng: "createdAt",
+                            type: "date",
+                            handleDateRangeClick: handleFilter
+                        }
                     ]} rows={{
                         startIcon: <PdfIcon />,
                         actions: {
