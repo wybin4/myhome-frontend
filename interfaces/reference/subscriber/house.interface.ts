@@ -69,5 +69,5 @@ export const housePageComponent: IReferencePageComponent<IHouseReferenceDataItem
             rows: []
         },
     ],
-    additionalGetFormData: { "isAllInfo": true }
+    additionalGetFormData: { "isAllInfo": false }
 };

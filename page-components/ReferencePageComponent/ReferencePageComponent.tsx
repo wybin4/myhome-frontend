@@ -20,7 +20,7 @@ import { TableSearchProps } from "@/components/primitive/TableSearch/TableSearch
 export const ReferencePageComponent = <T extends FieldValues>({
     item,
     additionalSelectorOptions,
-    setPostData, additionalFormData,
+    setPostData, additionalFormData, downloadAllData,
     entityName, uriToAdd, addMany = true,
     handleFilter, handleFilterDate, handleSearch, isData
     // className, ...props
@@ -230,7 +230,16 @@ export const ReferencePageComponent = <T extends FieldValues>({
         return item.components.filter(c => c.type !== "none").map(c => {
             return {
                 name: String(c.sendId ? c.sendId : c.id),
-                value: c.title.map(t => t.word).join(" ")
+                value: phraseByArr(c.title)
+            };
+        });
+    };
+
+    const getDownloadHeaders = (): ExcelHeader[] => {
+        return item.components.filter(c => c.type !== "none").map(c => {
+            return {
+                name: String(c.id),
+                value: capFirstLetter(phraseByArr(c.title))
             };
         });
     };
@@ -238,13 +247,13 @@ export const ReferencePageComponent = <T extends FieldValues>({
     const getButtons = (): TableButtonType[] => {
         if (addMany) {
             return [
-                { type: "download" },
+                { type: "download", onClick: () => downloadAllData && downloadAllData(getDownloadHeaders()) },
                 { type: "upload", onClick: () => setIsFileFormOpened(!isFileFormOpened) },
                 { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
             ];
         } else {
             return [
-                { type: "download" },
+                { type: "download", onClick: () => downloadAllData && downloadAllData(getDownloadHeaders()) },
                 { type: "add", onClick: () => setIsFormOpened(!isFormOpened) }
             ];
         }

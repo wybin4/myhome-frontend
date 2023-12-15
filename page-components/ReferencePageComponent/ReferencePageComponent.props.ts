@@ -18,6 +18,7 @@ export interface ReferencePageComponentProps<T extends FieldValues> extends Deta
     entityName?: string;
     addMany?: boolean;
 
+    downloadAllData?: (headers: ExcelHeader[]) => Promise<void>;
     handleFilter: (value: string[], id: string) => Promise<void>;
     handleFilterDate?: (value: IBaseDateRange | undefined, id: string) => Promise<void>;
     handleSearch: (value: string, id: string) => Promise<void>;

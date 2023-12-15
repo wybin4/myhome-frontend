@@ -108,7 +108,7 @@
 
     background-color: var(--white);
 
-    z-index: 5;
+    z-index: 2;
 }
 
 @media (max-width: 600px) {

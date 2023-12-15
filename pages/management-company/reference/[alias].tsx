@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IAppContext } from "@/context/app.context";
-import { API } from "@/helpers/api";
+import { API, api } from "@/helpers/api";
 import { PAGE_LIMIT } from "@/helpers/constants";
 import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleFilterDateClick, handleSearch } from "@/helpers/reference-constants";
 import { IUser, IUserReferenceData, IUserReferenceDataItem, UserRole, ownerPageComponent } from "@/interfaces/account/user.interface";
@@ -21,6 +21,8 @@ import { FieldValues } from "react-hook-form";
 import { getPagination } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
 import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
+import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";
+import writeExcelFile from "write-excel-file";
 
 function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
     const [data, setData] = useState(initialData);
@@ -189,6 +191,52 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
                             linkToGet, item.additionalGetFormData, setPostData,
                             setItemOffset, setSearch, filters
                         );
+                    }}
+                    downloadAllData={async (headers: ExcelHeader[]) => {
+                        const { data } = await api.post(linkToGet, item.additionalGetFormData);
+                        const excelHeaders = headers.map(h => { return { value: h.value }; });
+                        const dataArr = data[baseEngName + "s"];
+                        const excelData = dataArr.map((obj: { [x: string]: any; }) => {
+                            return headers.map(header => {
+                                const key = header.name;
+                                const value = obj[key];
+
+                                let type = undefined;
+
+                                if (typeof value === 'number') {
+                                    type = Number;
+                                } else if (!isNaN(new Date(value).getTime())) {
+                                    type = Date;
+                                } else if (typeof value === "string") {
+                                    type = String;
+                                }
+
+                                if (type) {
+                                    if (type === Date) {
+                                        return {
+                                            type: type,
+                                            value: new Date(value),
+                                            format: 'mm/dd/yyyy',
+                                        };
+                                    } else {
+                                        return {
+                                            type: type,
+                                            value: value,
+                                        };
+                                    }
+                                }
+                            });
+                        });
+                        const url = `${new Date().getTime()}.xlsx`;
+
+                        writeExcelFile([excelHeaders, ...excelData], { fileName: url })
+                            .then(() => {
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = url;
+                                document.body.appendChild(a);
+                            });
+                        return;
                     }}
                     {...getAdditionalFormData()}
                 />
