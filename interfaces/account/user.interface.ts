@@ -86,5 +86,5 @@ export const managementCompanyPageComponent:
             rows: []
         },
     ],
-    additionalGetFormData: { "userRole": UserRole.ManagementCompany }
+    additionalGetFormData: { requesterRole: UserRole.Admin, userRole: UserRole.ManagementCompany }
 };

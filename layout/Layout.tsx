@@ -146,7 +146,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
             socket.disconnect();
         };
     }, []);
-    
+
     return (
         <>
             {user && user.userRole && user.userRole !== UserRole.None &&
@@ -167,7 +167,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
                     <Footer className={styles.footer} />
                 </div>
             }
-            {(!user || !user.userRole || user.userRole === UserRole.None) && <Main userRole={UserRole.None} />}
+            {(!user || user.userRole === UserRole.None) && <Main userRole={UserRole.None} />}
         </>
     );
 };

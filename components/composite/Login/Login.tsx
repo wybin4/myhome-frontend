@@ -7,6 +7,7 @@ import MCIcon from "./mc.svg";
 import LogoIcon from "./logo.svg";
 import LoginIcon from "./login.svg";
 import LogoWrapperIcon from "./logowrapper.svg";
+import LogoBigWrapperIcon from "./logoBigWrapper.svg";
 import { Button, Htag, Input, Paragraph, PopUp } from "@/components";
 import { ILoginUser, UserRole } from "@/interfaces/account/user.interface";
 import { useEffect, useState } from "react";
@@ -169,7 +170,7 @@ export const Login = ({
             {isForm &&
                 <>
                     <span>
-
+                        <span className={styles.logoBigWrapperIcon}> <LogoBigWrapperIcon /></span>
                         <span className={styles.logoWrapperIcon}>
                             <LogoWrapperIcon />
                             <span className={styles.formLogo}>

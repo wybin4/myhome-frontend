@@ -99,7 +99,7 @@ export const setPostDataForReference = (
             const dataCount = newData.totalCount;
             const newTotalCount = dataCount !== 0 ? dataCount : null;
             const newProp = newData[nameWithS];
-
+      
             return {
                 ...prevData,
                 [nameWithS]: isNew ? [...newProp] : [...prevData[nameWithS], ...newProp],

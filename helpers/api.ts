@@ -26,7 +26,7 @@ export const API: {
         appeal: { update: string; };
     };
     admin: {
-        correction: { penaltyCalculationRule: { add: string; get: string } };
+        correction: { penaltyCalculationRule: { add: string; } };
     };
     singlePaymentDocument: { get: string };
     reference: IDataGet;
@@ -96,7 +96,6 @@ export const API: {
         correction: {
             penaltyCalculationRule: {
                 add: ``,
-                get: ``
             }
         }
     },
