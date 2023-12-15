@@ -102,7 +102,8 @@ export const normPageComponent:
             rows: [], enum: TypeOfNorm
         },
         ...baseTariffAndNormWithUnitPageComponents as unknown as IReferencePageItem<INormReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { type: TariffAndNormType.Norm }
 };
 
 export const socialNormPageComponent:
@@ -123,7 +124,8 @@ export const socialNormPageComponent:
             rows: []
         },
         ...baseTariffAndNormWithUnitPageComponents as unknown as IReferencePageItem<ISocialNormReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { type: TariffAndNormType.SocialNorm }
 };
 
 export const seasonalityFactorPageComponent:
@@ -157,7 +159,8 @@ export const seasonalityFactorPageComponent:
             rows: []
         },
         ...baseTariffAndNormPageComponents as unknown as IReferencePageItem<ISeasonalityFactorReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { type: TariffAndNormType.SeasonalityFactor }
 };
 
 export const сommonHouseNeedTariffPageComponent:
@@ -178,7 +181,8 @@ export const сommonHouseNeedTariffPageComponent:
             rows: []
         },
         ...baseTariffAndNormWithUnitPageComponents as unknown as IReferencePageItem<ICommonHouseNeedTariffReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { type: TariffAndNormType.CommonHouseNeedTariff }
 };
 
 export const municipalTariffPageComponent:
@@ -204,5 +208,6 @@ export const municipalTariffPageComponent:
             rows: []
         },
         ...baseTariffAndNormWithUnitPageComponents as unknown as IReferencePageItem<IMunicipalTariffReferenceDataItem>[]
-    ]
+    ],
+    additionalGetFormData: { type: TariffAndNormType.MunicipalTariff }
 };

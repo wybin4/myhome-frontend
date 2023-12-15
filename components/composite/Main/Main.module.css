@@ -1,0 +1,380 @@
+.referenceMainMC {
+    height: 190vh;
+}
+
+.referenceMainOwner {
+    height: 145vh;
+}
+
+.background svg {
+    position: absolute;
+    right: 3rem;
+    width: 68rem;
+    height: 34rem;
+}
+
+.title {
+    position: absolute;
+    top: 16rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 4.5rem;
+    font-weight: 600;
+    line-height: 4.8rem;
+    color: var(--primary);
+}
+
+.listWrapper {
+    position: absolute;
+    top: 58rem;
+
+    display: flex;
+    align-items: center;
+    justify-items: stretch;
+    justify-content: space-evenly;
+
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+
+.titleSecond {
+    font-size: 1.7rem;
+    font-weight: 500;
+}
+
+.descriptionSecond {
+    margin-top: 2rem;
+
+    line-height: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.titleSecond,
+.descriptionSecond {
+    max-width: 30rem;
+}
+
+.description {
+    position: absolute;
+    top: 22rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+    line-height: 1.6rem;
+    font-size: 1.3rem;
+}
+
+.possibilityDescription {
+    font-size: 0.9rem;
+
+    margin-top: 1rem;
+}
+
+.mc .descIcon svg {
+    fill: var(--primary);
+}
+
+.mc .descIconStroke svg,
+.mc .descIcon svg,
+.mc .possibilityIcon svg {
+    width: 3rem;
+}
+
+.owner .possibilityIcon svg {
+    flex-shrink: inherit;
+}
+
+.owner .possibilityIcon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.listDesc {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+}
+
+.listIcon svg {
+    margin-top: 1rem;
+
+    height: 17rem;
+}
+
+.listDescTitle {
+    max-width: 15rem;
+
+    font-weight: 500;
+}
+
+.mc .descIconStroke svg {
+    stroke: #D5DAF9;
+    stroke-width: 6.67px;
+    stroke-linejoin: round;
+}
+
+.possibs {
+    position: absolute;
+    top: 28rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: var(--white);
+    background-color: var(--primary);
+    border-radius: 0.7rem;
+
+    padding: 0.5rem 1.4rem;
+
+    min-width: 8rem;
+}
+
+.totalPossWrapper {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.mc .totalPossWrapper {
+    top: 45rem;
+}
+
+.owner .totalPossWrapper {
+    top: 52rem;
+}
+
+.mc .totalPossWrapper {
+    gap: 0 8rem;
+}
+
+.owner .totalPossWrapper {
+    gap: 2rem 4rem;
+
+    width: 80%;
+}
+
+.possibilityWrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+}
+
+.possibilityName {
+    font-weight: 500;
+}
+
+.owner .possibilityName {
+    font-size: 1.1rem;
+}
+
+.mc .possibilityIconWithFill svg {
+    fill: var(--primary);
+}
+
+.mc .possibilityIconWithStroke svg {
+    stroke-width: 6.67px;
+    stroke: var(--primary);
+    stroke-linejoin: round;
+}
+
+.owner .possibilityIconWithFill svg {
+    fill: var(--white);
+}
+
+.owner .possibilityIconWithStroke svg {
+    stroke-width: 6.67px;
+    stroke: var(--white);
+    stroke-linejoin: round;
+}
+
+.owner .possibilityIcon {
+    background-color: var(--primary);
+    border-radius: 100%;
+
+    padding: 0.7rem;
+}
+
+.possibs:hover {
+    background-color: var(--primary-hover);
+}
+
+.ownerIcon svg,
+.mcIcon svg {
+    position: absolute;
+    right: 1rem;
+    top: 12rem;
+    height: 25rem;
+    width: 30vw;
+
+    fill: var(--primary);
+}
+
+@media (max-width: 1200px) {
+    .mc .totalPossWrapper {
+        top: 49rem;
+    }
+
+    .totalPossWrapper {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .mcIcon,
+    .ownerIcon {
+        display: none;
+    }
+
+    .title {
+        top: 18rem;
+    }
+
+    .description {
+        width: 70%;
+
+        top: 26rem;
+    }
+
+    .possibs {
+        top: 35rem;
+    }
+
+    .totalPossWrapper {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .owner .totalPossWrapper {
+        top: 58rem;
+    }
+
+    .titleSecond,
+    .descriptionSecond {
+        max-width: auto;
+    }
+
+    .listWrapper {
+        top: 62rem;
+
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .listIcon svg {
+        height: 19rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 3rem;
+    }
+
+    .description {
+        width: 90%;
+
+        font-size: 1.1rem;
+        line-height: 1.4rem;
+    }
+
+    .possibs {
+        top: 34rem;
+    }
+
+    .listWrapper {
+        max-width: 80%;
+        margin: 0 auto;
+    }
+
+    .owner .totalPossWrapper {
+        top: 68rem;
+
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-content: flex-start;
+
+        width: 80%;
+    }
+
+    .referenceMainOwner {
+        height: 185vh;
+    }
+
+    .listIcon svg {
+        height: 18rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        top: 21rem;
+
+        font-size: 2.7rem;
+    }
+
+    .description {
+        top: 28rem;
+    }
+
+    .possibs {
+        top: 36rem;
+    }
+
+    .mc .totalPossWrapper {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        align-content: flex-start;
+
+        width: 80%;
+    }
+
+    .mc .totalPossWrapper {
+        top: 60rem;
+    }
+
+    .owner .totalPossWrapper {
+        top: 75rem;
+    }
+
+    .possibilityWrapper {
+        gap: 2rem;
+    }
+
+    .possibilityIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 3.5rem;
+        width: 3.5rem;
+    }
+
+    .background svg {
+        right: 0;
+    }
+
+    .listWrapper {
+        top: 80rem;
+    }
+
+    .referenceMainMC {
+        height: 225vh;
+    }
+
+    .referenceMainOwner {
+        height: 200vh;
+    }
+
+    .owner .possibilityWrapper {
+        gap: 1rem;
+    }
+
+    .listIcon svg {
+        height: 21rem;
+    }
+}

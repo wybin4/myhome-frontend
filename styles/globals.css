@@ -30,7 +30,7 @@ body {
     margin: 0;
     padding: 0;
     color: var(--black);
-    background: #F5F6F8;
+    background: var(--white);
 
     font-family: var(--font-family);
 }

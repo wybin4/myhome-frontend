@@ -152,6 +152,11 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
         }
     };
 
+    const isDate = (value: string): boolean => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+        return dateRegex.test(value);
+    };
+
     const createComponent = <T extends FieldValues>(
         item: IReferencePageComponent<T>,
         uriToAdd?: string,
@@ -205,18 +210,18 @@ function ReferencePage({ data: initialData }: ReferencePageProps): JSX.Element {
 
                                 if (typeof value === 'number') {
                                     type = Number;
-                                } else if (!isNaN(new Date(value).getTime())) {
+                                } else if (isDate(value)) {
                                     type = Date;
                                 } else if (typeof value === "string") {
                                     type = String;
                                 }
-
+                           
                                 if (type) {
                                     if (type === Date) {
                                         return {
                                             type: type,
                                             value: new Date(value),
-                                            format: 'mm/dd/yyyy',
+                                            format: 'dd/mm/yyyy',
                                         };
                                     } else {
                                         return {
@@ -450,15 +455,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     };
                 }
             case "municipal-tariff":
-                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.MunicipalTariff);
+                return await fetchTariffAndNormData(context, apiUrl,
+                    municipalTariffPageComponent.additionalGetFormData
+                );
             case "norm":
-                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.Norm);
+                return await fetchTariffAndNormData(context, apiUrl,
+                    normPageComponent.additionalGetFormData
+                );
             case "social-norm":
-                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.SocialNorm);
+                return await fetchTariffAndNormData(context, apiUrl,
+                    socialNormPageComponent.additionalGetFormData
+                );
             case "seasonality-factor":
-                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.SeasonalityFactor, true);
+                return await fetchTariffAndNormData(context, apiUrl,
+                    seasonalityFactorPageComponent.additionalGetFormData,
+                    true
+                );
             case "common-house-need-tariff":
-                return await fetchTariffAndNormData(context, apiUrl, TariffAndNormType.CommonHouseNeedTariff, false, true);
+                return await fetchTariffAndNormData(context, apiUrl,
+                    сommonHouseNeedTariffPageComponent.additionalGetFormData,
+                    false, true
+                );
             case "penalty-rule":
                 try {
                     const { props: penaltyCalcRuleProps } = await fetchReferenceData<IPenaltyCalculationRuleReferenceData>(context, apiUrl, undefined, true);
@@ -511,7 +528,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const fetchTariffAndNormData = async (
     context: GetServerSidePropsContext,
     apiUrl: string,
-    type: TariffAndNormType,
+    additionalFormData: { [key: string]: string | boolean | number } | undefined,
     isNotUnit?: boolean,
     isHouse?: boolean
 ) => {
@@ -519,7 +536,7 @@ const fetchTariffAndNormData = async (
         const { props: tariffAndNormProps } = await fetchReferenceData<IBaseTariffAndNormReferenceData>(
             context,
             apiUrl,
-            { type },
+            additionalFormData,
             true
         );
 
