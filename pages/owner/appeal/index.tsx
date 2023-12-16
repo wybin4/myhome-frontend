@@ -7,8 +7,7 @@ import { IGetUserWithSubscriber } from "@/interfaces/account/user.interface";
 import { EventType, IGetEvents, IGetAppeal } from "@/interfaces/event.interface";
 import { IFilter } from "@/interfaces/meta.interface";
 import { withLayout } from "@/layout/Layout";
-import { AppealPageComponent } from "@/page-components";
-import { setPostDataForEvent } from "@/pages/management-company/reference-helper";
+import { AppealPageComponent, setPostDataForEvent } from "@/page-components";
 import { GetServerSidePropsContext } from "next";
 import { useContext, useState } from "react";
 

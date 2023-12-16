@@ -6,8 +6,7 @@ import { PAGE_LIMIT } from "@/helpers/constants";
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData, handleFilterDateClick } from "@/helpers/reference-constants";
 import { IAppContext } from "@/context/app.context";
-import { getPagination, setPostDataForReference } from "../reference-helper";
-import { ArchieveSPDPageComponent } from "@/page-components";
+import { ArchieveSPDPageComponent, getPagination, setPostDataForReference } from "@/page-components";
 import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 
 const postDataSPDs = {

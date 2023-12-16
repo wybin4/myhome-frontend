@@ -13,12 +13,11 @@ import { IGetHouse, IHouseReferenceData, IHouseReferenceDataItem, housePageCompo
 import { ISubscriberReferenceData, ISubscriberReferenceDataItem, subscriberPageComponent } from "@/interfaces/reference/subscriber/subscriber.interface";
 import { IMunicipalTariffReferenceDataItem, municipalTariffPageComponent, INormReferenceDataItem, normPageComponent, ISocialNormReferenceDataItem, socialNormPageComponent, ISeasonalityFactorReferenceDataItem, seasonalityFactorPageComponent, ICommonHouseNeedTariffReferenceDataItem, сommonHouseNeedTariffPageComponent, TariffAndNormType, IBaseTariffAndNormReferenceData } from "@/interfaces/reference/tariff-and-norm.interface";
 import { withLayout } from "@/layout/Layout";
-import { ReferencePageComponent } from "@/page-components";
+import { ReferencePageComponent, getPagination } from "@/page-components";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
-import { getPagination } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
 import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 import { ExcelHeader } from "@/components/primitive/Excel/Excel.props";

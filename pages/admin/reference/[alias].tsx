@@ -9,8 +9,7 @@ import { IPenaltyRuleReferenceDataItem, penaltyRulePageComponent } from "@/inter
 import { ISearch } from "@/interfaces/meta.interface";
 import { IReferenceData, IReferencePageComponent } from "@/interfaces/reference/page.interface";
 import { withLayout } from "@/layout/Layout";
-import { ReferencePageComponent } from "@/page-components";
-import { getPagination, setPostDataForReference } from "@/pages/management-company/reference-helper";
+import { ReferencePageComponent, getPagination, setPostDataForReference } from "@/page-components";
 import { isDate } from "date-fns";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";

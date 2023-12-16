@@ -8,10 +8,9 @@ import { EventType, IGetEvents } from "@/interfaces/event.interface";
 import { enrichReferenceComponent, fetchReferenceData, handleFilter, handleFilterDateClick, handleSearch } from "@/helpers/reference-constants";
 import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
-import { ReferencePageComponent } from "@/page-components";
+import { ReferencePageComponent, getPagination, setPostDataForEvent } from "@/page-components";
 import { useState } from "react";
 import { PAGE_LIMIT } from "@/helpers/constants";
-import { getPagination, setPostDataForEvent } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
 import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 

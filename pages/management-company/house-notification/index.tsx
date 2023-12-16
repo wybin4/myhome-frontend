@@ -8,10 +8,9 @@ import { HouseNotificationType, IHouseNotificationReferenceData, IHouseNotificat
 import { EventType, IGetEvents } from "@/interfaces/event.interface";
 import { GetServerSidePropsContext } from "next";
 import { IAppContext } from "@/context/app.context";
-import { ReferencePageComponent } from "@/page-components";
+import { ReferencePageComponent, getPagination, setPostDataForEvent } from "@/page-components";
 import { PAGE_LIMIT, getEnumKeyByValue } from "@/helpers/constants";
 import { enrichReferenceComponent, handleFilter, fetchReferenceData, handleSearch, handleFilterDateClick } from "@/helpers/reference-constants";
-import { getPagination, setPostDataForEvent } from "../reference-helper";
 import { IFilter, ISearch } from "@/interfaces/meta.interface";
 import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
 

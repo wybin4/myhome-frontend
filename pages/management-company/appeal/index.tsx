@@ -2,12 +2,11 @@
 import { API } from "@/helpers/api";
 import { withLayout } from "@/layout/Layout";
 import { EventType, IGetAppeal, IGetEvents } from "@/interfaces/event.interface";
-import { AppealPageComponent } from "@/page-components";
+import { AppealPageComponent, getPagination, setPostDataForEvent } from "@/page-components";
 import { GetServerSidePropsContext } from "next";
 import { fetchReferenceData, handleFilter, handleFilterDateClick } from "@/helpers/reference-constants";
 import { AppContext, IAppContext } from "@/context/app.context";
 import { useContext, useState } from "react";
-import { setPostDataForEvent, getPagination } from "../reference-helper";
 import { PAGE_LIMIT } from "@/helpers/constants";
 import { IFilter } from "@/interfaces/meta.interface";
 import { IBaseDateRange } from "@/components/primitive/DatePicker/DatePicker.props";
