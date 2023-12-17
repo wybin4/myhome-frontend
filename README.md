@@ -33,11 +33,11 @@ npm run dev
 - `charge`
 - `archive-spd`
 
-## Ресурсы
-- Дизайн в [Figma](https://www.figma.com/file/Ku03TsMBCwtseXdS7lxzTb/%D0%B8%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D0%BA%D0%B0?type=design&node-id=0-1&mode=design)
-
 ### `components`
 
 - `enhanced`
 - `composite`
 - `primitive`
+
+## Ресурсы
+- Дизайн в [Figma](https://www.figma.com/file/Ku03TsMBCwtseXdS7lxzTb/%D0%B8%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D0%BA%D0%B0?type=design&node-id=0-1&mode=design)
