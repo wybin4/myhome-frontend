@@ -1,9 +1,9 @@
 # myhome-frontend
 
 ## Описание
-Этот репозиторий содержит фронтенд-часть проекта MyHome, разработанную с использованием Next.js и Tailwind CSS. Проект разработан под [бэкенд](https://github.com/wybin4/myhome).
+Этот репозиторий содержит фронтенд-часть проекта MyHome, разработанную с использованием Next.js и Tailwind CSS. Проект взаимодействует с соответствующим [бэкендом](https://github.com/wybin4/myhome).
 
-<img width="700px" src="https://github.com/wybin4/myhome-frontend/blob/main/public/page.png"/>
+<img width="800px" src="https://github.com/wybin4/myhome-frontend/blob/main/public/page.png"/>
 
 ## Требования
 - Node >= 20
